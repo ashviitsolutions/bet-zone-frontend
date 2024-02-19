@@ -1,0 +1,20 @@
+export default {
+    SPLASH_SCREEN:'SplashScreen',
+    VIP:'Vip',
+    CREATE_ACCOUNT:'CreateAccount',
+    LOGIN:'Login',
+    PLAN:'Plan',
+    CONTACTS:'Contacts',
+    VIP_TIPS:'VipTips',
+    DETAILS_PAGE:'DetailsPage',
+    PROFILE:'Profile',
+    HOME_PAGE_STACK:'HomePageStack',
+    PROFILE_PAGE_STACK:'ProfilePageStack',
+    VIP_PAGE_STACK:'VipPageStack',
+    HOME:'Home',
+    VIP:'vip',
+    TABS:'Tabs',
+    ON_BOARDING_PAGE:'OnBoardingPage',
+    ADMIN_LOGIN_PAGE:'FirstLoginPage',
+    AUTH_LOGIN:'AuthLogin'
+}
