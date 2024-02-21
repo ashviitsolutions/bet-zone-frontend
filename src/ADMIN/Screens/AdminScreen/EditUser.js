@@ -12,7 +12,6 @@ import Colors from '../../../Constants/Colors';
 import Header from '../../../Components/Header';
 import ImagePath from '../../../Constants/ImagePath';
 import Button from '../../../Components/Button';
-import Tabs from '../../../Navigation/TabsNav';
 import DropDownPicker from 'react-native-dropdown-picker';
 const {width, height} = Dimensions.get('screen');
 import {useNavigation} from '@react-navigation/native';

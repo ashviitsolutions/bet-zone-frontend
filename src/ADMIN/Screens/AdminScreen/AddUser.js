@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
   Image,
@@ -23,14 +23,54 @@ import {
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
 import InputComp from '../../../Components/InputComp';
+import { IP } from '../../../Constants/Server';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 function AddUser() {
   const navigation = useNavigation();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
-    {label: 'No months membership', value: 'No months membership'},
-    {label: 'membership', value: 'membership'},
+    {label: '1 months membership', value: '1 months membership'},
+    {label: '3 months membership', value: '3 months membership'},
+    {label: '6 months membership', value: '6 months membership'},
   ]);
+  const [token,setToken] = useState('')
+useEffect(() => {
+  async function fetchData() {
+    try {
+      const storedToken = await AsyncStorage.getItem('token');
+      setToken(storedToken);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  fetchData();
+}, []);
+
+  const handleAddUser=async ()=>{
+    const formData = new FormData()
+    formData.append('full_name','pradeep'),
+    formData.append('email','pradeep')
+    formData.append('password','pradeep')
+    formData.append('confirm_password','pradeep')
+    formData.append('mobile',433432)
+    formData.append('auth_type','dsakldl')
+    formData.append('membership',items)
+
+    const response = await fetch(`${IP}/addUser`,{
+      method:'POST',
+      headers: {
+        Authorization:token
+      },
+      body:formData
+    })
+
+    const responseData = await response.json()
+    console.log('data',responseData)
+
+  navigation.navigate('List')
+  }
   return (
     <SafeAreaView style={{flex: 1}}>
       <Header />
@@ -69,7 +109,6 @@ function AddUser() {
         <InputComp title={'123849862'} />
         <InputComp title={'new password'} />
         <InputComp title={'confirm password'} />
-        <InputComp title={'6 months membership'} />
 
         <DropDownPicker
           open={open}
@@ -78,7 +117,7 @@ function AddUser() {
           setOpen={setOpen}
           setValue={setValue}
           setItems={setItems}
-          placeholder={'No membership'}
+          placeholder={'membership'}
           dropDownDirection="Bottom"
           dropDownContainerStyle={{
             borderRadius: responsiveWidth(2),
@@ -102,11 +141,11 @@ function AddUser() {
           h={5}
           br={6}
           title={'CREATE'}
-          onPress={() => navigation.navigate('List')}
+          onPress={handleAddUser}
         />
 
         <Text
-          onPress={() => navigation.goBack()}
+          onPress={()=>navigation.goBack()}
           style={{
             color: Colors.grayText,
             alignSelf: 'center',

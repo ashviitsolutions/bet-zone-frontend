@@ -10,7 +10,8 @@ import {
   Text,
   TextInput,
   View,
-  ToastAndroid
+  ToastAndroid,
+  TouchableOpacity,
 } from 'react-native';
 import Colors from '../../Constants/Colors';
 import Header from '../../Components/Header';
@@ -27,48 +28,54 @@ import {
 import NavigationString from '../../Constants/NavigationString';
 import InputComp from '../../Components/InputComp';
 import ContactAreaComp from '../../Components/ContactAreaComp';
-import { IP } from '../../Constants/Server';
+import {IP} from '../../Constants/Server';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 function AuthLogin() {
   const navigation = useNavigation();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
   const handleLogin = async () => {
-     
-    // if(email && password){
-    //     try {
-    //       const response = await fetch(`${IP}user/login`, {
-    //         method: 'POST',
-    //         headers: {
-    //           'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({
-    //           email: email,
-    //           password: password,
-    //         }),
-    //       });
-      
-    //       if (!response.ok) {
-    //         console.error('Authentication failed');
-    //         return;
-    //       }
-    //       const responseData = await response.json();
-    //     //   const authToken = responseData.token;
-    //       navigation.navigate(NavigationString.TABS, { isAdmin: true });
-      
-    //     } 
+    if (email && password) {
+      try {
+        const response = await fetch(`${IP}/user/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password,
+          }),
+        });
         
-    //     catch (error) {
-    //       console.error('Error during login:', error);
-    //     }
-    // }
+        if (!response.ok) {
+          console.error('Authentication failed');
+          return;
+        }
+        const responseData = await response.json();
+        const authToken = response.headers.get('Authorization');
+        console.log(authToken)
+        if(authToken){
+          await AsyncStorage.setItem('token',authToken)
+        }
+        ToastAndroid.show(responseData.msg, ToastAndroid.SHORT);
 
-    // else{
-    //     ToastAndroid.show('Enter email/password', ToastAndroid.SHORT);
-    // }
-    navigation.navigate(NavigationString.TABS, { isAdmin: true });
+        if (responseData.user_info.auth_type === 'user') {
+          navigation.navigate(NavigationString.TABS, {isAdmin: false});
+        } else {
+          navigation.navigate(NavigationString.TABS, {isAdmin: true});
+        }
+
+      } catch (error) {
+        console.error('Error during login:', error);
+      }
+    } else {
+      ToastAndroid.show('Enter email/password', ToastAndroid.SHORT);
+    }
+    // navigation.navigate(NavigationString.TABS, { isAdmin: false });
   };
-  
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <Header />
@@ -87,11 +94,11 @@ function AuthLogin() {
           <Text style={styles.login_text}>LOGIN</Text>
         </View>
 
-        <InputComp 
-        title={'email'} 
-        value={email} 
-        onChangeText={setEmail} 
-        keyType={'email-address'}
+        <InputComp
+          title={'email'}
+          value={email}
+          onChangeText={setEmail}
+          keyType={'email-address'}
         />
 
         <InputComp
@@ -102,7 +109,22 @@ function AuthLogin() {
         />
 
         <Button w={30} h={5} br={6} title={'LOGIN'} onPress={handleLogin} />
-        <ContactAreaComp />
+        {/* <ContactAreaComp /> */}
+        <View
+          style={{
+            height: responsiveHeight(4),
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'row',
+            marginVertical: responsiveHeight(1.5),
+          }}>
+          <Text style={{color: Colors.grayText}}>Dont't have account ? </Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate(NavigationString.AUTH_SIGN_UP)}
+            activeOpacity={0.8}>
+            <Text style={{color: Colors.grayText}}>Signup</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

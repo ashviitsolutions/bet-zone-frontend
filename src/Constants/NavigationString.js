@@ -16,5 +16,6 @@ export default {
     TABS:'Tabs',
     ON_BOARDING_PAGE:'OnBoardingPage',
     ADMIN_LOGIN_PAGE:'FirstLoginPage',
-    AUTH_LOGIN:'AuthLogin'
+    AUTH_LOGIN:'AuthLogin',
+    AUTH_SIGN_UP:'AuthSignup'
 }
