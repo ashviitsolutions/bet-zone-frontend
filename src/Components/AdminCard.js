@@ -6,9 +6,19 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
+import { IP } from '../Constants/Server';
 
 const AdminCard = ({item, onPress}) => {
   const {type} = item;
+  // console.log(item.attachments)
+  const originalDate = item.updatedAt instanceof Date ? item.updatedAt : new Date();
+  const hours = String(originalDate.getUTCHours()).padStart(2, '0');
+  const minutes = String(originalDate.getUTCMinutes()).padStart(2, '0');
+  const day = String(originalDate.getUTCDate()).padStart(2, '0');
+  const month = String(originalDate.getUTCMonth() + 1).padStart(2, '0');
+  const year = originalDate.getUTCFullYear();
+  const formattedDate = `${hours}:${minutes} ${day}-${month}-${year}`;
+
   return (
     <TouchableOpacity
       activeOpacity={0.8}
@@ -33,7 +43,7 @@ const AdminCard = ({item, onPress}) => {
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
-        <Text style={styles.dateText}>{item.date}</Text>
+        <Text style={styles.dateText}>{formattedDate}</Text>
         <View
           style={{
             borderRadius: responsiveWidth(3),
@@ -53,23 +63,23 @@ const AdminCard = ({item, onPress}) => {
         </View>
         <View style={styles.game_Icon_Name_box}>
           <Image source={require('../assets/icons/football.png')} />
-          <Text style={styles.gameNameText}>{item.game}</Text>
+          <Text style={styles.gameNameText}>{item.category}</Text>
         </View>
       </View>
 
       <View style={styles.secondRow}>
-        <Image source={item.img} style={styles.imgStyle} />
+      <Image source={{ uri: `${IP}/file/${item.attachments}`}} style={styles.imgStyle} />
         <View style={{width: responsiveWidth(52)}}>
-          <Text style={styles.titleText}>{item.match}</Text>
+          <Text style={styles.titleText}>{item.title}</Text>
           <Text numberOfLines={6} ellipsizeMode="tail" style={styles.descText}>
-            {item.desc}
+            {item.description}
           </Text>
         </View>
       </View>
 
       <View style={styles.thirdRow}>
-        <Text style={styles.amtText}>AMT - {item.amounts}</Text>
-        <Text style={styles.oddText}>ODDS - {item.ODD}</Text>
+        <Text style={styles.amtText}>AMT - {item.amt}</Text>
+        <Text style={styles.oddText}>ODDS - {item.odds}</Text>
         <Text style={styles.probsText}>PROBS - {item.probs}</Text>
       </View>
     </TouchableOpacity>

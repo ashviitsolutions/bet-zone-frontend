@@ -10,7 +10,7 @@ import {
 } from "react-native-responsive-dimensions"
 function Header() {
   return (
-   <View style={{width:responsiveWidth(100),height:responsiveHeight(10),backgroundColor:Colors.mainColor,justifyContent:'center',alignItems:'center'}}>
+   <View style={{height:responsiveHeight(10),backgroundColor:Colors.mainColor,justifyContent:'center',alignItems:'center'}}>
 
 <Image 
 source={ImagePath.headerIcon}

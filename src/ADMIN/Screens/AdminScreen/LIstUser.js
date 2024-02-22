@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
   Image,
+  KeyboardAvoidingView,
   SafeAreaView,
   ScrollView,
   Text,
@@ -22,40 +23,41 @@ import {
 } from 'react-native-responsive-dimensions';
 import SearchBar from '../../../Components/SearchBar';
 import AdminHeaderBar from '../../../Components/AdminHeaderBar';
+import { IP } from '../../../Constants/Server';
 function ListUser() {
   const navigation = useNavigation();
-  const Data = [
-    {
-      id: 1,
-      name: 'FULL NAME OF USER',
-      email: 'user@gmail.com',
-      contact: '9898937973',
-      member: 'NO MEMBER',
-    },
-    {
-      id: 2,
-      name: 'FULL NAME OF USER',
-      email: 'user@gmail.com',
-      contact: '9898937973',
-      member: '3 MONTH',
-      exp: '20-02-2023',
-    },
-    {
-      id: 3,
-      name: 'FULL NAME OF USER',
-      email: 'user@gmail.com',
-      contact: '9898937973',
-      member: 'NO MEMBER',
-    },
-    {
-      id: 4,
-      name: 'FULL NAME OF USER',
-      email: 'user@gmail.com',
-      contact: '9898937973',
-      member: '3 MONTH',
-      exp: '20-02-2023',
-    },
-  ];
+  // const Data = [
+  //   {
+  //     id: 1,
+  //     name: 'FULL NAME OF USER',
+  //     email: 'user@gmail.com',
+  //     contact: '9898937973',
+  //     member: 'NO MEMBER',
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'FULL NAME OF USER',
+  //     email: 'user@gmail.com',
+  //     contact: '9898937973',
+  //     member: '3 MONTH',
+  //     exp: '20-02-2023',
+  //   },
+  //   {
+  //     id: 3,
+  //     name: 'FULL NAME OF USER',
+  //     email: 'user@gmail.com',
+  //     contact: '9898937973',
+  //     member: 'NO MEMBER',
+  //   },
+  //   {
+  //     id: 4,
+  //     name: 'FULL NAME OF USER',
+  //     email: 'user@gmail.com',
+  //     contact: '9898937973',
+  //     member: '3 MONTH',
+  //     exp: '20-02-2023',
+  //   },
+  // ];
 
   function Card({onPress, item}) {
     const {member} = item;
@@ -106,7 +108,7 @@ function ListUser() {
               fontWeight: '900',
               fontSize: responsiveFontSize(1.8),
             }}>
-            {item.name}
+            {item.full_name}
           </Text>
           <Text
             style={{
@@ -120,7 +122,7 @@ function ListUser() {
               color: Colors.whiteText,
               fontSize: responsiveFontSize(1.6),
             }}>
-            Contact No. {item.contact}
+            Contact No. {item.mobile}
           </Text>
         </View>
 
@@ -162,6 +164,22 @@ function ListUser() {
       </TouchableOpacity>
     );
   }
+
+  const [data,setData] = useState([])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${IP}/getUsers`);
+        const data = await response.json();
+        setData(data.services)
+        console.log(data.services[0])
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
   return (
     <SafeAreaView style={{flex: 1}}>
       <Header />
@@ -178,10 +196,13 @@ function ListUser() {
         />
 
         <SearchBar />
-
-        <ScrollView style={{flex: 1, padding: 10, height: 'auto'}}>
+        <KeyboardAvoidingView
+          behavior="padding"
+          style={{flex: 1}}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+        <ScrollView style={{flex: 1, padding: 10,marginBottom:responsiveHeight(15)}}>
           <FlatList
-            data={Data}
+            data={data}
             renderItem={({item}) => (
               <Card
                 item={item}
@@ -192,6 +213,7 @@ function ListUser() {
             showsVerticalScrollIndicator={false}
           />
         </ScrollView>
+        </KeyboardAvoidingView>
       </View>
     </SafeAreaView>
   );

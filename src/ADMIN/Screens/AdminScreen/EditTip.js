@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   ImageBackground,
@@ -22,17 +22,20 @@ import ImagePath from '../../../Constants/ImagePath';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {Button} from '../../../Components';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { IP } from '../../../Constants/Server';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function EditTip() {
   const navigation = useNavigation();
   const route = useRoute();
-  const {match, desc, ODD, probs, amounts, img, date} = route.params.item;
+  const {date} = route.params.item;
+  
 
-  const [title, setTitle] = useState(match);
-  const [description, setDescription] = useState(desc);
-  const [amount, setAmount] = useState(amounts);
-  const [odds, setOdds] = useState(ODD);
-  const [prob, setProb] = useState(probs);
+  const [title, setTitle] = useState(route.params.item.title);
+  const [description, setDescription] = useState(route.params.item.description);
+  const [amount, setAmount] = useState(route.params.item.amt);
+  const [odds, setOdds] = useState(route.params.item.odds);
+  const [prob, setProb] = useState(route.params.item.probs);
 
   const [image, setImage] = useState('');
 
@@ -56,6 +59,53 @@ export default function EditTip() {
       }
     });
   };
+  const [token, setToken] = useState('');
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const storedToken = await AsyncStorage.getItem('token');
+        setToken(storedToken);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  const handleUpdateTip = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('title', 'baseball');
+      formData.append('description', 'a usa game from usa');
+      formData.append('amt', '12');
+      formData.append('odds', '344');
+      formData.append('probs', '432');
+      formData.append('type', 'VIP');
+      formData.append('category', 'cricket');
+      formData.append('postImages', {
+        uri: image,
+        type: 'image/jpeg',
+        name: 'image.jpg',
+      });
+
+      const response = await fetch(`${IP}/service/${route.params.item._id}/update`, {
+        method: 'PUT',
+        headers: {
+          Authorization: token,
+        },
+        body: formData,
+      });
+
+      const responseData = await response.json();
+      console.warn('error is ',responseData)
+      navigation.navigate('AdminHomePage');
+    } catch (error) {
+      console.error('Error:', error.message);
+      console.error('Stack Trace:', error.stack);
+    }
+  };
+
  
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -67,26 +117,28 @@ export default function EditTip() {
           height: '100%',
           padding: 10,
         }}>
-        <View style={styles.topHeader}>
-          <View style={styles.sportsBox}>
-            <Image source={require('../../../assets/icons/football.png')} />
-            <Text style={styles.sportsText}>SPORT</Text>
+       
+         <View style={styles.hedaerSub}>
+          <View style={styles.sportBox}>
+            <Image source={require('../../../assets/icons/run.png')} />
+            <Text style={styles.sportText}>SPORT</Text>
             <Image source={require('../../../assets/icons/downArr.png')} />
           </View>
-          <View style={styles.VipBox}>
-            <Text style={styles.vipText}>VIP</Text>
+
+          <View style={styles.vipBox}>
+            <Text  style={styles.vipText}>{route.params.item.type}</Text>
             <Image source={require('../../../assets/icons/whiteDwnArr.png')} />
           </View>
-          <View style={styles.dateBox}>
+          <View style={styles.date_box}>
             <Image
               source={require('../../../assets/icons/solar_calendar-linear.png')}
-              style={styles.calenderImg}
+              style={styles.calender_icon}
             />
-            <Text style={styles.dateTextStyle}>{date}</Text>
+            <Text style={styles.date_text}>Select date/time</Text>
           </View>
         </View>
         <View style={styles.imgBox}>
-          <Image source={{uri: image}} style={styles.imgStyle} />
+          <Image source={image ? {uri:image}:{ uri: `${IP}/file/${route.params.item.attachments}`}} style={styles.imgStyle} />
         </View>
         <Text style={styles.titleText}>TIP TITLE</Text>
         <View
@@ -171,7 +223,8 @@ export default function EditTip() {
             br={2}
             title={'UPDATE'}
             customStyle={{marginTop: 0}}
-            onPress={() => navigation.navigate('NewTips')}
+            onPress={handleUpdateTip}
+            // onPress={() => navigation.navigate('NewTips')}
           />
         </View>
       </ScrollView>
@@ -180,61 +233,7 @@ export default function EditTip() {
 }
 
 const styles = StyleSheet.create({
-  topHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-    alignItems: 'center',
-  },
-  sportsText: {
-    color: Colors.blackText,
-    fontSize: responsiveFontSize(1.8),
-    fontWeight: '900',
-  },
-  sportsBox: {
-    width: responsiveWidth(30),
-    height: responsiveHeight(3),
-    backgroundColor: Colors.grayText,
-    borderRadius: responsiveWidth(15),
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-  },
-  VipBox: {
-    width: responsiveWidth(20),
-    height: responsiveHeight(3),
-    borderRadius: responsiveWidth(15),
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    borderWidth: 1,
-    borderColor: Colors.grayText,
-  },
-  vipText: {
-    color: Colors.whiteText,
-    fontSize: responsiveFontSize(1.8),
-    fontWeight: '900',
-  },
-  dateBox: {
-    borderColor: Colors.grayText,
-    borderWidth: 1,
-    borderRadius: responsiveWidth(2),
-    padding: 5,
-    flexDirection: 'row',
-  },
-  calenderImg: {
-    width: 20,
-    height: 20,
-    tintColor: Colors.grayText,
-    marginRight: responsiveWidth(2),
-  },
-  dateTextStyle: {
-    color: '#d0d0d0',
-    fontSize: responsiveFontSize(1.6),
-    fontWeight: '900',
-  },
+ 
   imgBox: {
     width: responsiveWidth(93),
     height: responsiveHeight(30),
@@ -324,5 +323,75 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: responsiveHeight(4),
     justifyContent: 'center',
+  },
+
+
+  hedaerSub: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+    alignItems: 'center',
+  },
+  sportText: {
+    color: Colors.blackText,
+    fontSize: responsiveFontSize(1.8),
+    fontWeight: '900',
+  },
+  sportBox: {
+    width: responsiveWidth(30),
+    height: responsiveHeight(3),
+    backgroundColor: Colors.grayText,
+    borderRadius: responsiveWidth(15),
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+  },
+  vipText: {
+    color: Colors.whiteText,
+    fontSize: responsiveFontSize(1.8),
+    fontWeight: '900',
+  },
+  vipBox: {
+    width: responsiveWidth(20),
+    height: responsiveHeight(3),
+    borderRadius: responsiveWidth(15),
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    borderWidth: 1,
+    borderColor: Colors.grayText,
+  },
+  imgStyle: {
+    width: responsiveWidth(95),
+    height: responsiveHeight(30),
+    borderRadius: responsiveWidth(2),
+  },
+  img_box: {
+    width: responsiveWidth(93),
+    height: responsiveHeight(30),
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: Colors.grayText,
+    overflow: 'hidden',
+  },
+  date_text: {
+    color: '#d0d0d0',
+    fontSize: responsiveFontSize(1.6),
+    fontWeight: '900',
+  },
+  calender_icon: {
+    width: 20,
+    height: 20,
+    tintColor: Colors.grayText,
+    marginRight: responsiveWidth(2),
+  },
+  date_box: {
+    borderColor: Colors.grayText,
+    borderWidth: 1,
+    borderRadius: responsiveWidth(2),
+    padding: 5,
+    flexDirection: 'row',
   },
 });
