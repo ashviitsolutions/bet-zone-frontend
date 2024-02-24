@@ -17,9 +17,28 @@ import {
 } from 'react-native-responsive-dimensions';
 import Colors from '../../Constants/Colors';
 import ImagePath from '../../Constants/ImagePath';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 export default function DetailsPage() {
   const navigation = useNavigation();
+  const route = useRoute()
+  const date = route.params.item.updatedAt
+  // const originalDate = route.params.item.updatedAt instanceof Date ? route.params.item.updatedAt : new Date();
+  // const hours = String(originalDate.getUTCHours()).padStart(2, '0');
+  // const minutes = String(originalDate.getUTCMinutes()).padStart(2, '0');
+  // const day = String(originalDate.getUTCDate()).padStart(2, '0');
+  // const month = String(originalDate.getUTCMonth() + 1).padStart(2, '0');
+  // const year = originalDate.getUTCFullYear();
+  // const formattedDate = `${hours}:${minutes} ${day}-${month}-${year}`;
+
+  const formattedDate = new Date(date).toLocaleString('en-GB', {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+  });
+  
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <Header />
@@ -37,26 +56,21 @@ export default function DetailsPage() {
             <Image source={ImagePath.backIcon} style={styles.backIcon_style} />
             <Text style={{color: '#d0d0d0'}}>Back</Text>
           </TouchableOpacity>
-          <Text style={styles.date_text}>Tip-22:41 12-12-2021</Text>
+          <Text style={styles.date_text}>Tip - {formattedDate}</Text>
         </View>
         <Image
           source={require('../../assets/Image/football.webp')}
           style={styles.img_style}
         />
-        <Text style={styles.title_text}>Tanzania Vs Uganda</Text>
+          <Text style={styles.title_text}>{route.params.item.title}</Text>
         <Text style={styles.desc_text}>
-          In publishing and graphic design, Lorem ipsum is a placeholder text
-          commonly used to demonstrate the visual form of ublishing and graphic
-          design, Lorem ipsum is a placeholder text commonly used to demonstrate
-          the visual form of a document or a typeface without relying on
-          meaningful content. Lorem ipsum may be used as a placeholder before
-          the final copy is available.
+         {route.params.item.description}
         </Text>
 
         <View style={styles.last_box}>
-          <Text style={styles.amt_text}>AMT - 200</Text>
-          <Text style={styles.odd_text}>ODDS - 2.1</Text>
-          <Text style={styles.probs_text}>PROBS -0.8</Text>
+          <Text style={styles.amt_text}>AMT - {route.params.item.amt}</Text>
+          <Text style={styles.odd_text}>ODDS - {route.params.item.odds}</Text>
+          <Text style={styles.probs_text}>PROBS -{route.params.item.probs}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -22,88 +22,105 @@ import {
 } from 'react-native-responsive-dimensions';
 import UserCard from '../../Components/UserCard';
 import UserHeaderBar from '../../Components/UserHeaderBar';
+import { IP } from '../../Constants/Server';
 function Home() {
   const navigation = useNavigation();
 
-  const Data = [
-    {
-      id: 1,
-      date: '22:41 12-09-2023',
-      game: 'FOOTBALL',
-      amount: '2000',
-      match: 'Tanzania vs Uganda',
-      desc: 'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.',
-      ODD: '2.1',
-      probs: '83.2',
-      img: require('../../assets/splashScreenImg/AppIcon.png'),
-    },
-    {
-      id: 2,
-      date: '22:41 12-09-2023',
-      game: 'FOOTBALL',
-      amount: '2000',
-      match: 'Tanzania vs Uganda',
-      desc: 'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.',
-      ODD: '2.1',
-      probs: '83.2',
-      img: require('../../assets/splashScreenImg/AppIcon.png'),
-    },
-    {
-      id: 3,
-      date: '22:41 12-09-2023',
-      game: 'FOOTBALL',
-      amount: '2000',
-      match: 'Tanzania vs Uganda',
-      desc: 'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.',
-      ODD: '2.1',
-      probs: '83.2',
-      img: require('../../assets/splashScreenImg/AppIcon.png'),
-    },
-    {
-      id: 4,
-      date: '22:41 12-09-2023',
-      game: 'FOOTBALL',
-      amount: '2000',
-      match: 'Tanzania vs Uganda',
-      desc: 'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.',
-      ODD: '2.1',
-      probs: '83.2',
-      img: require('../../assets/splashScreenImg/AppIcon.png'),
-    },
-    {
-      id: 5,
-      date: '22:41 12-09-2023',
-      game: 'FOOTBALL',
-      amount: '2000',
-      match: 'Tanzania vs Uganda',
-      desc: 'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.',
-      ODD: '2.1',
-      probs: '83.2',
-      img: require('../../assets/splashScreenImg/AppIcon.png'),
-    },
-    {
-      id: 6,
-      date: '22:41 12-09-2023',
-      game: 'FOOTBALL',
-      amount: '2000',
-      match: 'Tanzania vs Uganda',
-      desc: 'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.',
-      ODD: '2.1',
-      probs: '83.2',
-      img: require('../../assets/splashScreenImg/AppIcon.png'),
-    },
-    {
-      id: 7,
-      date: '22:41 12-09-2023',
-      game: 'FOOTBALL',
-      amount: '2000',
-      match: 'Tanzania vs Uganda',
-      desc: 'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.',
-      ODD: '2.1',
-      probs: '83.2',
-      img: require('../../assets/splashScreenImg/AppIcon.png'),
-    },
-  ];
+  // const Data = [
+  //   {
+  //     id: 1,
+  //     date: '22:41 12-09-2023',
+  //     game: 'FOOTBALL',
+  //     amount: '2000',
+  //     match: 'Tanzania vs Uganda',
+  //     desc: 'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.',
+  //     ODD: '2.1',
+  //     probs: '83.2',
+  //     img: require('../../assets/splashScreenImg/AppIcon.png'),
+  //   },
+  //   {
+  //     id: 2,
+  //     date: '22:41 12-09-2023',
+  //     game: 'FOOTBALL',
+  //     amount: '2000',
+  //     match: 'Tanzania vs Uganda',
+  //     desc: 'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.',
+  //     ODD: '2.1',
+  //     probs: '83.2',
+  //     img: require('../../assets/splashScreenImg/AppIcon.png'),
+  //   },
+  //   {
+  //     id: 3,
+  //     date: '22:41 12-09-2023',
+  //     game: 'FOOTBALL',
+  //     amount: '2000',
+  //     match: 'Tanzania vs Uganda',
+  //     desc: 'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.',
+  //     ODD: '2.1',
+  //     probs: '83.2',
+  //     img: require('../../assets/splashScreenImg/AppIcon.png'),
+  //   },
+  //   {
+  //     id: 4,
+  //     date: '22:41 12-09-2023',
+  //     game: 'FOOTBALL',
+  //     amount: '2000',
+  //     match: 'Tanzania vs Uganda',
+  //     desc: 'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.',
+  //     ODD: '2.1',
+  //     probs: '83.2',
+  //     img: require('../../assets/splashScreenImg/AppIcon.png'),
+  //   },
+  //   {
+  //     id: 5,
+  //     date: '22:41 12-09-2023',
+  //     game: 'FOOTBALL',
+  //     amount: '2000',
+  //     match: 'Tanzania vs Uganda',
+  //     desc: 'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.',
+  //     ODD: '2.1',
+  //     probs: '83.2',
+  //     img: require('../../assets/splashScreenImg/AppIcon.png'),
+  //   },
+  //   {
+  //     id: 6,
+  //     date: '22:41 12-09-2023',
+  //     game: 'FOOTBALL',
+  //     amount: '2000',
+  //     match: 'Tanzania vs Uganda',
+  //     desc: 'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.',
+  //     ODD: '2.1',
+  //     probs: '83.2',
+  //     img: require('../../assets/splashScreenImg/AppIcon.png'),
+  //   },
+  //   {
+  //     id: 7,
+  //     date: '22:41 12-09-2023',
+  //     game: 'FOOTBALL',
+  //     amount: '2000',
+  //     match: 'Tanzania vs Uganda',
+  //     desc: 'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.',
+  //     ODD: '2.1',
+  //     probs: '83.2',
+  //     img: require('../../assets/splashScreenImg/AppIcon.png'),
+  //   },
+  // ];
+
+  const [data,setData] = useState([])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${IP}/service/view-services`);
+        const data = await response.json();
+        setData(data.services)
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -117,14 +134,14 @@ function Home() {
         <UserHeaderBar />
         <ScrollView style={{flex: 1, padding: 10}}>
           <FlatList
-            data={Data}
+            data={data}
             renderItem={({item}) => (
               <UserCard
                 item={item}
-                onPress={() => navigation.navigate('DetailsPage')}
+                onPress={() => navigation.navigate('DetailsPage',{item,item})}
               />
             )}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={(item, index) => (item && item.id ? item.id.toString() : index.toString())}
             contentContainerStyle={{paddingBottom: responsiveHeight(20)}}
             showsVerticalScrollIndicator={false}
           />

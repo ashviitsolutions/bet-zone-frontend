@@ -60,7 +60,7 @@ function AuthSignup() {
         }
   
         const responseData = await response.json();
-        console.log('User created successfully');
+        ToastAndroid.show('User created successfully', ToastAndroid.SHORT);
         navigation.goBack();
       } catch (error) {
         console.error('Error during user registration:', error);

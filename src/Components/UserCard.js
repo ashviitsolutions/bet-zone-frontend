@@ -6,34 +6,43 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
+import { IP } from '../Constants/Server';
 
 const UserCard = ({item, onPress}) => {
+  // console.log('item....',item)
+  const originalDate = item.updatedAt instanceof Date ? item.updatedAt : new Date();
+  const hours = String(originalDate.getUTCHours()).padStart(2, '0');
+  const minutes = String(originalDate.getUTCMinutes()).padStart(2, '0');
+  const day = String(originalDate.getUTCDate()).padStart(2, '0');
+  const month = String(originalDate.getUTCMonth() + 1).padStart(2, '0');
+  const year = originalDate.getUTCFullYear();
+  const formattedDate = `${hours}:${minutes} ${day}-${month}-${year}`;
   return (
     <TouchableOpacity activeOpacity={0.8} onPress={onPress} style={styles.card}>
       <View style={styles.first_row}>
-        <Text style={styles.date_text}>{item.date}</Text>
+        <Text style={styles.date_text}>{formattedDate}</Text>
         <View style={styles.game_icon_name_box}>
           <Image source={require('../assets/icons/football.png')} />
-          <Text style={styles.game_text}>{item.game}</Text>
+          <Text style={styles.game_text}>{item.category}</Text>
         </View>
       </View>
 
       <View style={styles.secound_row}>
         <Image
-          source={require('../assets/Image/football.webp')}
+         source={{ uri: `${IP}/file/${item.attachments}`}}
           style={styles.img_style}
         />
         <View style={{width: responsiveWidth(52)}}>
-          <Text style={styles.match_text}>{item.match}</Text>
+          <Text style={styles.match_text}>{item.title}</Text>
           <Text numberOfLines={6} ellipsizeMode="tail" style={styles.desc_text}>
-            {item.desc}
+            {item.description}
           </Text>
         </View>
       </View>
 
       <View style={styles.third_row}>
-        <Text style={styles.amount_text}>AMT - {item.amount}</Text>
-        <Text style={styles.odd_text}>ODDS - {item.ODD}</Text>
+        <Text style={styles.amount_text}>AMT - {item.amt}</Text>
+        <Text style={styles.odd_text}>ODDS - {item.odds}</Text>
         <Text style={styles.prob_text}>PROBS - {item.probs}</Text>
       </View>
     </TouchableOpacity>
@@ -60,7 +69,7 @@ const styles = StyleSheet.create({
   },
   date_text: {color: Colors.grayText, fontSize: responsiveFontSize(1.5)},
   game_icon_name_box: {
-    width: responsiveWidth(25),
+    width: responsiveWidth(23),
     height: responsiveHeight(3),
     backgroundColor: Colors.secondaryColor,
     borderRadius: responsiveWidth(15),
