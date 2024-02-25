@@ -31,6 +31,7 @@ import InputComp from '../../Components/InputComp';
 import ContactAreaComp from '../../Components/ContactAreaComp';
 import { IP } from '../../Constants/Server';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loader from '../../Components/Loader';
 
 function AuthLogin() {
   const navigation = useNavigation();
@@ -96,6 +97,7 @@ function AuthLogin() {
   };
 
   return (
+    <>
     <SafeAreaView style={{ flex: 1 }}>
       <Header />
 
@@ -129,7 +131,7 @@ function AuthLogin() {
 
         <Button w={30} h={5} br={6} title={'LOGIN'} onPress={handleLogin} />
 
-        {loading && <ActivityIndicator size="large" color="#0000ff" />}
+        
 
         <View
           style={{
@@ -148,6 +150,8 @@ function AuthLogin() {
         </View>
       </ScrollView>
     </SafeAreaView>
+    {loading ? <Loader/> : null}
+    </>
   );
 }
 

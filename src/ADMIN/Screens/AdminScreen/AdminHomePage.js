@@ -26,9 +26,10 @@ import SearchBar from '../../../Components/SearchBar';
 import AdminCard from '../../../Components/AdminCard';
 import AdminHeaderBar from '../../../Components/AdminHeaderBar';
 import { IP } from '../../../Constants/Server';
+import Loader from '../../../Components/Loader';
 function AdminHomePage() {
   const navigation = useNavigation();
-
+  const [loading,setLoading] = useState(false)
   // const Data = [
   //   {
   //     id: 1,
@@ -118,6 +119,7 @@ function AdminHomePage() {
 
   const [data,setData] = useState([])
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       try {
         const response = await fetch(`${IP}/service/view-services`);
@@ -125,6 +127,9 @@ function AdminHomePage() {
         setData(data.services)
       } catch (error) {
         console.error('Error fetching data:', error);
+      }
+      finally {
+        setLoading(false);
       }
     };
   
@@ -134,6 +139,7 @@ function AdminHomePage() {
 
  
   return (
+    <>
     <SafeAreaView style={{flex: 1}}>
       <Header />
 
@@ -171,6 +177,8 @@ function AdminHomePage() {
         </KeyboardAvoidingView>
       </View>
     </SafeAreaView>
+    {loading ? <Loader/> : null}
+    </>
   );
 }
 

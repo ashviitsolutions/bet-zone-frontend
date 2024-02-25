@@ -23,6 +23,7 @@ import {
 import UserCard from '../../Components/UserCard';
 import UserHeaderBar from '../../Components/UserHeaderBar';
 import { IP } from '../../Constants/Server';
+import Loader from '../../Components/Loader';
 function Home() {
   const navigation = useNavigation();
 
@@ -105,24 +106,28 @@ function Home() {
   //     img: require('../../assets/splashScreenImg/AppIcon.png'),
   //   },
   // ];
-
+   const [loading,setLoading] = useState(false)
   const [data,setData] = useState([])
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       try {
         const response = await fetch(`${IP}/service/view-services`);
-        const data = await response.json();
-        setData(data.services)
+        const responseData = await response.json();
+        setData(responseData.services);
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
       }
     };
-  
+
     fetchData();
   }, []);
   
 
   return (
+    <>
     <SafeAreaView style={{flex: 1}}>
       <Header />
       <View
@@ -148,6 +153,8 @@ function Home() {
         </ScrollView>
       </View>
     </SafeAreaView>
+    {loading ? <Loader/> : null}
+    </>
   );
 }
 

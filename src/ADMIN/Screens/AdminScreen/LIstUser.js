@@ -24,6 +24,7 @@ import {
 import SearchBar from '../../../Components/SearchBar';
 import AdminHeaderBar from '../../../Components/AdminHeaderBar';
 import { IP } from '../../../Constants/Server';
+import Loader from '../../../Components/Loader';
 function ListUser() {
   const navigation = useNavigation();
   // const Data = [
@@ -58,7 +59,7 @@ function ListUser() {
   //     exp: '20-02-2023',
   //   },
   // ];
-
+  const [loading,setLoading] = useState(false)
   function Card({onPress, item}) {
     const {member} = item;
     return (
@@ -166,7 +167,9 @@ function ListUser() {
   }
 
   const [data,setData] = useState([])
+  
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       try {
         const response = await fetch(`${IP}/getUsers`);
@@ -176,11 +179,16 @@ function ListUser() {
       } catch (error) {
         console.error('Error fetching data:', error);
       }
+      finally {
+        setLoading(false);
+      }
     };
   
     fetchData();
   }, []);
+
   return (
+    <>
     <SafeAreaView style={{flex: 1}}>
       <Header />
       <View
@@ -216,6 +224,8 @@ function ListUser() {
         </KeyboardAvoidingView>
       </View>
     </SafeAreaView>
+    {loading ? <Loader/> : null}
+    </>
   );
 }
 
