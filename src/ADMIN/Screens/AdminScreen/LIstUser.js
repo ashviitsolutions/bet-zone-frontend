@@ -139,7 +139,7 @@ function ListUser() {
             w={25}
             h={3}
             br={6}
-            title={`${item.member}`}
+            title={`${item.membershiplevel}`}
             customStyle={{
               marginTop: 3,
               marginBottom: 3,
@@ -186,6 +186,8 @@ function ListUser() {
   
     fetchData();
   }, []);
+
+  console.log("data",data)
 
   return (
     <>

@@ -98,59 +98,59 @@ function AuthLogin() {
 
   return (
     <>
-    <SafeAreaView style={{ flex: 1 }}>
-      <Header />
+      <SafeAreaView style={{ flex: 1 }}>
+        <Header />
 
-      <ScrollView
-        style={{
-          backgroundColor: Colors.mainColor,
-          height: responsiveHeight(100),
-          padding: 10,
-        }}>
-        <View style={styles.header}>
-          <Image
-            source={ImagePath.ProfileIcon}
-            style={styles.ProfileIcon_style}
-          />
-          <Text style={styles.login_text}>LOGIN</Text>
-        </View>
-
-        <InputComp
-          title={'email'}
-          value={email}
-          onChangeText={setEmail}
-          keyType={'email-address'}
-        />
-
-        <InputComp
-          title={'password'}
-          value={password}
-          onChangeText={setPassword}
-          password={true}
-        />
-
-        <Button w={30} h={5} br={6} title={'LOGIN'} onPress={handleLogin} />
-
-        
-
-        <View
+        <ScrollView
           style={{
-            height: responsiveHeight(4),
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'row',
-            marginVertical: responsiveHeight(1.5),
+            backgroundColor: Colors.mainColor,
+            height: responsiveHeight(100),
+            padding: 10,
           }}>
-          <Text style={{ color: Colors.grayText }}>Don't have an account? </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate(NavigationString.AUTH_SIGN_UP)}
-            activeOpacity={0.8}>
-            <Text style={{ color: Colors.grayText }}>Sign up</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-    {loading ? <Loader/> : null}
+          <View style={styles.header}>
+            <Image
+              source={ImagePath.ProfileIcon}
+              style={styles.ProfileIcon_style}
+            />
+            <Text style={styles.login_text}>LOGIN</Text>
+          </View>
+
+          <InputComp
+            title={'email'}
+            value={email}
+            onChangeText={setEmail}
+            keyType={'email-address'}
+          />
+
+          <InputComp
+            title={'password'}
+            value={password}
+            onChangeText={setPassword}
+            password={true}
+          />
+
+          <Button w={30} h={5} br={6} title={'LOGIN'} onPress={handleLogin} />
+
+
+
+          <View
+            style={{
+              height: responsiveHeight(4),
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'row',
+              marginVertical: responsiveHeight(1.5),
+            }}>
+            <Text style={{ color: Colors.grayText }}>Don't have an account? </Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate(NavigationString.AUTH_SIGN_UP)}
+              activeOpacity={0.8}>
+              <Text style={{ color: Colors.grayText }}>Sign up</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+      {loading ? <Loader /> : null}
     </>
   );
 }

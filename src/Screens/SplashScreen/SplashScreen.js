@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { Dimensions, Image, View, AsyncStorage } from 'react-native'; // Import AsyncStorage
+import { Dimensions, Image, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../../Constants/Colors';
 import ImagePath from '../../Constants/ImagePath';
 import { useNavigation } from '@react-navigation/native';
@@ -23,6 +24,7 @@ function SplashScreen() {
           });
           if (response.ok) {
             const userData = await response.json();
+            console.log("user my profile", userData)
             if (userData && userData.auth_type) {
               if (userData.auth_type === 'user') {
                 navigation.replace(NavigationString.TABS, { isAdmin: false });
@@ -48,9 +50,9 @@ function SplashScreen() {
       } catch (error) {
         console.error('Error during splash screen:', error);
         // Handle error
-        setTimeout(() => {
-          navigation.replace(NavigationString.AUTH_LOGIN);
-        }, 3000);
+        // setTimeout(() => {
+        //   navigation.replace(NavigationString.AUTH_LOGIN);
+        // }, 3000);
       }
     };
 

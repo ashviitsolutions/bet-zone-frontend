@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -14,8 +14,8 @@ import Header from '../../../Components/Header';
 import ImagePath from '../../../Constants/ImagePath';
 import Button from '../../../Components/Button';
 import Tabs from '../../../Navigation/TabsNav';
-const {width, height} = Dimensions.get('screen');
-import {useNavigation} from '@react-navigation/native';
+
+import { useNavigation } from '@react-navigation/native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {
   responsiveWidth,
@@ -25,75 +25,87 @@ import {
 import InputComp from '../../../Components/InputComp';
 import { IP } from '../../../Constants/Server';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const { width } = Dimensions.get('screen');
+
+
 function AddUser() {
   const navigation = useNavigation();
-  const [mobile,setMobile] = useState('')
-  const [name,setName]= useState('')
-  const [email,setEmail]= useState('')
-  const [password,setPassword]= useState('')
-  const [confirmPassword,setConfirmPassword]= useState('')
+  const [mobile, setMobile] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
+
   const [items, setItems] = useState([
-    {label: '1 month membership', value: '1 month membership'},
-    {label: '3 month membership', value: '3 month membership'},
-    {label: 'No membership', value: 'No membership'},
+    { label: '1 month membership', value: '1 MONTH' },
+    { label: '3 month membership', value: '3 MONTH' },
+    { label: 'No membership', value: 'NO MEMBER' },
   ]);
-  const [token,setToken] = useState('')
-useEffect(() => {
-  async function fetchData() {
-    try {
-      const storedToken = await AsyncStorage.getItem('token');
-      setToken(storedToken);
-    } catch (error) {
-      console.error(error);
+
+  console.log("mobile", typeof (mobile))
+
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const storedToken = await AsyncStorage.getItem('token');
+        setToken(storedToken);
+      } catch (error) {
+        console.error(error);
+      }
     }
-  }
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
+  const handleAddUser = async () => {
+    const userData = {
+      full_name: name,
+      email: email,
+      password: password,
+      confirm_password: confirmPassword,
+      mobile: mobile, // Corrected field name
+      auth_type: 'user',
+      membershiplevel: value
+    };
+    console.log("userData", userData)
+    try {
+      const response = await fetch(`${IP}/addUser`, {
+        method: 'POST',
+        headers: {
+          Authorization: token,
 
-  const handleAddUser=async ()=>{
-    console.log(mobile)
-    const formData = new FormData()
-    formData.append('full_name','pradeep'),
-    formData.append('email','pradeep@gmail.com')
-    formData.append('password','pradeep1234')
-    formData.append('confirm_password','pradeep1234')
-    formData.append('mobile','984683584')
-    formData.append('auth_type','user')
-    formData.append('membershiplevel','3 months membership')
+        },
+        body: JSON.stringify(userData), // Convert the data to JSON string
+      });
 
-    const response = await fetch(`${IP}/addUser`,{
-      method:'POST',
-      headers: {
-        Authorization:token,
-        'Content-Type': 'multipart/form-data',
-      },
-      body: JSON.stringify({
-        full_name:"pradeep",
-        email:"to@gmail.com",
-        password:"ps123",
-        confirm_password:"ps123",
-        mobile:"176367465",
-        auth_type:"user",
-        membershiplevel:"3 month membership"
-    
-    })
-    })
+      const responseData = await response.json();
+      console.log("responseData", responseData)
+      if (response.status === 200) {
+        console.log('User added successfully');
+        navigation.navigate('List');
+      } else {
+        console.log('Error:', responseData.msg);
+        // Handle error messages appropriately, e.g., show them to the user
+      }
+    } catch (error) {
+      console.error('Error adding user:', error);
+      // Handle network errors or other unexpected errors
+    }
+  };
 
-    const responseData = await response.json()
-    console.log('data',responseData)
 
-  navigation.navigate('List')
-  }
+
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Header />
 
       <ScrollView
         style={{
           backgroundColor: Colors.mainColor,
-          height: responsiveHeight(100),
+          height: '100%',
           padding: 10,
         }}>
         <View
@@ -119,11 +131,18 @@ useEffect(() => {
             ADD USER
           </Text>
         </View>
-        <InputComp title={'Demo user'} onChangeText={(t)=>setName(t)} />
-        <InputComp title={'demo@gmail.com'} onChangeText={(t)=>setEmail(t)}  keyType={'email-address'}/>
-        <InputComp title={'mobile'} onChangeText={(t)=>setMobile(t)}  keyType={'numeric'} />
-        <InputComp title={'new password'} onChangeText={(t)=>setPassword(t)}/>
-        <InputComp title={'confirm password'} onChangeText={(t)=>setConfirmPassword(t)} />
+        <InputComp title={'Demo user'} onChangeText={(t) => setName(t)} />
+        <InputComp
+          title={'demo@gmail.com'}
+          onChangeText={(t) => setEmail(t)}
+          keyType={'email-address'}
+        />
+        <InputComp title={'mobile'} onChangeText={(t) => setMobile(t)} />
+        <InputComp title={'new password'} onChangeText={(t) => setPassword(t)} />
+        <InputComp
+          title={'confirm password'}
+          onChangeText={(t) => setConfirmPassword(t)}
+        />
 
         <DropDownPicker
           open={open}
@@ -160,7 +179,7 @@ useEffect(() => {
         />
 
         <Text
-          onPress={()=>navigation.goBack()}
+          onPress={() => navigation.goBack()}
           style={{
             color: Colors.grayText,
             alignSelf: 'center',
