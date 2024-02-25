@@ -22,15 +22,15 @@ import ImagePath from '../../../Constants/ImagePath';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {Button} from '../../../Components';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import { IP } from '../../../Constants/Server';
+import {IP} from '../../../Constants/Server';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DropDownComp from '../../../Components/DropDownComp';
+import SportsDropDown from '../../../Components/SportsDropDown';
 
 export default function EditTip() {
   const navigation = useNavigation();
   const route = useRoute();
   const {date} = route.params.item;
-  
-
   const [title, setTitle] = useState(route.params.item.title);
   const [description, setDescription] = useState(route.params.item.description);
   const [amount, setAmount] = useState(route.params.item.amt);
@@ -38,6 +38,26 @@ export default function EditTip() {
   const [prob, setProb] = useState(route.params.item.probs);
 
   const [image, setImage] = useState('');
+  const data = [
+    {id: 1, name: 'VIP'},
+    {id: 2, name: 'OLD'},
+  ];
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const onSelect = item => {
+    setSelectedItem(item);
+  };
+  const data2 = [
+    {id: 1, name: 'BaseBall'},
+    {id: 2, name: 'Cricket'},
+    {id: 3, name: 'Football'},
+    {id: 4, name: 'Tennis'},
+  ];
+  const [sportsSelectedItem, setSportsSelectedItem] = useState(null);
+
+  const onSportsSelect = item => {
+    setSportsSelectedItem(item);
+  };
 
   const openImagePicker = () => {
     const options = {
@@ -89,16 +109,19 @@ export default function EditTip() {
         name: 'image.jpg',
       });
 
-      const response = await fetch(`${IP}/service/${route.params.item._id}/update`, {
-        method: 'PUT',
-        headers: {
-          Authorization: token,
+      const response = await fetch(
+        `${IP}/service/${route.params.item._id}/update`,
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: token,
+          },
+          body: formData,
         },
-        body: formData,
-      });
+      );
 
       const responseData = await response.json();
-      console.warn('error is ',responseData)
+      console.warn('error is ', responseData);
       navigation.navigate('AdminHomePage');
     } catch (error) {
       console.error('Error:', error.message);
@@ -106,7 +129,6 @@ export default function EditTip() {
     }
   };
 
- 
   return (
     <SafeAreaView style={{flex: 1}}>
       <Header />
@@ -117,18 +139,14 @@ export default function EditTip() {
           height: '100%',
           padding: 10,
         }}>
-       
-         <View style={styles.hedaerSub}>
-          <View style={styles.sportBox}>
-            <Image source={require('../../../assets/icons/run.png')} />
-            <Text style={styles.sportText}>SPORT</Text>
-            <Image source={require('../../../assets/icons/downArr.png')} />
-          </View>
+        <View style={styles.hedaerSub}>
+          <SportsDropDown
+            data={data2}
+            onSelect={onSportsSelect}
+            value={sportsSelectedItem}
+          />
 
-          <View style={styles.vipBox}>
-            <Text  style={styles.vipText}>{route.params.item.type}</Text>
-            <Image source={require('../../../assets/icons/whiteDwnArr.png')} />
-          </View>
+          <DropDownComp data={data} onSelect={onSelect} value={selectedItem} />
           <View style={styles.date_box}>
             <Image
               source={require('../../../assets/icons/solar_calendar-linear.png')}
@@ -138,7 +156,14 @@ export default function EditTip() {
           </View>
         </View>
         <View style={styles.imgBox}>
-          <Image source={image ? {uri:image}:{ uri: `${IP}/file/${route.params.item.attachments}`}} style={styles.imgStyle} />
+          <Image
+            source={
+              image
+                ? {uri: image}
+                : {uri: `${IP}/file/${route.params.item.attachments}`}
+            }
+            style={styles.imgStyle}
+          />
         </View>
         <Text style={styles.titleText}>TIP TITLE</Text>
         <View
@@ -233,7 +258,6 @@ export default function EditTip() {
 }
 
 const styles = StyleSheet.create({
- 
   imgBox: {
     width: responsiveWidth(93),
     height: responsiveHeight(30),
@@ -324,7 +348,6 @@ const styles = StyleSheet.create({
     height: responsiveHeight(4),
     justifyContent: 'center',
   },
-
 
   hedaerSub: {
     flexDirection: 'row',

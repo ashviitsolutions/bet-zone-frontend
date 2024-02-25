@@ -27,6 +27,8 @@ import {IP} from '../../../Constants/Server';
 import NavigationString from '../../../Constants/NavigationString';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DropDownPicker from 'react-native-dropdown-picker';
+import DropDownComp from '../../../Components/DropDownComp';
+import SportsDropDown from '../../../Components/SportsDropDown';
 export default function NewTips() {
   const navigation = useNavigation();
   const [image, setImage] = useState('');
@@ -37,6 +39,28 @@ export default function NewTips() {
   const [probs, setProbs] = useState('');
   const [type, setType] = useState('');
   const [category, setCategory] = useState('');
+
+  const data = [
+    {id: 1, name: 'VIP'},
+    {id: 2, name: 'OLD'},
+  ];
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const onSelect = item => {
+    setSelectedItem(item);
+  };
+
+  const data2 = [
+    {id: 1, name: 'BaseBall'},
+    {id: 2, name: 'Cricket'},
+    {id: 3, name: 'Football'},
+    {id: 4, name: 'Tennis'},
+  ];
+  const [sportsSelectedItem, setSportsSelectedItem] = useState(null);
+
+  const onSportsSelect = item => {
+    setSportsSelectedItem(item);
+  };
   const openImagePicker = () => {
     const options = {
       mediaType: 'photo',
@@ -87,7 +111,7 @@ export default function NewTips() {
         type: 'image/jpeg',
         name: 'image.jpg',
       });
-      
+
       const response = await fetch(`${IP}/service/add`, {
         method: 'POST',
         headers: {
@@ -105,11 +129,9 @@ export default function NewTips() {
     }
   };
 
- 
   return (
     <SafeAreaView style={{flex: 1}}>
       <Header />
-     
 
       <ScrollView
         style={{
@@ -118,16 +140,13 @@ export default function NewTips() {
           padding: 10,
         }}>
         <View style={styles.hedaerSub}>
-          <View style={styles.sportBox}>
-            <Image source={require('../../../assets/icons/run.png')} />
-            <Text style={styles.sportText}>SPORT</Text>
-            <Image source={require('../../../assets/icons/downArr.png')} />
-          </View>
+          <SportsDropDown
+            data={data2}
+            onSelect={onSportsSelect}
+            value={sportsSelectedItem}
+          />
 
-          <View style={styles.vipBox}>
-            <Text  style={styles.vipText}>VIP</Text>
-            <Image source={require('../../../assets/icons/whiteDwnArr.png')} />
-          </View>
+          <DropDownComp data={data} onSelect={onSelect} value={selectedItem} />
           <View style={styles.date_box}>
             <Image
               source={require('../../../assets/icons/solar_calendar-linear.png')}

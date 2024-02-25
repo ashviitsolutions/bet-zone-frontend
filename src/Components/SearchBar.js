@@ -6,11 +6,22 @@ import {
   Image,
   StyleSheet,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {responsiveFontSize} from 'react-native-responsive-dimensions';
 import Colors from '../Constants/Colors';
+import FilterDropDown from './FilterDropDown';
 const {width, height} = Dimensions.get('window');
 const SearchBar = () => {
+  const data = [
+    {id: 1, name: 'ALL'},
+    {id: 2, name: 'VIP'},
+    {id: 3, name: 'FREE'},
+  ];
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const onSelect = item => {
+    setSelectedItem(item);
+  };
   return (
     <View style={styles.searchbar_container}>
       <View style={styles.input_container}>
@@ -18,7 +29,8 @@ const SearchBar = () => {
 
         <Image source={require('../assets/icons/search.png')} />
       </View>
-      <Image source={require('../assets/icons/filter.png')} />
+      {/* <Image source={require('../assets/icons/filter.png')} /> */}
+      <FilterDropDown data={data} onSelect={onSelect} value={selectedItem} />
     </View>
   );
 };
