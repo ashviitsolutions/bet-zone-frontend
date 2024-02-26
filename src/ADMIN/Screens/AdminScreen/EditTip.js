@@ -97,7 +97,7 @@ export default function EditTip() {
     try {
       const formData = new FormData();
       formData.append('title', 'baseball');
-      formData.append('description', 'a usa game from usa');
+      formData.append('description', 'kkkkkkkk');
       formData.append('amt', '12');
       formData.append('odds', '344');
       formData.append('probs', '432');

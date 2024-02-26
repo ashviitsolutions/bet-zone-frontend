@@ -27,10 +27,8 @@ import { IP } from '../../../Constants/Server';
 import Loader from '../../../Components/Loader';
 function ListUser() {
   const navigation = useNavigation();
-
+  
   const [loading, setLoading] = useState(false)
-  const [reachedEnd, setReachedEnd] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
 
   function Card({ onPress, item }) {
     const { member } = item;
@@ -139,18 +137,17 @@ function ListUser() {
   }
 
   const [data, setData] = useState([])
-
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
       try {
-        const response = await fetch(`${IP}/getusers?page=${currentPage}&limit=20`);
-        const newData = await response.json();
-        if (newData.services.length > 0) {
-          setData(prevData => [...prevData, ...newData.services]);
-
+        const response = await fetch(`${IP}/getusers?page=1&limit=9`);
+        const data = await response.json();
+        if (data.services && data.services.length > 0) {
+          setData(prevData => [...prevData, ...data.services]);
+          console.log(data.services[0]);
         } else {
-          setReachedEnd(true);
+          setReachedEnd(true); // Assuming setReachedEnd is defined elsewhere
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -161,6 +158,33 @@ function ListUser() {
 
     fetchData();
   }, []);
+
+
+
+  // useEffect(() => {
+  //   setLoading(true);
+  //   const fetchData = async () => {
+  //     try {
+  //       // const response = await fetch(`${IP}/getUsers`);
+  //       const response = await fetch(`${IP}/getusers?page=1&limit=20`);
+  //       const newData = await response.json();
+  //       if (newData.length > 0) {
+  //         setData(prevData => [...prevData, ...newData]);
+  //       } else {
+  //         setLoading(false);
+  //       }
+  //     } catch (error) {
+  //       setLoading(false);
+  //       // Handle errors here
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+
+
 
   const handleLoadMore = () => {
     if (!loading && !reachedEnd) {
@@ -196,12 +220,9 @@ function ListUser() {
             <ScrollView style={{ flex: 1, padding: 10, marginBottom: responsiveHeight(15) }}>
               <FlatList
                 data={data}
-
                 renderItem={({ item }) => (
                   <Card
                     item={item}
-                    onEndReached={handleLoadMore}
-                    onEndReachedThreshold={0.1}
                     onPress={() => navigation.navigate('EditUser')}
                   />
                 )}

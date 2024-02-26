@@ -62,6 +62,9 @@ function AddUser() {
     }
     fetchData();
   }, []);
+
+
+
   const handleAddUser = async () => {
     setLoading(true);
     const userData = {
@@ -75,7 +78,7 @@ function AddUser() {
     };
     console.log("userData", userData)
     try {
-      const response = await fetch(`${IP}/user/addUser`, {
+      const response = await fetch(`${IP}/addUser`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
