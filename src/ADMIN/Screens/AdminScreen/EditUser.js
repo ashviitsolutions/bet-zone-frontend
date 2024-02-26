@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dimensions,
   Image,
@@ -6,6 +6,7 @@ import {
   ScrollView,
   Text,
   TextInput,
+  ActivityIndicator,
   View,
 } from 'react-native';
 import Colors from '../../../Constants/Colors';
@@ -13,30 +14,117 @@ import Header from '../../../Components/Header';
 import ImagePath from '../../../Constants/ImagePath';
 import Button from '../../../Components/Button';
 import DropDownPicker from 'react-native-dropdown-picker';
-const {width, height} = Dimensions.get('screen');
-import {useNavigation, useRoute} from '@react-navigation/native';
+const { width, height } = Dimensions.get('screen');
+import { useNavigation, useRoute } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { IP } from '../../../Constants/Server';
+import ContactAreaComp from '../../../Components/ContactAreaComp';
 import {
   responsiveWidth,
   responsiveFontSize,
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
+
 function EditUser() {
   const route = useRoute();
-  const [name, setName] = useState(route.params.item.full_name);
-  const [email, setEmail] = useState(route.params.item.email);
-  const [mobile, setMobile] = useState(route.params.item.mobile);
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  // Ensure route.params.item is defined or use an empty object as default
+  const item = route.params?.item || {};
+  const [name, setName] = useState(item.full_name || '');
+  const [email, setEmail] = useState(item.email || '');
+  const [mobile, setMobile] = useState(item.mobile || '');
+  const [password, setPassword] = useState(item.password || '');
+  const [confirmPassword, setConfirmPassword] = useState(item.confirmPassword || '');
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState(item.membershiplevel || 'NO MEMBER');
+  const [loading, setLoading] = useState(false);
+
+
   const [items, setItems] = useState([
-    {label: '6 months membership', value: '6 months membership'},
-    {label: '3 months membership', value: '3 months membership'},
-    {label: '3 months membership', value: '2 months membership'},
+    { label: '1 month membership', value: '1 MONTH' },
+    { label: '3 month membership', value: '3 MONTH' },
   ]);
   const navigation = useNavigation();
+
+
+  console.log("id membershiplevel", item.membershiplevel)
+
+
+
+
+
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const storedToken = await AsyncStorage.getItem('token');
+        setToken(storedToken);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData();
+  }, []);
+
+
+
+  const handleAddUser = async () => {
+    setLoading(true);
+    const userData = {
+      full_name: name,
+      email: email,
+      password: password,
+      confirm_password: confirmPassword,
+      mobile: mobile,
+      auth_type: 'user',
+      membershiplevel: value
+    };
+    console.log("userData", userData)
+    try {
+      const response = await fetch(`${IP}/user/${item._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+        body: JSON.stringify(userData), // Convert the data to JSON string
+      });
+
+      const responseData = await response.json();
+      console.log("responseData", responseData)
+      if (response.status === 200) {
+        console.log('User added successfully');
+        setLoading(false);
+        navigation.navigate('List');
+      } else {
+        setLoading(false);
+        console.log('Error:', responseData.msg);
+        // Handle error messages appropriately, e.g., show them to the user
+      }
+    } catch (error) {
+      console.error('Error adding user:', error);
+      setLoading(false);
+      // Handle network errors or other unexpected errors
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Header />
       <ScrollView
         style={{
@@ -70,7 +158,7 @@ function EditUser() {
         <TextInput
           placeholder="Demo user"
           value={name}
-          onChangeText={(i)=>setName(i)}
+          onChangeText={(i) => setName(i)}
           placeholderTextColor={Colors.grayText}
           style={{
             padding: 10,
@@ -87,7 +175,7 @@ function EditUser() {
           placeholder="demo@gmail.com"
           placeholderTextColor={Colors.grayText}
           value={email}
-          onChangeText={(i)=>setEmail(i)}
+          onChangeText={(i) => setEmail(i)}
           style={{
             padding: 10,
             borderColor: Colors.grayText,
@@ -102,7 +190,7 @@ function EditUser() {
         <TextInput
           placeholder="123849862"
           value={String(mobile)}
-          onChangeText={(i)=>setMobile(i)}
+          onChangeText={(i) => setMobile(i)}
           placeholderTextColor={Colors.grayText}
           style={{
             padding: 10,
@@ -118,7 +206,7 @@ function EditUser() {
         <TextInput
           placeholder="new password"
           value={password}
-          onChangeText={(i)=>setPassword(i)}
+          onChangeText={(i) => setPassword(i)}
           placeholderTextColor={Colors.grayText}
           style={{
             padding: 10,
@@ -134,7 +222,7 @@ function EditUser() {
         <TextInput
           placeholder="confirm password"
           value={confirmPassword}
-          onChangeText={(i)=>setConfirmPassword(i)}
+          onChangeText={(i) => setConfirmPassword(i)}
           placeholderTextColor={Colors.grayText}
           style={{
             padding: 10,
@@ -154,10 +242,10 @@ function EditUser() {
           setOpen={setOpen}
           setValue={setValue}
           setItems={setItems}
-          placeholder={'6 months membership'}
+          placeholder={'No membership'}
           dropDownDirection="Bottom"
           dropDownContainerStyle={{
-          
+
             borderRadius: responsiveWidth(2),
             width: responsiveWidth(85),
             alignSelf: 'center',
@@ -172,7 +260,7 @@ function EditUser() {
             alignSelf: 'center',
             marginBottom: responsiveHeight(1.5),
 
-           
+
           }}
         />
 
@@ -181,17 +269,22 @@ function EditUser() {
           h={5}
           br={6}
           title={'UPDATE'}
-          onPress={() => navigation.navigate('List')}
+          onPress={handleAddUser}
+
         />
 
         <Text
+          onPress={() => navigation.goBack()}
           style={{
             color: Colors.grayText,
             alignSelf: 'center',
             marginVertical: 15,
+
           }}>
           Back
         </Text>
+        {loading && <ActivityIndicator size="large" color="#0000ff" />}
+        <ContactAreaComp />
       </ScrollView>
     </SafeAreaView>
   );

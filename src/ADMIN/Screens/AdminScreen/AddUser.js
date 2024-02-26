@@ -38,13 +38,12 @@ function AddUser() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState('NO MEMBER');
   const [loading, setLoading] = useState(false);
 
   const [items, setItems] = useState([
     { label: '1 month membership', value: '1 MONTH' },
     { label: '3 month membership', value: '3 MONTH' },
-    { label: 'No membership', value: 'NO MEMBER' },
   ]);
 
 
@@ -160,7 +159,7 @@ function AddUser() {
           setOpen={setOpen}
           setValue={setValue}
           setItems={setItems}
-          placeholder={'membership'}
+          placeholder={'No membership'}
           dropDownDirection="Bottom"
           dropDownContainerStyle={{
             borderRadius: responsiveWidth(2),

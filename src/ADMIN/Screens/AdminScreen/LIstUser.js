@@ -14,8 +14,8 @@ import Colors from '../../../Constants/Colors';
 import Header from '../../../Components/Header';
 import ImagePath from '../../../Constants/ImagePath';
 import Button from '../../../Components/Button';
-const {width, height} = Dimensions.get('screen');
-import {useNavigation} from '@react-navigation/native';
+const { width, height } = Dimensions.get('screen');
+import { useNavigation } from '@react-navigation/native';
 import {
   responsiveWidth,
   responsiveFontSize,
@@ -27,10 +27,12 @@ import { IP } from '../../../Constants/Server';
 import Loader from '../../../Components/Loader';
 function ListUser() {
   const navigation = useNavigation();
-  const [loading,setLoading] = useState(false)
 
-  function Card({onPress, item}) {
-    const {member} = item;
+  const [loading, setLoading] = useState(false)
+  const [data, setData] = useState([])
+
+  function Card({ onPress, item }) {
+    const { member } = item;
     return (
       <TouchableOpacity
         activeOpacity={0.7}
@@ -50,7 +52,7 @@ function ListUser() {
           shadowColor: '#000',
           borderWidth: 1,
           borderColor:
-            member === 'NO MEMBER' ? Colors.grayText : Colors.yellowColor,
+          item.membershiplevel === 'NO MEMBER' ? Colors.grayText : Colors.yellowColor,
         }}>
         <View
           style={{
@@ -58,17 +60,18 @@ function ListUser() {
             height: responsiveHeight(6),
             borderRadius: responsiveWidth(6),
             borderColor:
-              member === 'NO MEMBER' ? Colors.grayText : Colors.yellowColor,
+            item.membershiplevel === 'NO MEMBER' ? Colors.grayText : Colors.yellowColor,
             borderWidth: 1,
             justifyContent: 'center',
           }}>
           <Text
             style={{
               color:
-                member === 'NO MEMBER' ? Colors.grayText : Colors.yellowColor,
+                item.membershiplevel === 'NO MEMBER' ? Colors.grayText : Colors.yellowColor,
               alignSelf: 'center',
             }}>
-            VIP
+            {item.membershiplevel === 'NO MEMBER' ?  'NA' : 'VIP'}
+           
           </Text>
         </View>
         <View>
@@ -96,7 +99,7 @@ function ListUser() {
           </Text>
         </View>
 
-        <View style={{alignItems: 'center', justifyContent: 'space-evenly'}}>
+        <View style={{ alignItems: 'center', justifyContent: 'space-evenly' }}>
           <Text
             style={{
               color: Colors.whiteText,
@@ -104,24 +107,31 @@ function ListUser() {
             }}>
             MEMBERSHIP PLAN
           </Text>
+
           <Button
             w={25}
             h={3}
             br={6}
-            title={`${item.member}`}
+            title={`${item.membershiplevel}`}
             customStyle={{
               marginTop: 3,
               marginBottom: 3,
-              backgroundColor:
-                member === 'NO MEMBER'
-                  ? Colors.grayText
-                  : Colors.secondaryColor,
+              backgroundColor: item.membershiplevel === 'NO MEMBER' ? Colors.grayText : Colors.secondaryColor,
             }}
             customStyleText={{
               fontSize: responsiveFontSize(1.6),
               fontWeight: '900',
             }}
           />
+
+
+
+
+
+
+
+
+
           <Text
             style={{
               color: Colors.whiteText,
@@ -135,64 +145,85 @@ function ListUser() {
     );
   }
 
-  const [data,setData] = useState([])
-  
+
+
+
+
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
       try {
-        const response = await fetch(`${IP}/getUsers`);
+        const response = await fetch(`${IP}/getusers?page=1&limit=30`);
         const data = await response.json();
-        setData(data.services)
+        if (data.services && data.services.length > 0) {
+          setData(prevData => [...prevData, ...data.services]);
+          console.log(data.services[0]);
+        } else {
+          setReachedEnd(true); // Assuming setReachedEnd is defined elsewhere
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
-      }
-      finally {
+      } finally {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, []);
 
+
+
+
+
+
+  const handleLoadMore = () => {
+    if (!loading && !reachedEnd) {
+      fetchData();
+      setCurrentPage(prevPage => prevPage + 1);
+
+    }
+  };
+
+  console.log("data", data)
+
   return (
     <>
-    <SafeAreaView style={{flex: 1}}>
-      <Header />
-      <View
-        style={{
-          backgroundColor: Colors.mainColor,
-          height: responsiveHeight(100),
-          padding: 5,
-        }}>
-        <AdminHeaderBar
-          leftTitle={'LIST OF TIPS'}
-          rightTitle={'+ NEW USER'}
-          onPress={() => navigation.navigate('AddUser')}
-        />
-
-        <SearchBar />
-        <KeyboardAvoidingView
-          behavior="padding"
-          style={{flex: 1}}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-        <ScrollView style={{flex: 1, padding: 10,marginBottom:responsiveHeight(15)}}>
-          <FlatList
-            data={data}
-            renderItem={({item}) => (
-              <Card
-                item={item}
-                onPress={() => navigation.navigate('EditUser',{item:item})}
-              />
-            )}
-            keyExtractor={item => item.id.toString()}
-            showsVerticalScrollIndicator={false}
+      <SafeAreaView style={{ flex: 1 }}>
+        <Header />
+        <View
+          style={{
+            backgroundColor: Colors.mainColor,
+            height: responsiveHeight(100),
+            padding: 5,
+          }}>
+          <AdminHeaderBar
+            leftTitle={'LIST OF TIPS'}
+            rightTitle={'+ NEW USER'}
+            onPress={() => navigation.navigate('AddUser')}
           />
-        </ScrollView>
-        </KeyboardAvoidingView>
-      </View>
-    </SafeAreaView>
-    {loading ? <Loader/> : null}
+
+          <SearchBar />
+          <KeyboardAvoidingView
+            behavior="padding"
+            style={{ flex: 1 }}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+            <ScrollView style={{ flex: 1, padding: 10, marginBottom: responsiveHeight(15) }}>
+              <FlatList
+                data={data}
+                renderItem={({ item }) => (
+                  <Card
+                    item={item}
+                    onPress={() => navigation.navigate('EditUser', { item: item })}
+                  />
+                )}
+                keyExtractor={item => item.id.toString()}
+                showsVerticalScrollIndicator={false}
+              />
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </View>
+      </SafeAreaView>
+      {loading ? <Loader /> : null}
     </>
   );
 }
