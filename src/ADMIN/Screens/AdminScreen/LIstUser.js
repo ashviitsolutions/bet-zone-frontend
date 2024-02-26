@@ -14,8 +14,8 @@ import Colors from '../../../Constants/Colors';
 import Header from '../../../Components/Header';
 import ImagePath from '../../../Constants/ImagePath';
 import Button from '../../../Components/Button';
-const { width, height } = Dimensions.get('screen');
-import { useNavigation } from '@react-navigation/native';
+const {width, height} = Dimensions.get('screen');
+import {useNavigation} from '@react-navigation/native';
 import {
   responsiveWidth,
   responsiveFontSize,
@@ -27,11 +27,10 @@ import { IP } from '../../../Constants/Server';
 import Loader from '../../../Components/Loader';
 function ListUser() {
   const navigation = useNavigation();
-  
-  const [loading, setLoading] = useState(false)
+  const [loading,setLoading] = useState(false)
 
-  function Card({ onPress, item }) {
-    const { member } = item;
+  function Card({onPress, item}) {
+    const {member} = item;
     return (
       <TouchableOpacity
         activeOpacity={0.7}
@@ -97,7 +96,7 @@ function ListUser() {
           </Text>
         </View>
 
-        <View style={{ alignItems: 'center', justifyContent: 'space-evenly' }}>
+        <View style={{alignItems: 'center', justifyContent: 'space-evenly'}}>
           <Text
             style={{
               color: Colors.whiteText,
@@ -109,7 +108,7 @@ function ListUser() {
             w={25}
             h={3}
             br={6}
-            title={`${item.membershiplevel}`}
+            title={`${item.member}`}
             customStyle={{
               marginTop: 3,
               marginBottom: 3,
@@ -136,104 +135,64 @@ function ListUser() {
     );
   }
 
-  const [data, setData] = useState([])
+  const [data,setData] = useState([])
+  
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
       try {
-        const response = await fetch(`${IP}/getusers?page=1&limit=9`);
+        const response = await fetch(`${IP}/getUsers`);
         const data = await response.json();
-        if (data.services && data.services.length > 0) {
-          setData(prevData => [...prevData, ...data.services]);
-          console.log(data.services[0]);
-        } else {
-          setReachedEnd(true); // Assuming setReachedEnd is defined elsewhere
-        }
+        setData(data.services)
       } catch (error) {
         console.error('Error fetching data:', error);
-      } finally {
+      }
+      finally {
         setLoading(false);
       }
     };
-
+  
     fetchData();
   }, []);
 
-
-
-  // useEffect(() => {
-  //   setLoading(true);
-  //   const fetchData = async () => {
-  //     try {
-  //       // const response = await fetch(`${IP}/getUsers`);
-  //       const response = await fetch(`${IP}/getusers?page=1&limit=20`);
-  //       const newData = await response.json();
-  //       if (newData.length > 0) {
-  //         setData(prevData => [...prevData, ...newData]);
-  //       } else {
-  //         setLoading(false);
-  //       }
-  //     } catch (error) {
-  //       setLoading(false);
-  //       // Handle errors here
-  //       console.error('Error fetching data:', error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-
-
-
-
-  const handleLoadMore = () => {
-    if (!loading && !reachedEnd) {
-      fetchData();
-      setCurrentPage(prevPage => prevPage + 1);
-
-    }
-  };
-
-  console.log("data", data)
-
   return (
     <>
-      <SafeAreaView style={{ flex: 1 }}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: Colors.mainColor,
-            height: responsiveHeight(100),
-            padding: 5,
-          }}>
-          <AdminHeaderBar
-            leftTitle={'LIST OF TIPS'}
-            rightTitle={'+ NEW USER'}
-            onPress={() => navigation.navigate('AddUser')}
-          />
+    <SafeAreaView style={{flex: 1}}>
+      <Header />
+      <View
+        style={{
+          backgroundColor: Colors.mainColor,
+          height: responsiveHeight(100),
+          padding: 5,
+        }}>
+        <AdminHeaderBar
+          leftTitle={'LIST OF TIPS'}
+          rightTitle={'+ NEW USER'}
+          onPress={() => navigation.navigate('AddUser')}
+        />
 
-          <SearchBar />
-          <KeyboardAvoidingView
-            behavior="padding"
-            style={{ flex: 1 }}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-            <ScrollView style={{ flex: 1, padding: 10, marginBottom: responsiveHeight(15) }}>
-              <FlatList
-                data={data}
-                renderItem={({ item }) => (
-                  <Card
-                    item={item}
-                    onPress={() => navigation.navigate('EditUser')}
-                  />
-                )}
-                keyExtractor={item => item.id.toString()}
-                showsVerticalScrollIndicator={false}
+        <SearchBar />
+        <KeyboardAvoidingView
+          behavior="padding"
+          style={{flex: 1}}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+        <ScrollView style={{flex: 1, padding: 10,marginBottom:responsiveHeight(15)}}>
+          <FlatList
+            data={data}
+            renderItem={({item}) => (
+              <Card
+                item={item}
+                onPress={() => navigation.navigate('EditUser',{item:item})}
               />
-            </ScrollView>
-          </KeyboardAvoidingView>
-        </View>
-      </SafeAreaView>
-      {loading ? <Loader /> : null}
+            )}
+            keyExtractor={item => item.id.toString()}
+            showsVerticalScrollIndicator={false}
+          />
+        </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
+    </SafeAreaView>
+    {loading ? <Loader/> : null}
     </>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Dimensions,
   Image,
@@ -13,24 +13,30 @@ import Header from '../../../Components/Header';
 import ImagePath from '../../../Constants/ImagePath';
 import Button from '../../../Components/Button';
 import DropDownPicker from 'react-native-dropdown-picker';
-const { width, height } = Dimensions.get('screen');
-import { useNavigation } from '@react-navigation/native';
+const {width, height} = Dimensions.get('screen');
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {
   responsiveWidth,
   responsiveFontSize,
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
 function EditUser() {
+  const route = useRoute();
+  const [name, setName] = useState(route.params.item.full_name);
+  const [email, setEmail] = useState(route.params.item.email);
+  const [mobile, setMobile] = useState(route.params.item.mobile);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
-    { label: '1 month membership', value: '1 MONTH' },
-    { label: '3 month membership', value: '3 MONTH' },
-    { label: 'No membership', value: 'NO MEMBER' },
+    {label: '6 months membership', value: '6 months membership'},
+    {label: '3 months membership', value: '3 months membership'},
+    {label: '3 months membership', value: '2 months membership'},
   ]);
   const navigation = useNavigation();
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{flex:1}}>
       <Header />
       <ScrollView
         style={{
@@ -63,6 +69,8 @@ function EditUser() {
         </View>
         <TextInput
           placeholder="Demo user"
+          value={name}
+          onChangeText={(i)=>setName(i)}
           placeholderTextColor={Colors.grayText}
           style={{
             padding: 10,
@@ -78,6 +86,8 @@ function EditUser() {
         <TextInput
           placeholder="demo@gmail.com"
           placeholderTextColor={Colors.grayText}
+          value={email}
+          onChangeText={(i)=>setEmail(i)}
           style={{
             padding: 10,
             borderColor: Colors.grayText,
@@ -91,6 +101,8 @@ function EditUser() {
         />
         <TextInput
           placeholder="123849862"
+          value={String(mobile)}
+          onChangeText={(i)=>setMobile(i)}
           placeholderTextColor={Colors.grayText}
           style={{
             padding: 10,
@@ -105,6 +117,8 @@ function EditUser() {
         />
         <TextInput
           placeholder="new password"
+          value={password}
+          onChangeText={(i)=>setPassword(i)}
           placeholderTextColor={Colors.grayText}
           style={{
             padding: 10,
@@ -119,6 +133,8 @@ function EditUser() {
         />
         <TextInput
           placeholder="confirm password"
+          value={confirmPassword}
+          onChangeText={(i)=>setConfirmPassword(i)}
           placeholderTextColor={Colors.grayText}
           style={{
             padding: 10,
@@ -141,7 +157,7 @@ function EditUser() {
           placeholder={'6 months membership'}
           dropDownDirection="Bottom"
           dropDownContainerStyle={{
-
+          
             borderRadius: responsiveWidth(2),
             width: responsiveWidth(85),
             alignSelf: 'center',
@@ -156,7 +172,7 @@ function EditUser() {
             alignSelf: 'center',
             marginBottom: responsiveHeight(1.5),
 
-
+           
           }}
         />
 
