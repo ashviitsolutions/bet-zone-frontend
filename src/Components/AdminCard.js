@@ -25,8 +25,6 @@ const AdminCard = ({item, onPress}) => {
       onPress={onPress}
       style={{
         backgroundColor: type === 'VIP' ? Colors.brownColor : Colors.lightBrown,
-        // width: responsiveWidth(95),
-        // height: responsiveHeight(22.5),
         flex: 1,
         borderRadius: responsiveWidth(5),
         padding: 10,

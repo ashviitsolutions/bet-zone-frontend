@@ -27,39 +27,8 @@ import { IP } from '../../../Constants/Server';
 import Loader from '../../../Components/Loader';
 function ListUser() {
   const navigation = useNavigation();
-  // const Data = [
-  //   {
-  //     id: 1,
-  //     name: 'FULL NAME OF USER',
-  //     email: 'user@gmail.com',
-  //     contact: '9898937973',
-  //     member: 'NO MEMBER',
-  //   },
-  //   {
-  //     id: 2,
-  //     name: 'FULL NAME OF USER',
-  //     email: 'user@gmail.com',
-  //     contact: '9898937973',
-  //     member: '3 MONTH',
-  //     exp: '20-02-2023',
-  //   },
-  //   {
-  //     id: 3,
-  //     name: 'FULL NAME OF USER',
-  //     email: 'user@gmail.com',
-  //     contact: '9898937973',
-  //     member: 'NO MEMBER',
-  //   },
-  //   {
-  //     id: 4,
-  //     name: 'FULL NAME OF USER',
-  //     email: 'user@gmail.com',
-  //     contact: '9898937973',
-  //     member: '3 MONTH',
-  //     exp: '20-02-2023',
-  //   },
-  // ];
   const [loading,setLoading] = useState(false)
+
   function Card({onPress, item}) {
     const {member} = item;
     return (
@@ -175,7 +144,6 @@ function ListUser() {
         const response = await fetch(`${IP}/getUsers`);
         const data = await response.json();
         setData(data.services)
-        console.log(data.services[0])
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -214,7 +182,7 @@ function ListUser() {
             renderItem={({item}) => (
               <Card
                 item={item}
-                onPress={() => navigation.navigate('EditUser')}
+                onPress={() => navigation.navigate('EditUser',{item:item})}
               />
             )}
             keyExtractor={item => item.id.toString()}
