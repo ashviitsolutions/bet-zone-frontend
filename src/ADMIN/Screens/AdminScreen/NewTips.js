@@ -45,11 +45,10 @@ export default function NewTips() {
     {id: 2, name: 'OLD'},
   ];
   const [selectedItem, setSelectedItem] = useState(null);
-
   const onSelect = item => {
     setSelectedItem(item);
   };
-
+  
   const data2 = [
     {id: 1, name: 'BaseBall'},
     {id: 2, name: 'Cricket'},
