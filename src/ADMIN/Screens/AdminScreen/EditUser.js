@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -13,8 +13,8 @@ import Header from '../../../Components/Header';
 import ImagePath from '../../../Constants/ImagePath';
 import Button from '../../../Components/Button';
 import DropDownPicker from 'react-native-dropdown-picker';
-const {width, height} = Dimensions.get('screen');
-import {useNavigation} from '@react-navigation/native';
+const { width, height } = Dimensions.get('screen');
+import { useNavigation } from '@react-navigation/native';
 import {
   responsiveWidth,
   responsiveFontSize,
@@ -24,13 +24,13 @@ function EditUser() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
-    {label: '6 months membership', value: '6 months membership'},
-    {label: '3 months membership', value: '3 months membership'},
-    {label: '3 months membership', value: '2 months membership'},
+    { label: '1 month membership', value: '1 MONTH' },
+    { label: '3 month membership', value: '3 MONTH' },
+    { label: 'No membership', value: 'NO MEMBER' },
   ]);
   const navigation = useNavigation();
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Header />
       <ScrollView
         style={{
@@ -141,7 +141,7 @@ function EditUser() {
           placeholder={'6 months membership'}
           dropDownDirection="Bottom"
           dropDownContainerStyle={{
-          
+
             borderRadius: responsiveWidth(2),
             width: responsiveWidth(85),
             alignSelf: 'center',
@@ -156,7 +156,7 @@ function EditUser() {
             alignSelf: 'center',
             marginBottom: responsiveHeight(1.5),
 
-           
+
           }}
         />
 

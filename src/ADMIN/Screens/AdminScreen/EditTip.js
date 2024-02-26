@@ -36,18 +36,8 @@ export default function EditTip() {
   const [amount, setAmount] = useState(route.params.item.amt);
   const [odds, setOdds] = useState(route.params.item.odds);
   const [prob, setProb] = useState(route.params.item.probs);
-  const [amt, setAmt] = useState(route.params.item.amt);
 
   const [image, setImage] = useState('');
-
-
-  console.log("id value", route.params.item.amt)
-
-
-
-
-
-
   const data = [
     { id: 1, name: 'VIP' },
     { id: 2, name: 'OLD' },
@@ -106,12 +96,13 @@ export default function EditTip() {
   const handleUpdateTip = async () => {
     try {
       const formData = new FormData();
-      formData.append('description', description);
-      formData.append('amt', amt);
-      formData.append('odds', odds);
-      formData.append('probs', prob);
-      formData.append('type', selectedItem);
-      formData.append('category', sportsSelectedItem);
+      formData.append('title', 'baseball');
+      formData.append('description', 'a usa game from usa');
+      formData.append('amt', '12');
+      formData.append('odds', '344');
+      formData.append('probs', '432');
+      formData.append('type', 'VIP');
+      formData.append('category', 'cricket');
       formData.append('postImages', {
         uri: image,
         type: 'image/jpeg',
@@ -129,21 +120,14 @@ export default function EditTip() {
         },
       );
 
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log('Update Response:', responseData);
-        navigation.navigate('AdminHomePage');
-      } else {
-        console.error('Update Failed:', response.status);
-        // Optionally handle the failure condition here
-      }
+      const responseData = await response.json();
+      console.warn('error is ', responseData);
+      navigation.navigate('AdminHomePage');
     } catch (error) {
-      console.error('Update Error:', error.message);
-      console.error('Update Stack Trace:', error.stack);
-      // Handle other errors, such as network errors
+      console.error('Error:', error.message);
+      console.error('Stack Trace:', error.stack);
     }
   };
-
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

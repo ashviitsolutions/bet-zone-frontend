@@ -7,6 +7,7 @@ import {
   ScrollView,
   Text,
   TextInput,
+  ActivityIndicator,
   View,
 } from 'react-native';
 import Colors from '../../../Constants/Colors';
@@ -25,7 +26,7 @@ import {
 import InputComp from '../../../Components/InputComp';
 import { IP } from '../../../Constants/Server';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import ContactAreaComp from '../../../Components/ContactAreaComp';
 const { width } = Dimensions.get('screen');
 
 
@@ -38,6 +39,7 @@ function AddUser() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [items, setItems] = useState([
     { label: '1 month membership', value: '1 MONTH' },
@@ -45,7 +47,7 @@ function AddUser() {
     { label: 'No membership', value: 'NO MEMBER' },
   ]);
 
-  console.log("mobile", typeof (mobile))
+
 
   const [token, setToken] = useState('');
 
@@ -61,22 +63,23 @@ function AddUser() {
     fetchData();
   }, []);
   const handleAddUser = async () => {
+    setLoading(true);
     const userData = {
       full_name: name,
       email: email,
       password: password,
       confirm_password: confirmPassword,
-      mobile: mobile, // Corrected field name
+      mobile: mobile,
       auth_type: 'user',
       membershiplevel: value
     };
     console.log("userData", userData)
     try {
-      const response = await fetch(`${IP}/addUser`, {
+      const response = await fetch(`${IP}/user/addUser`, {
         method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           Authorization: token,
-
         },
         body: JSON.stringify(userData), // Convert the data to JSON string
       });
@@ -85,13 +88,16 @@ function AddUser() {
       console.log("responseData", responseData)
       if (response.status === 200) {
         console.log('User added successfully');
+        setLoading(false);
         navigation.navigate('List');
       } else {
+        setLoading(false);
         console.log('Error:', responseData.msg);
         // Handle error messages appropriately, e.g., show them to the user
       }
     } catch (error) {
       console.error('Error adding user:', error);
+      setLoading(false);
       // Handle network errors or other unexpected errors
     }
   };
@@ -187,6 +193,8 @@ function AddUser() {
           }}>
           Back
         </Text>
+        {loading && <ActivityIndicator size="large" color="#0000ff" />}
+        <ContactAreaComp />
       </ScrollView>
     </SafeAreaView>
   );
