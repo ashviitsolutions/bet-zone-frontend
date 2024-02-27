@@ -73,8 +73,8 @@ function AuthLogin() {
         }
         const responseData = await response.json();
         const authToken = response.headers.get('Authorization');
-        console.log("authToken", authToken)
-        console.log("authToken", responseData)
+        // console.log("authToken", authToken)
+        // console.log("authToken", responseData)
         if (authToken) {
           await AsyncStorage.setItem('token', authToken)
         }

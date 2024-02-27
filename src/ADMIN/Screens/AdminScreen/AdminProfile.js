@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -22,9 +22,70 @@ import {
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
 import InputComp from '../../../Components/InputComp';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loader from '../../../Components/Loader';
 function AdminProfile() {
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [mobile, setMobile] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const storedToken = await AsyncStorage.getItem('token');
+        setToken(storedToken);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData();
+  }, []);
+  
+  // const handleAddUser = async () => {
+  //   setLoading(true);
+  //   const userData = {
+  //     full_name: name,
+  //     email: email,
+  //     password: password,
+  //     confirm_password: confirmPassword,
+  //     mobile: mobile,
+  //   };
+  //   console.log("userData", userData)
+  //   try {
+  //     const response = await fetch(`${IP}/user/${item._id}`, {
+  //       method: 'PUT',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: token,
+  //       },
+  //       body: JSON.stringify(userData), // Convert the data to JSON string
+  //     });
+
+  //     const responseData = await response.json();
+  //     console.log("responseData", responseData)
+  //     if (response.status === 200) {
+  //       console.log('User added successfully');
+  //       setLoading(false);
+  //       // navigation.navigate('List');
+  //     } else {
+  //       setLoading(false);
+  //       console.log('Error:', responseData.msg);
+  //       // Handle error messages appropriately, e.g., show them to the user
+  //     }
+  //   } catch (error) {
+  //     console.error('Error adding user:', error);
+  //     setLoading(false);
+  //     // Handle network errors or other unexpected errors
+  //   }
+  // };
+
   return (
+    <>
     <SafeAreaView style={{flex: 1}}>
       <Header />
 
@@ -54,16 +115,19 @@ function AdminProfile() {
               color: Colors.whiteText,
               fontWeight: '900',
             }}>
-            ADMIN
+            ADMIN 
           </Text>
         </View>
-        <InputComp title={'Admin name'} />
+        <InputComp
+            title={'Admin name'}
+            value={email}
+            onChangeText={setEmail}
+            keyType={'email-address'}
+          />
         <InputComp title={'demo@gmail.com'} />
         <InputComp title={'123849862'} />
         <InputComp title={'new password'} />
         <InputComp title={'confirm password'} />
-        <InputComp title={'6 months membership'} />
-
         <Button w={30} h={5} br={6} title={'CREATE'} />
 
         <Text
@@ -76,6 +140,8 @@ function AdminProfile() {
         </Text>
       </ScrollView>
     </SafeAreaView>
+       {loading ? <Loader /> : null}
+    </>
   );
 }
 
