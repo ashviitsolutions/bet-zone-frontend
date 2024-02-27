@@ -10,6 +10,7 @@ import Colors from '../Constants/Colors';
 export default function SportsDropDown({
   data = [],
   value = {},
+  defaultValueSport,
   onSelect = () => {},
 }) {
   const [showOption, setShowOption] = useState(false);
@@ -17,13 +18,14 @@ export default function SportsDropDown({
     setShowOption(false);
     onSelect(val);
   };
+  console.log(value)
   return (
     <View>
       <TouchableOpacity
         onPress={() => setShowOption(!showOption)}
         style={styles.sportBox}>
         <Image source={require('../assets/icons/run.png')} />
-        <Text style={styles.sportText}>{value?.name ?? 'sports'}</Text>
+        <Text style={styles.sportText}>{value?.name ?? defaultValueSport ?? 'sports'}</Text>
         <Image source={require('../assets/icons/downArr.png')} />
       </TouchableOpacity>
 

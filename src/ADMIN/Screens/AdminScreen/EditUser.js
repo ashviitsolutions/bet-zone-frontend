@@ -108,21 +108,6 @@ function EditUser() {
     }
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Header />
