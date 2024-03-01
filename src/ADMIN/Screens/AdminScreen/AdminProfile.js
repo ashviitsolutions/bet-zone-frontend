@@ -37,6 +37,8 @@ function AdminProfile() {
   const [token, setToken] = useState('');
 
   useEffect(() => {
+   
+    
     async function fetchData() {
       try {
         const storedToken = await AsyncStorage.getItem('token');
@@ -85,7 +87,11 @@ function AdminProfile() {
       if (response.status === 200) {
         console.log('Profile update successfully');
         setLoading(false);
-        navigation.navigate('List');
+        // Update local storage data
+        await AsyncStorage.setItem('email', email);
+        await AsyncStorage.setItem('mobile', mobile);
+        await AsyncStorage.setItem('full_name', name);
+        // navigation.navigate('AdminHomePage');
       } else {
         setLoading(false);
         console.log('Error:', responseData.msg);
