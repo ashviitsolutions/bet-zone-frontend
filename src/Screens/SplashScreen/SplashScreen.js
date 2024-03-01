@@ -32,19 +32,19 @@ function SplashScreen() {
                 navigation.replace(NavigationString.TABS, { isAdmin: true });
               } else {
                 // Handle unexpected user type
-                navigation.replace(NavigationString.AUTH_LOGIN);
+                navigation.replace(NavigationString.TABS, { isAdmin: false });
               }
             } else {
               // Handle missing user data
-              navigation.replace(NavigationString.AUTH_LOGIN);
+              navigation.replace(NavigationString.TABS, { isAdmin: false });
             }
           } else {
             // Handle unsuccessful response
-            navigation.replace(NavigationString.AUTH_LOGIN);
+            navigation.replace(NavigationString.TABS, { isAdmin: false });
           }
         } else {
           setTimeout(() => {
-            navigation.replace(NavigationString.AUTH_LOGIN);
+            navigation.replace(NavigationString.TABS, { isAdmin: false });
           }, 3000);
         }
       } catch (error) {

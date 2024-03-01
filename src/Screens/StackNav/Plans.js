@@ -28,9 +28,8 @@ function Plans() {
   const navigation = useNavigation();
   const Data = [
     { id: 1, price: '13$/month', type: 'MONTHLY SUBSCRIPTION' },
-    { id: 2, price: '13$/month', type: 'MONTHLY SUBSCRIPTION' },
-    { id: 3, price: '13$/month', type: 'MONTHLY SUBSCRIPTION' },
-    { id: 4, price: '13$/month', type: 'MONTHLY SUBSCRIPTION' },
+    { id: 2, price: '13$/month', type: '3 MONTH SUBSCRIPTION' },
+
   ];
 
   function Card() {

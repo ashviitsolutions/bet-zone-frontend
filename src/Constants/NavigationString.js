@@ -3,7 +3,7 @@ export default {
     VIP:'Vip',
     CREATE_ACCOUNT:'CreateAccount',
     LOGIN:'Login',
-    PLAN:'Plan',
+    PLAN:'Plans',
     CONTACTS:'Contacts',
     VIP_TIPS:'VipTips',
     DETAILS_PAGE:'DetailsPage',

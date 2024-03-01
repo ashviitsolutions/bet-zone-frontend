@@ -1,5 +1,5 @@
-import React from 'react';
-import { Dimensions, Image, SafeAreaView, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Dimensions, Image, SafeAreaView, Text, View, TouchableOpacity } from 'react-native';
 import Colors from '../../Constants/Colors';
 import Header from '../../Components/Header';
 import ImagePath from '../../Constants/ImagePath';
@@ -13,8 +13,37 @@ import {
 } from 'react-native-responsive-dimensions';
 import NavigationString from '../../Constants/NavigationString';
 import ContactAreaComp from '../../Components/ContactAreaComp';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 function VIP() {
   const navigation = useNavigation();
+  const [token, setToken] = useState('');
+  const [membership, setMemberhsip] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const storedToken = await AsyncStorage.getItem('token');
+        const meberhsip = await AsyncStorage.getItem('is_member');
+        setToken(storedToken);
+        setMemberhsip(meberhsip === 'true');
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  const handlePress = () => {
+    if (token && membership) {
+      navigation.navigate(NavigationString.VIP_TIPS);
+    } else if (token) {
+      navigation.navigate(NavigationString.PLAN);
+    } else {
+      navigation.navigate(NavigationString.CREATE_ACCOUNT);
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Header />
@@ -40,7 +69,6 @@ function VIP() {
               left: -responsiveWidth(0.3),
             }}
           />
-
           <Text
             style={{
               fontSize: responsiveFontSize(5),
@@ -79,8 +107,7 @@ function VIP() {
               textAlign: 'center',
             }}>
             {' '}
-            To Access the VIP TIPS you have to create an account and buy
-            membership
+            To Access the VIP TIPS you have to create an account and buy membership
           </Text>
         </View>
 
@@ -89,8 +116,34 @@ function VIP() {
           h={5}
           br={6}
           title={'BUY MEMBERSHIP'}
-          onPress={() => navigation.navigate(NavigationString.CREATE_ACCOUNT)}
+          onPress={handlePress}
         />
+
+
+
+        {
+          !token && (
+            <View
+              style={{
+                height: responsiveHeight(4),
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'row',
+                marginVertical: responsiveHeight(1.5),
+              }}>
+              <Text style={{ color: Colors.grayText }}>Already have an account? </Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate(NavigationString.LOGIN)}
+                activeOpacity={0.8}>
+                <Text style={{ color: Colors.grayText }}>Login</Text>
+              </TouchableOpacity>
+            </View>
+          )
+        }
+
+
+
+
 
         <ContactAreaComp />
       </View>

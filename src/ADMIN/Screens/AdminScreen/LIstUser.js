@@ -154,7 +154,7 @@ function ListUser() {
     };
 
     fetchData();
-  }, []);
+  }, [navigation]);
 
   return (
     <>
