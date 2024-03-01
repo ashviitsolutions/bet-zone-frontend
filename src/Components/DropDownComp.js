@@ -10,6 +10,7 @@ import Colors from '../Constants/Colors';
 export default function DropDownComp({
   data = [],
   value = {},
+  defaultValueType,
   onSelect = () => {},
 }) {
   const [showOption, setShowOption] = useState(false);
@@ -22,7 +23,9 @@ export default function DropDownComp({
       <TouchableOpacity
         onPress={() => setShowOption(!showOption)}
         style={styles.vipBox}>
-        <Text style={styles.vipText}>{value?.name ?? 'VIP'}</Text>
+        <Text style={styles.vipText}>
+          {value?.name ?? defaultValueType ?? 'Type'}
+        </Text>
         <Image source={require('../assets/icons/whiteDwnArr.png')} />
       </TouchableOpacity>
 

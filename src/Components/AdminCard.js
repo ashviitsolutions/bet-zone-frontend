@@ -6,12 +6,12 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import { IP } from '../Constants/Server';
+import {IP} from '../Constants/Server';
 
 const AdminCard = ({item, onPress}) => {
   const {type} = item;
-  // console.log(item.attachments)
-  const originalDate = item.updatedAt instanceof Date ? item.updatedAt : new Date();
+  const originalDate =
+    item.updatedAt instanceof Date ? item.updatedAt : new Date();
   const hours = String(originalDate.getUTCHours()).padStart(2, '0');
   const minutes = String(originalDate.getUTCMinutes()).padStart(2, '0');
   const day = String(originalDate.getUTCDate()).padStart(2, '0');
@@ -56,17 +56,20 @@ const AdminCard = ({item, onPress}) => {
               alignSelf: 'center',
               fontWeight: '900',
             }}>
-            {item.type}
+            {item.type || 'null'}
           </Text>
         </View>
         <View style={styles.game_Icon_Name_box}>
           <Image source={require('../assets/icons/football.png')} />
-          <Text style={styles.gameNameText}>{item.category}</Text>
+          <Text style={styles.gameNameText}>{item.category || 'null'}</Text>
         </View>
       </View>
 
       <View style={styles.secondRow}>
-      <Image source={{ uri: `${IP}/file/${item.attachments}`}} style={styles.imgStyle} />
+        <Image
+          source={{uri: `${IP}/file/${item.attachments}`}}
+          style={styles.imgStyle}
+        />
         <View style={{width: responsiveWidth(52)}}>
           <Text style={styles.titleText}>{item.title}</Text>
           <Text numberOfLines={6} ellipsizeMode="tail" style={styles.descText}>

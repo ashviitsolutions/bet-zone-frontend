@@ -49,9 +49,6 @@ function EditUser() {
   console.log("id membershiplevel", item.membershiplevel)
 
 
-
-
-
   const [token, setToken] = useState('');
 
   useEffect(() => {
@@ -107,21 +104,6 @@ function EditUser() {
       // Handle network errors or other unexpected errors
     }
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

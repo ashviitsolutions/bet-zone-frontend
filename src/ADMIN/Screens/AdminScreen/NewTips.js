@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   ImageBackground,
@@ -20,10 +20,10 @@ import {
 } from 'react-native-responsive-dimensions';
 import Colors from '../../../Constants/Colors';
 import ImagePath from '../../../Constants/ImagePath';
-import { useNavigation } from '@react-navigation/native';
-import { Button } from '../../../Components';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { IP } from '../../../Constants/Server';
+import {useNavigation} from '@react-navigation/native';
+import {Button} from '../../../Components';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {IP} from '../../../Constants/Server';
 import NavigationString from '../../../Constants/NavigationString';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -41,25 +41,30 @@ export default function NewTips() {
   const [category, setCategory] = useState('');
 
   const data = [
-    { id: 1, name: 'VIP' },
-    { id: 2, name: 'OLD' },
+    {id: 1, name: 'VIP'},
+    {id: 2, name: 'OLD'},
   ];
   const [selectedItem, setSelectedItem] = useState(null);
   const onSelect = item => {
+    setType(item.name);
     setSelectedItem(item);
   };
-  
+
   const data2 = [
-    { id: 1, name: 'BaseBall' },
-    { id: 2, name: 'Cricket' },
-    { id: 3, name: 'Football' },
-    { id: 4, name: 'Tennis' },
+    {id: 1, name: 'BaseBall'},
+    {id: 2, name: 'Cricket'},
+    {id: 3, name: 'Football'},
+    {id: 4, name: 'Tennis'},
   ];
   const [sportsSelectedItem, setSportsSelectedItem] = useState(null);
 
-
-  console.log('User sportsSelectedItem image picker', sportsSelectedItem, selectedItem);
+  console.log(
+    'User sportsSelectedItem image picker',
+    sportsSelectedItem,
+    selectedItem,
+  );
   const onSportsSelect = item => {
+    setCategory(item.name);
     setSportsSelectedItem(item);
   };
   const openImagePicker = () => {
@@ -105,13 +110,15 @@ export default function NewTips() {
       formData.append('amt', amt);
       formData.append('odds', odds);
       formData.append('probs', probs);
-      formData.append('type', selectedItem);
-      formData.append('category', sportsSelectedItem);
-      formData.append('postImages', {
-        uri: image,
-        type: 'image/jpeg',
-        name: 'image.jpg',
-      });
+      formData.append('type', type);
+      formData.append('category', category);
+      if (image) {
+        formData.append('postImages', {
+          uri: image,
+          type: 'image/jpeg',
+          name: 'image.jpg',
+        });
+      }
 
       const response = await fetch(`${IP}/service/add`, {
         method: 'POST',
@@ -137,9 +144,8 @@ export default function NewTips() {
     }
   };
 
-
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{flex: 1}}>
       <Header />
 
       <ScrollView
@@ -165,9 +171,9 @@ export default function NewTips() {
           </View>
         </View>
         <View style={styles.img_box}>
-          <Image source={{ uri: image }} style={styles.imgStyle} />
+          <Image source={{uri: image}} style={styles.imgStyle} />
         </View>
-        <Text style={{ color: Colors.grayText, marginVertical: 5 }}>
+        <Text style={{color: Colors.grayText, marginVertical: 5}}>
           TIP TITLE
         </Text>
         <View
@@ -187,7 +193,7 @@ export default function NewTips() {
           <View style={styles.changePic_box}>
             <Text
               onPress={openImagePicker}
-              style={{ color: Colors.grayText, alignSelf: 'center' }}>
+              style={{color: Colors.grayText, alignSelf: 'center'}}>
               CHANGE PIC
             </Text>
           </View>
@@ -196,7 +202,7 @@ export default function NewTips() {
         <Text style={styles.desc_text_title}>TIP DISCRIPTION</Text>
         <View style={styles.desc_box}>
           <TextInput
-            style={{ color: '#fff', fontSize: responsiveFontSize(1.9) }}
+            style={{color: '#fff', fontSize: responsiveFontSize(1.9)}}
             multiline={true}
             placeholder="enter tip discription"
             placeholderTextColor={Colors.grayText}
@@ -260,9 +266,9 @@ export default function NewTips() {
             h={4}
             br={2}
             title={'SAVE'}
-            customStyle={{ marginTop: 0 }}
+            customStyle={{marginTop: 0}}
             onPress={handleSaveTip}
-          // onPress={() => navigation.navigate('AdminHomePage')}
+            // onPress={() => navigation.navigate('AdminHomePage')}
           />
         </View>
       </ScrollView>
@@ -370,7 +376,7 @@ const styles = StyleSheet.create({
     height: responsiveHeight(17),
     borderRadius: 10,
   },
-  desc_text_title: { color: Colors.grayText, marginVertical: 5, marginTop: 10 },
+  desc_text_title: {color: Colors.grayText, marginVertical: 5, marginTop: 10},
   input_field_title: {
     color: Colors.grayText,
     fontSize: responsiveFontSize(1.4),
@@ -405,5 +411,5 @@ const styles = StyleSheet.create({
     height: responsiveHeight(4),
     justifyContent: 'center',
   },
-  back_text: { color: Colors.grayText, alignSelf: 'center' },
+  back_text: {color: Colors.grayText, alignSelf: 'center'},
 });
