@@ -52,7 +52,7 @@ function ListUser() {
           shadowColor: '#000',
           borderWidth: 1,
           borderColor:
-          item.membershiplevel === 'NO MEMBER' ? Colors.grayText : Colors.yellowColor,
+            item.membershiplevel === 'NO MEMBER' ? Colors.grayText : Colors.yellowColor,
         }}>
         <View
           style={{
@@ -60,7 +60,7 @@ function ListUser() {
             height: responsiveHeight(6),
             borderRadius: responsiveWidth(6),
             borderColor:
-            item.membershiplevel === 'NO MEMBER' ? Colors.grayText : Colors.yellowColor,
+              item.membershiplevel === 'NO MEMBER' ? Colors.grayText : Colors.yellowColor,
             borderWidth: 1,
             justifyContent: 'center',
           }}>
@@ -70,8 +70,8 @@ function ListUser() {
                 item.membershiplevel === 'NO MEMBER' ? Colors.grayText : Colors.yellowColor,
               alignSelf: 'center',
             }}>
-            {item.membershiplevel === 'NO MEMBER' ?  'NA' : 'VIP'}
-           
+            {item.membershiplevel === 'NO MEMBER' ? 'NA' : 'VIP'}
+
           </Text>
         </View>
         <View>
