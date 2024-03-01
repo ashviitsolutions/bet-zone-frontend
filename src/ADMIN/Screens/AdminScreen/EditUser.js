@@ -32,8 +32,8 @@ function EditUser() {
   const [name, setName] = useState(item.full_name || '');
   const [email, setEmail] = useState(item.email || '');
   const [mobile, setMobile] = useState(item.mobile || '');
-  const [password, setPassword] = useState(item.password || '');
-  const [confirmPassword, setConfirmPassword] = useState(item.confirmPassword || '');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(item.membershiplevel || 'NO MEMBER');
   const [loading, setLoading] = useState(false);
@@ -188,6 +188,7 @@ function EditUser() {
         <TextInput
           placeholder="new password"
           value={password}
+          secureTextEntry={true}
           onChangeText={(i) => setPassword(i)}
           placeholderTextColor={Colors.grayText}
           style={{
@@ -204,6 +205,7 @@ function EditUser() {
         <TextInput
           placeholder="confirm password"
           value={confirmPassword}
+          secureTextEntry={true}
           onChangeText={(i) => setConfirmPassword(i)}
           placeholderTextColor={Colors.grayText}
           style={{

@@ -32,7 +32,7 @@ function AdminHomePage() {
     setLoading(true);
     const fetchData = async () => {
       try {
-        const response = await fetch(`${IP}/service/view-services`);
+        const response = await fetch(`${IP}/service/view-services?page=1&limit=18`);
         const data = await response.json();
         setData(data.services)
       } catch (error) {

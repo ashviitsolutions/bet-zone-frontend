@@ -73,10 +73,13 @@ function AuthLogin() {
         }
         const responseData = await response.json();
         const authToken = response.headers.get('Authorization');
-        // console.log("authToken", authToken)
+        console.log("responseData login data", responseData)
         // console.log("authToken", responseData)
         if (authToken) {
           await AsyncStorage.setItem('token', authToken)
+          await AsyncStorage.setItem('email', email);
+          await AsyncStorage.setItem('full_name', responseData.user_info.full_name);
+          await AsyncStorage.setItem('mobile', responseData.user_info.mobile);
         }
         ToastAndroid.show(responseData.msg, ToastAndroid.SHORT);
 
