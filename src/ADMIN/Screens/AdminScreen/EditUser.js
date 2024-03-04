@@ -37,19 +37,13 @@ function EditUser() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(item.membershiplevel || 'NO MEMBER');
   const [loading, setLoading] = useState(false);
-
-
+  const [token, setToken] = useState('');
+  const navigation = useNavigation();
   const [items, setItems] = useState([
     { label: '1 month membership', value: '1 MONTH' },
     { label: '3 month membership', value: '3 MONTH' },
   ]);
-  const navigation = useNavigation();
 
-
-  console.log("id membershiplevel", item.membershiplevel)
-
-
-  const [token, setToken] = useState('');
 
   useEffect(() => {
     async function fetchData() {

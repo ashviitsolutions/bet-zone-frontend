@@ -19,20 +19,21 @@ function VIP() {
   const navigation = useNavigation();
   const [token, setToken] = useState('');
   const [membership, setMemberhsip] = useState(true);
+  async function fetchData() {
+    try {
+      const storedToken = await AsyncStorage.getItem('token');
+      const meberhsip = await AsyncStorage.getItem('is_member');
+      setToken(storedToken);
+      setMemberhsip(meberhsip === 'true');
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const storedToken = await AsyncStorage.getItem('token');
-        const meberhsip = await AsyncStorage.getItem('is_member');
-        setToken(storedToken);
-        setMemberhsip(meberhsip === 'true');
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchData();
-  }, []);
+    const unsubscribe = navigation.addListener('state', () => { fetchData() });
+    return unsubscribe;
+  }, [navigation]);
 
   const handlePress = () => {
     if (token && membership) {
@@ -40,7 +41,7 @@ function VIP() {
     } else if (token) {
       navigation.navigate(NavigationString.PLAN);
     } else {
-      navigation.navigate(NavigationString.CREATE_ACCOUNT);
+      navigation.navigate(NavigationString.LOGIN);
     }
   };
 
@@ -121,24 +122,23 @@ function VIP() {
 
 
 
-        {
-          !token && (
-            <View
-              style={{
-                height: responsiveHeight(4),
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'row',
-                marginVertical: responsiveHeight(1.5),
-              }}>
-              <Text style={{ color: Colors.grayText }}>Already have an account? </Text>
-              <TouchableOpacity
-                onPress={() => navigation.navigate(NavigationString.LOGIN)}
-                activeOpacity={0.8}>
-                <Text style={{ color: Colors.grayText }}>Login</Text>
-              </TouchableOpacity>
-            </View>
-          )
+        {!token && (
+          <View
+            style={{
+              height: responsiveHeight(4),
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'row',
+              marginVertical: responsiveHeight(1.5),
+            }}>
+            <Text style={{ color: Colors.grayText }}>Already have an account? </Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('LOGIN')}
+              activeOpacity={0.8}>
+              <Text style={{ color: Colors.grayText }}>Login</Text>
+            </TouchableOpacity>
+          </View>
+        )
         }
 
 

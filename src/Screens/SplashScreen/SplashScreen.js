@@ -27,28 +27,28 @@ function SplashScreen() {
             console.log("user my profile", userData)
             if (userData && userData.auth_type) {
               if (userData.auth_type === 'user') {
-                navigation.replace(NavigationString.TABS, { isAdmin: false });
+                navigation.replace(NavigationString.TABS);
               } else if (userData.auth_type === 'admin') {
-                navigation.replace(NavigationString.TABS, { isAdmin: true });
+                navigation.replace(NavigationString.Admin_Tabs);
               } else {
-                // Handle unexpected user type
-                navigation.replace(NavigationString.TABS, { isAdmin: false });
+                navigation.replace(NavigationString.TABS);
               }
             } else {
               // Handle missing user data
-              navigation.replace(NavigationString.TABS, { isAdmin: false });
+              navigation.replace(NavigationString.TABS);
             }
           } else {
             // Handle unsuccessful response
-            navigation.replace(NavigationString.TABS, { isAdmin: false });
+            navigation.replace(NavigationString.TABS);
           }
         } else {
           setTimeout(() => {
-            navigation.replace(NavigationString.TABS, { isAdmin: false });
+            navigation.replace(NavigationString.TABS);
           }, 3000);
         }
       } catch (error) {
         console.error('Error during splash screen:', error);
+        navigation.replace(NavigationString.TABS);
         // Handle error
         // setTimeout(() => {
         //   navigation.replace(NavigationString.AUTH_LOGIN);

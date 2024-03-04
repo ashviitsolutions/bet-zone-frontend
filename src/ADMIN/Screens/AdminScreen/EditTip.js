@@ -42,6 +42,7 @@ export default function EditTip() {
   const [category, setCategory] = useState(route.params.item.category || '');
   const [image, setImage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState('');
   const data = [
     { id: 1, name: 'VIP' },
     { id: 2, name: 'OLD' },
@@ -86,7 +87,6 @@ export default function EditTip() {
       }
     });
   };
-  const [token, setToken] = useState('');
   useEffect(() => {
     async function fetchData() {
       try {

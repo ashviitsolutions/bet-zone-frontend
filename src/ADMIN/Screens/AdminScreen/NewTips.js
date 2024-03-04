@@ -42,6 +42,7 @@ export default function NewTips() {
   const [type, setType] = useState('');
   const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState('');
 
   const data = [
     { id: 1, name: 'VIP' },
@@ -60,12 +61,6 @@ export default function NewTips() {
     { id: 4, name: 'Tennis' },
   ];
   const [sportsSelectedItem, setSportsSelectedItem] = useState(null);
-
-  console.log(
-    'User sportsSelectedItem image picker',
-    sportsSelectedItem,
-    selectedItem,
-  );
   const onSportsSelect = item => {
     setCategory(item.name);
     setSportsSelectedItem(item);
@@ -90,8 +85,6 @@ export default function NewTips() {
       }
     });
   };
-  // const token =  AsyncStorage.getItem('token');
-  const [token, setToken] = useState('');
   useEffect(() => {
     async function fetchData() {
       try {

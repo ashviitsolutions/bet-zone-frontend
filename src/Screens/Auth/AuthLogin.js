@@ -48,7 +48,7 @@ function AuthLogin() {
     const token = await AsyncStorage.getItem('token');
     if (token) {
       // Token is present, navigate to the home page or any other authenticated page
-      navigation.replace(NavigationString.TABS, { isAdmin: false });
+      navigation.replace(NavigationString.TABS);
     }
   };
 
@@ -66,7 +66,7 @@ function AuthLogin() {
             password: password,
           }),
         });
-
+        console.log(response)
         if (!response.ok) {
           console.error('Authentication failed');
           return;
@@ -74,7 +74,6 @@ function AuthLogin() {
         const responseData = await response.json();
         const authToken = response.headers.get('Authorization');
         console.log("responseData login data", responseData)
-        // console.log("authToken", responseData)
         if (authToken) {
           await AsyncStorage.setItem('token', authToken)
           await AsyncStorage.setItem('email', email);
@@ -82,13 +81,11 @@ function AuthLogin() {
           await AsyncStorage.setItem('mobile', responseData.user_info.mobile);
         }
         ToastAndroid.show(responseData.msg, ToastAndroid.SHORT);
-
         if (responseData.user_info.auth_type === 'user') {
-          navigation.replace(NavigationString.TABS, { isAdmin: false });
+          navigation.replace(NavigationString.TABS);
         } else {
-          navigation.replace(NavigationString.TABS, { isAdmin: true });
+          navigation.replace(NavigationString.TABS);
         }
-
       } catch (error) {
         console.error('Error during login:', error);
       } finally {

@@ -25,6 +25,7 @@ import {
 import InputComp from '../../../Components/InputComp';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../../../Components/Loader';
+import NavigationString from '../../../Constants/NavigationString';
 
 function AdminProfile() {
   const navigation = useNavigation();
@@ -37,8 +38,6 @@ function AdminProfile() {
   const [token, setToken] = useState('');
 
   useEffect(() => {
-   
-    
     async function fetchData() {
       try {
         const storedToken = await AsyncStorage.getItem('token');
@@ -104,7 +103,10 @@ function AdminProfile() {
     }
   };
 
-
+  const handleLogout = async () => {
+    await AsyncStorage.clear()
+    navigation.replace(NavigationString.TABS);
+  }
 
   return (
     <>
@@ -180,6 +182,7 @@ function AdminProfile() {
             onPress={() => navigation.goBack()}>
             Back
           </Text>
+          <Button w={30} h={5} br={6} title={'Logout'} onPress={handleLogout} />
         </ScrollView>
       </SafeAreaView>
       {loading ? <Loader /> : null}
