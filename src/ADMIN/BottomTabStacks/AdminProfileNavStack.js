@@ -10,7 +10,6 @@ export default function AdminProfileNavStack() {
     <NavigationContainer independent={true}>
       <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name={'AdminProfile'} component={AdminProfile} />
-       
       </Stack.Navigator>
     </NavigationContainer>
   );
