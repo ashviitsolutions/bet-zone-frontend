@@ -31,6 +31,9 @@ function ListUser() {
 
   function Card({ onPress, item }) {
     const { member } = item;
+    if (item.auth_type === 'admin') {
+      return null; // Do not render the card for admin
+    }
     return (
       <TouchableOpacity
         activeOpacity={0.7}
@@ -138,24 +141,26 @@ function ListUser() {
 
   const [data, setData] = useState([])
 
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${IP}/getUsers?page=1&limit=18`);
+      const newData = await response.json();
+      setData(newData?.services);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    setLoading(true);
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${IP}/getUsers?page=1&limit=18`);
-        const data = await response.json();
-        setData(data?.services)
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-      finally {
-        setLoading(false);
-      }
-    };
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchData();
+    });
 
-    fetchData();
+    return unsubscribe;
   }, [navigation]);
-
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>

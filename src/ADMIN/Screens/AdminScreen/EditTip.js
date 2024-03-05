@@ -11,6 +11,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ToastAndroid,
 } from 'react-native';
 import Header from '../../../Components/Header';
 import {
@@ -46,7 +47,7 @@ export default function EditTip() {
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)
   const [selectedDate,setSelectedDate]= useState('')
-  console.log(route.params.item.date)
+  // console.log(route.params.item.date)
   const originalTimestamp = (route.params.item.date);
   const dateObject = new Date(originalTimestamp);
   
@@ -128,8 +129,8 @@ export default function EditTip() {
       formData.append('type', type || '');
       formData.append('category', category || '');
       // formData.append('date', selectedDate);
-      // const formattedDate = date.toISOString();
-      // formData.append('date', formattedDate);
+      const formattedDate = date.toISOString();
+      formData.append('date', formattedDate);
       if (image) {
         formData.append('postImages', {
           uri: image,
@@ -150,7 +151,8 @@ export default function EditTip() {
       );
 
       const responseData = await response.json();
-      console.warn('error is ', responseData);
+      ToastAndroid.show(responseData.msg, ToastAndroid.SHORT);
+      // console.warn('error is ', responseData.msg);
       navigation.navigate('AdminHomePage');
       setLoading(false);
     } catch (error) {

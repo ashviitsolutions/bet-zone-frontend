@@ -53,7 +53,6 @@ function Login() {
             password: password,
           }),
         });
-
         if (!response.ok) {
           ToastAndroid.show('Authentication failed', ToastAndroid.SHORT);
           console.error('Authentication failed');
@@ -66,7 +65,7 @@ function Login() {
           await AsyncStorage.setItem('auth_type', String(responseData.user_info.auth_type));
           await AsyncStorage.setItem('token', authToken)
           await AsyncStorage.setItem('email', email);
-          await AsyncStorage.setItem('full_name', responseData.user_info.name);
+          await AsyncStorage.setItem('full_name', responseData.user_info.full_name);
           await AsyncStorage.setItem('mobile', responseData.user_info.mobile);
           await AsyncStorage.setItem('is_member', String(responseData.user_info.is_member));
           global.auth_type = responseData.user_info.auth_type
@@ -78,7 +77,9 @@ function Login() {
           navigation.replace(NavigationString.Admin_Tabs);
         }
       } catch (error) {
+        ToastAndroid.show(error.toString(), ToastAndroid.SHORT);
         console.error('Error during login:', error);
+        setLoading(false);
       } finally {
         setLoading(false);
       }

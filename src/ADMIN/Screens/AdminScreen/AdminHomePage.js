@@ -26,35 +26,29 @@ import Loader from '../../../Components/Loader';
 
 function AdminHomePage() {
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(false)
-//  const [refresh,setRefersh] =  useState(false)
-//  const pullme=()=>{
-//   setRefersh(true)
-//   setTimeout(() => {
-//     setRefersh(false)
-//   }, 2000);
-//  }
-  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${IP}/service/view-services?page=1&limit=18`);
+      const data = await response.json();
+      setData(data.services);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    setLoading(true);
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${IP}/service/view-services?page=1&limit=18`);
-        const data = await response.json();
-        setData(data.services)
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-      finally {
-        setLoading(false);
-      }
-    };
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchData();
+    });
 
-    fetchData();
-  }, []);
-
-
-
+    return unsubscribe;
+  }, [navigation]);
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>

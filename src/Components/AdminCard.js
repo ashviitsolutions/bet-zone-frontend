@@ -22,15 +22,7 @@ const AdminCard = ({item, onPress}) => {
   
   const finalFormattedString = `${hours}:${minutes} ${day}-${month}-${year}`;
   
-  // console.log(finalFormattedString);
-  // const originalDate =  item.updatedAt instanceof Date ? item.updatedAt : new Date();
-  // const hours = String(originalDate.getUTCHours()).padStart(2, '0');
-  // const minutes = String(originalDate.getUTCMinutes()).padStart(2, '0');
-  // const day = String(originalDate.getUTCDate()).padStart(2, '0');
-  // const month = String(originalDate.getUTCMonth() + 1).padStart(2, '0');
-  // const year = originalDate.getUTCFullYear();
-  // const formattedDate = `${hours}:${minutes} ${day}-${month}-${year}`;
-
+  
   return (
     <TouchableOpacity
       activeOpacity={0.8}

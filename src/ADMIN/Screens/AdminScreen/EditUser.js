@@ -8,6 +8,7 @@ import {
   TextInput,
   ActivityIndicator,
   View,
+  ToastAndroid,
 } from 'react-native';
 import Colors from '../../../Constants/Colors';
 import Header from '../../../Components/Header';
@@ -84,7 +85,8 @@ function EditUser() {
       const responseData = await response.json();
       console.log("responseData::", responseData)
       if (response.status === 200) {
-        console.log('User added successfully');
+        ToastAndroid.show('User update successfully', ToastAndroid.SHORT);
+        console.log('User update successfully');
         setLoading(false);
         navigation.navigate('List');
       } else {
@@ -237,9 +239,8 @@ function EditUser() {
             width: responsiveWidth(85),
             alignSelf: 'center',
             marginBottom: responsiveHeight(1.5),
-
-
           }}
+          disabled={item.membershiplevel ?true:false}
         />
 
         <Button
@@ -261,7 +262,7 @@ function EditUser() {
           }}>
           Back
         </Text>
-        {loading && <ActivityIndicator size="large" color="#0000ff" />}
+        {loading && <ActivityIndicator size="large" color={Colors.yellowColor} />}
         <ContactAreaComp />
       </ScrollView>
     </SafeAreaView>

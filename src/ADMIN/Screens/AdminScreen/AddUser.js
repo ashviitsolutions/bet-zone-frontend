@@ -9,6 +9,7 @@ import {
   TextInput,
   ActivityIndicator,
   View,
+  ToastAndroid,
 } from 'react-native';
 import Colors from '../../../Constants/Colors';
 import Header from '../../../Components/Header';
@@ -42,6 +43,7 @@ function AddUser() {
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState('');
   const [items, setItems] = useState([
+    { label: 'No membership', value: 'NO MEMBER' },
     { label: '1 month membership', value: '1 MONTH' },
     { label: '3 month membership', value: '3 MONTH' },
   ]);
@@ -88,11 +90,13 @@ function AddUser() {
       const responseData = await response.json();
       console.log("responseData", responseData)
       if (response.status === 200) {
+        ToastAndroid.show('User add successfully', ToastAndroid.SHORT);
         console.log('User added successfully');
         setLoading(false);
         navigation.navigate('List');
       } else {
         setLoading(false);
+        ToastAndroid.show(responseData.msg, ToastAndroid.SHORT);
         console.log('Error:', responseData.msg);
         // Handle error messages appropriately, e.g., show them to the user
       }
@@ -144,7 +148,7 @@ function AddUser() {
           onChangeText={(t) => setEmail(t)}
           keyType={'email-address'}
         />
-        <InputComp title={'mobile'} onChangeText={(t) => setMobile(t)} />
+        <InputComp title={'mobile'} onChangeText={(t) => setMobile(t)} keyType={'numeric'}/>
         <InputComp title={'new password'} onChangeText={(t) => setPassword(t)} />
         <InputComp
           title={'confirm password'}
@@ -194,7 +198,7 @@ function AddUser() {
           }}>
           Back
         </Text>
-        {loading && <ActivityIndicator size="large" color="#0000ff" />}
+        {loading && <ActivityIndicator size="large" color={Colors.yellowColor} />}
         <ContactAreaComp />
       </ScrollView>
     </SafeAreaView>

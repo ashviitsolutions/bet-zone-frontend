@@ -44,7 +44,6 @@ function Tabs() {
           ),
         }}
       />
-
       <Tab.Screen
         name={'AdminVIPNavStack'}
         component={AdminVIPNavStack}

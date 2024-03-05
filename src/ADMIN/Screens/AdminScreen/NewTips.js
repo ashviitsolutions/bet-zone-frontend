@@ -134,6 +134,7 @@ export default function NewTips() {
 
       if (response.ok) {
         setLoading(false)
+        ToastAndroid.show('Tips add succesfully', ToastAndroid.SHORT);
         navigation.navigate('AdminHomePage'); // Navigate on success
       } else {
         // Handle non-OK response
