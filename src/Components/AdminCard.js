@@ -10,14 +10,26 @@ import {IP} from '../Constants/Server';
 
 const AdminCard = ({item, onPress}) => {
   const {type} = item;
-  const originalDate =
-    item.updatedAt instanceof Date ? item.updatedAt : new Date();
-  const hours = String(originalDate.getUTCHours()).padStart(2, '0');
-  const minutes = String(originalDate.getUTCMinutes()).padStart(2, '0');
-  const day = String(originalDate.getUTCDate()).padStart(2, '0');
-  const month = String(originalDate.getUTCMonth() + 1).padStart(2, '0');
-  const year = originalDate.getUTCFullYear();
-  const formattedDate = `${hours}:${minutes} ${day}-${month}-${year}`;
+  // console.log(item)
+  const originalTimestamp = (item.date);
+  const dateObject = new Date(originalTimestamp);
+  
+  const hours = dateObject.getHours().toString().padStart(2, '0');
+  const minutes = dateObject.getMinutes().toString().padStart(2, '0');
+  const day = dateObject.getDate().toString().padStart(2, '0');
+  const month = (dateObject.getMonth() + 1).toString().padStart(2, '0'); // Note: Months are zero-based
+  const year = dateObject.getFullYear();
+  
+  const finalFormattedString = `${hours}:${minutes} ${day}-${month}-${year}`;
+  
+  // console.log(finalFormattedString);
+  // const originalDate =  item.updatedAt instanceof Date ? item.updatedAt : new Date();
+  // const hours = String(originalDate.getUTCHours()).padStart(2, '0');
+  // const minutes = String(originalDate.getUTCMinutes()).padStart(2, '0');
+  // const day = String(originalDate.getUTCDate()).padStart(2, '0');
+  // const month = String(originalDate.getUTCMonth() + 1).padStart(2, '0');
+  // const year = originalDate.getUTCFullYear();
+  // const formattedDate = `${hours}:${minutes} ${day}-${month}-${year}`;
 
   return (
     <TouchableOpacity
@@ -41,7 +53,7 @@ const AdminCard = ({item, onPress}) => {
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
-        <Text style={styles.dateText}>{formattedDate}</Text>
+        <Text style={styles.dateText}>{finalFormattedString}</Text>
         <View
           style={{
             borderRadius: responsiveWidth(3),

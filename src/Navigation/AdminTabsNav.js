@@ -1,15 +1,15 @@
-import React, { } from 'react';
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { Dimensions } from 'react-native';
 import ImagePath from '../Constants/ImagePath';
 import Colors from '../Constants/Colors';
-import ProfileNavStack from '../BottomNavStack/ProfileNavStack';
-import VIPNavStack from '../BottomNavStack/VIPNavStack';
-import HomeNavStack from '../BottomNavStack/HomeNavStack';
 import { responsiveWidth, responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
-import NavigationString from '../Constants/NavigationString';
+import AdminHomeNavStack from '../ADMIN/BottomTabStacks/AdminHomeNavStack'
+import AdminVIPNavStack from '../ADMIN/BottomTabStacks/AdminVIPNavStack';
+import AdminProfileNavStack from '../ADMIN/BottomTabStacks/AdminProfileNavStack';
 import { CustomTabButton } from './CustomTabButton';
+
 const Tab = createBottomTabNavigator();
 const { width, height } = Dimensions.get('screen');
 function Tabs() {
@@ -17,7 +17,7 @@ function Tabs() {
   const resetToInitialState = (stackName) => { navigation.navigate(stackName); };
   return (
     <Tab.Navigator
-      initialRouteName={NavigationString.HOME_PAGE_STACK}
+      initialRouteName={'AdminVIPNavStack'}
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
@@ -28,14 +28,14 @@ function Tabs() {
       }}
     >
       <Tab.Screen
-        name={NavigationString.HOME_PAGE_STACK}
-        component={HomeNavStack}
+        name={'AdminHomeNavStack'}
+        component={AdminHomeNavStack}
         options={{
           tabBarIcon: ({ focused }) => (
             <CustomTabButton
-              onPress={() => resetToInitialState(NavigationString.HOME_PAGE_STACK)}
-              iconSource={ImagePath.HomeIcon}
-              label={"HOME"}
+              onPress={() => resetToInitialState('AdminHomeNavStack')}
+              iconSource={ImagePath.AdminUsersIcon}
+              label={"USERS"}
               tintColor={focused ? Colors.secondaryColor : '#8E8D8D'}
               customStyle={{
                 marginTop: responsiveHeight(1)
@@ -46,14 +46,14 @@ function Tabs() {
       />
 
       <Tab.Screen
-        name={NavigationString.VIP_PAGE_STACK}
-        component={VIPNavStack}
+        name={'AdminVIPNavStack'}
+        component={AdminVIPNavStack}
         options={{
           tabBarIcon: ({ focused }) => (
             <CustomTabButton
-              onPress={() => resetToInitialState(NavigationString.VIP_PAGE_STACK)}
+              onPress={() => resetToInitialState('AdminVIPNavStack')}
               iconSource={ImagePath.speakerIcon}
-              label={"VIP"}
+              label={"TIPS"}
               tintColor={'#000'}
               customStyle={{
                 backgroundColor: Colors.secondaryColor,
@@ -72,12 +72,12 @@ function Tabs() {
       />
 
       <Tab.Screen
-        name={NavigationString.PROFILE_PAGE_STACK}
-        component={ProfileNavStack}
+        name={'AdminProfileNavStack'}
+        component={AdminProfileNavStack}
         options={{
           tabBarIcon: ({ focused }) => (
             <CustomTabButton
-              onPress={() => resetToInitialState(NavigationString.PROFILE_PAGE_STACK)}
+              onPress={() => resetToInitialState('AdminProfileNavStack')}
               iconSource={ImagePath.ProfileIcon}
               label="PROFILE"
               tintColor={focused ? Colors.secondaryColor : '#8E8D8D'}
@@ -89,7 +89,7 @@ function Tabs() {
         }}
       />
     </Tab.Navigator>
-  )
+  );
 }
 
 export default Tabs;

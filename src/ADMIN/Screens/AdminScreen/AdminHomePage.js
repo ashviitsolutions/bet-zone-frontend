@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ScrollView,
   View,
+  RefreshControl
 } from 'react-native';
 import Colors from '../../../Constants/Colors';
 import Header from '../../../Components/Header';
@@ -26,7 +27,13 @@ import Loader from '../../../Components/Loader';
 function AdminHomePage() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false)
-
+//  const [refresh,setRefersh] =  useState(false)
+//  const pullme=()=>{
+//   setRefersh(true)
+//   setTimeout(() => {
+//     setRefersh(false)
+//   }, 2000);
+//  }
   const [data, setData] = useState([])
   useEffect(() => {
     setLoading(true);
@@ -51,6 +58,7 @@ function AdminHomePage() {
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
+        
         <Header />
 
         <View
@@ -69,6 +77,7 @@ function AdminHomePage() {
             behavior="padding"
             style={{ flex: 1 }}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+             
             <ScrollView style={{ flex: 1, padding: 10 }}>
               <FlatList
                 data={data}

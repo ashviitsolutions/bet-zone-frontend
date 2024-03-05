@@ -18,7 +18,7 @@ export default function SportsDropDown({
     setShowOption(false);
     onSelect(val);
   };
-  console.log(value)
+  // console.log(value)
   return (
     <View>
       <TouchableOpacity

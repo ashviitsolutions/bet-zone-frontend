@@ -40,7 +40,7 @@ function AddUser() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('NO MEMBER');
   const [loading, setLoading] = useState(false);
-
+  const [token, setToken] = useState('');
   const [items, setItems] = useState([
     { label: '1 month membership', value: '1 MONTH' },
     { label: '3 month membership', value: '3 MONTH' },
@@ -48,7 +48,6 @@ function AddUser() {
 
 
 
-  const [token, setToken] = useState('');
 
   useEffect(() => {
     async function fetchData() {

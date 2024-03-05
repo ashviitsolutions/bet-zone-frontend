@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Alert,
   Image,
-  ImageBackground,
-  KeyboardAvoidingView,
-  ActivityIndicator,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -23,14 +21,15 @@ import Colors from '../../../Constants/Colors';
 import ImagePath from '../../../Constants/ImagePath';
 import { useNavigation } from '@react-navigation/native';
 import { Button } from '../../../Components';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { launchImageLibrary } from 'react-native-image-picker';
 import { IP } from '../../../Constants/Server';
 import NavigationString from '../../../Constants/NavigationString';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DropDownPicker from 'react-native-dropdown-picker';
 import DropDownComp from '../../../Components/DropDownComp';
 import SportsDropDown from '../../../Components/SportsDropDown';
 import ContactAreaComp from '../../../Components/ContactAreaComp';
+import Loader from '../../../Components/Loader';
+import DatePicker from 'react-native-date-picker'
 export default function NewTips() {
   const navigation = useNavigation();
   const [image, setImage] = useState('');
@@ -42,7 +41,13 @@ export default function NewTips() {
   const [type, setType] = useState('');
   const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const [token, setToken] = useState('');
+  const [date, setDate] = useState(new Date())
+  const [open, setOpen] = useState(false)
+  const [selectedDate,setSelectedDate]= useState('')
+  // useEffect(() => {
+  //   Alert.alert(typeof(JSON.stringify(date)));
+  // }, [date]);
   const data = [
     { id: 1, name: 'VIP' },
     { id: 2, name: 'OLD' },
@@ -60,12 +65,6 @@ export default function NewTips() {
     { id: 4, name: 'Tennis' },
   ];
   const [sportsSelectedItem, setSportsSelectedItem] = useState(null);
-
-  console.log(
-    'User sportsSelectedItem image picker',
-    sportsSelectedItem,
-    selectedItem,
-  );
   const onSportsSelect = item => {
     setCategory(item.name);
     setSportsSelectedItem(item);
@@ -90,8 +89,6 @@ export default function NewTips() {
       }
     });
   };
-  // const token =  AsyncStorage.getItem('token');
-  const [token, setToken] = useState('');
   useEffect(() => {
     async function fetchData() {
       try {
@@ -116,7 +113,9 @@ export default function NewTips() {
       formData.append('probs', probs);
       formData.append('type', type);
       formData.append('category', category);
-      // formData.append('date', "date");
+      // formData.append('date', JSON.stringify(date));
+      const formattedDate = date.toISOString();
+      formData.append('date', formattedDate);
       if (image) {
         formData.append('postImages', {
           uri: image,
@@ -152,6 +151,7 @@ export default function NewTips() {
   };
 
   return (
+    <>
     <SafeAreaView style={{ flex: 1 }}>
       <Header />
 
@@ -161,6 +161,7 @@ export default function NewTips() {
           height: '100%',
           padding: 10,
         }}>
+          
         <View style={styles.hedaerSub}>
           <SportsDropDown
             data={data2}
@@ -174,8 +175,32 @@ export default function NewTips() {
               source={require('../../../assets/icons/solar_calendar-linear.png')}
               style={styles.calender_icon}
             />
-            <Text style={styles.date_text}>Select date/time</Text>
+            <Text onPress={() => setOpen(true)} style={styles.date_text}>{selectedDate ? selectedDate :'Select date/time'}</Text>
           </View>
+          <DatePicker
+        modal
+        open={open}
+        date={date}
+        onConfirm={(date) => {
+          setOpen(false)
+          setDate(date)
+          console.log('date is ',date)
+          console.log(typeof(date))
+          const originalTimestamp = date;
+          const newdate = new Date(originalTimestamp);
+          const formattedTime = `${("0" + newdate.getHours()).slice(-2)}:${("0" + newdate.getMinutes()).slice(-2)}`;
+          const formattedDate = `${("0" + newdate.getDate()).slice(-2)}-${("0" + (newdate.getMonth() + 1)).slice(-2)}-${newdate.getFullYear()}`;
+          const result = `${formattedTime} ${formattedDate}`;
+         console.log(typeof(result))
+         setSelectedDate(result.toString())
+         
+
+         
+        }}
+        onCancel={() => {
+          setOpen(false)
+        }}
+      />
         </View>
         <View style={styles.img_box}>
           <Image source={{ uri: image }} style={styles.imgStyle} />
@@ -278,10 +303,13 @@ export default function NewTips() {
           // onPress={() => navigation.navigate('AdminHomePage')}
           />
         </View>
-        {loading && <ActivityIndicator size="large" color="#0000ff" />}
+        {/* {loading && <ActivityIndicator size="large" color="#0000ff" />} */}
         <ContactAreaComp />
       </ScrollView>
     </SafeAreaView>
+     {loading ? <Loader /> : null}
+     </>
+
   );
 }
 

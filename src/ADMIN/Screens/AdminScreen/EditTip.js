@@ -28,11 +28,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DropDownComp from '../../../Components/DropDownComp';
 import SportsDropDown from '../../../Components/SportsDropDown';
 import ContactAreaComp from '../../../Components/ContactAreaComp';
-
+import DatePicker from 'react-native-date-picker'
 export default function EditTip() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { date } = route.params.item;
+  // const { date } = route.params.item;
   const [title, setTitle] = useState(route.params.item.title);
   const [description, setDescription] = useState(route.params.item.description);
   const [amount, setAmount] = useState(route.params.item.amt);
@@ -42,11 +42,28 @@ export default function EditTip() {
   const [category, setCategory] = useState(route.params.item.category || '');
   const [image, setImage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState('');
+  const [date, setDate] = useState(new Date())
+  const [open, setOpen] = useState(false)
+  const [selectedDate,setSelectedDate]= useState('')
+  console.log(route.params.item.date)
+  const originalTimestamp = (route.params.item.date);
+  const dateObject = new Date(originalTimestamp);
+  
+  const hours = dateObject.getHours().toString().padStart(2, '0');
+  const minutes = dateObject.getMinutes().toString().padStart(2, '0');
+  const day = dateObject.getDate().toString().padStart(2, '0');
+  const month = (dateObject.getMonth() + 1).toString().padStart(2, '0'); // Note: Months are zero-based
+  const year = dateObject.getFullYear();
+  
+  const finalFormattedString = `${hours}:${minutes} ${day}-${month}-${year}`;
+  // console.log(finalFormattedString)
   const data = [
     { id: 1, name: 'VIP' },
     { id: 2, name: 'OLD' },
   ];
   const [selectedItem, setSelectedItem] = useState(route.params.item.type);
+
 
   const onSelect = item => {
     setType(item.name);
@@ -86,7 +103,6 @@ export default function EditTip() {
       }
     });
   };
-  const [token, setToken] = useState('');
   useEffect(() => {
     async function fetchData() {
       try {
@@ -111,7 +127,9 @@ export default function EditTip() {
       formData.append('probs', prob);
       formData.append('type', type || '');
       formData.append('category', category || '');
-      // formData.append('date', "date");
+      // formData.append('date', selectedDate);
+      // const formattedDate = date.toISOString();
+      // formData.append('date', formattedDate);
       if (image) {
         formData.append('postImages', {
           uri: image,
@@ -171,8 +189,27 @@ export default function EditTip() {
               source={require('../../../assets/icons/solar_calendar-linear.png')}
               style={styles.calender_icon}
             />
-            <Text style={styles.date_text}>Select date/time</Text>
+            <Text onPress={() => setOpen(true)} style={styles.date_text}>{selectedDate ? selectedDate.toString() : finalFormattedString}</Text>
           </View>
+          <DatePicker
+        modal
+        open={open}
+        date={date}
+        onConfirm={(date) => {
+          setOpen(false)
+          setDate(date)
+          const originalTimestamp = date;
+          const newdate = new Date(originalTimestamp);
+          const formattedTime = `${("0" + newdate.getHours()).slice(-2)}:${("0" + newdate.getMinutes()).slice(-2)}`;
+          const formattedDate = `${("0" + newdate.getDate()).slice(-2)}-${("0" + (newdate.getMonth() + 1)).slice(-2)}-${newdate.getFullYear()}`;
+          const result = `${formattedTime} ${formattedDate}`;
+        //  console.log(typeof(result))
+         setSelectedDate(result)
+        }}
+        onCancel={() => {
+          setOpen(false)
+        }}
+      />
         </View>
         <View style={styles.imgBox}>
           <Image
