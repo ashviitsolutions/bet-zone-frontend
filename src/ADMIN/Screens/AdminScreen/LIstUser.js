@@ -9,6 +9,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  RefreshControl, 
 } from 'react-native';
 import Colors from '../../../Constants/Colors';
 import Header from '../../../Components/Header';
@@ -28,7 +29,7 @@ import Loader from '../../../Components/Loader';
 function ListUser() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false)
-
+  const [refreshing, setRefreshing] = useState(false); 
   function Card({ onPress, item }) {
     const { member } = item;
     if (item.auth_type === 'admin') {
@@ -143,24 +144,23 @@ function ListUser() {
 
   const fetchData = async () => {
     try {
-      setLoading(true);
+      setRefreshing(true)
       const response = await fetch(`${IP}/getUsers?page=1&limit=18`);
       const newData = await response.json();
       setData(newData?.services);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
+      setRefreshing(false)
       setLoading(false);
     }
   };
-
+const onRefresh=()=>{
+  fetchData()
+}
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
       fetchData();
-    });
-
-    return unsubscribe;
-  }, [navigation]);
+  }, []);
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
@@ -182,7 +182,12 @@ function ListUser() {
             behavior="padding"
             style={{ flex: 1 }}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-            <ScrollView style={{ flex: 1, padding: 10, marginBottom: responsiveHeight(15) }}>
+            <ScrollView style={{ flex: 1, padding: 10, marginBottom: responsiveHeight(15) }}
+            refreshControl={<RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            />}
+            >
               <FlatList
                 data={data}
                 renderItem={({ item }) => (

@@ -28,7 +28,6 @@ import {
 
 function EditUser() {
   const route = useRoute();
-  // Ensure route.params.item is defined or use an empty object as default
   const item = route.params?.item || {};
   const [name, setName] = useState(item.full_name || '');
   const [email, setEmail] = useState(item.email || '');
@@ -41,6 +40,7 @@ function EditUser() {
   const [token, setToken] = useState('');
   const navigation = useNavigation();
   const [items, setItems] = useState([
+    { label: 'No membership', value: 'NO MEMBER' },
     { label: '1 month membership', value: '1 MONTH' },
     { label: '3 month membership', value: '3 MONTH' },
   ]);
@@ -240,7 +240,7 @@ function EditUser() {
             alignSelf: 'center',
             marginBottom: responsiveHeight(1.5),
           }}
-          disabled={item.membershiplevel ?true:false}
+          // disabled={item.membershiplevel ?true:false}
         />
 
         <Button

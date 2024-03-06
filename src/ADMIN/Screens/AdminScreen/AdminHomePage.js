@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   ScrollView,
   View,
-  RefreshControl
+  RefreshControl, // Import RefreshControl
 } from 'react-native';
 import Colors from '../../../Constants/Colors';
 import Header from '../../../Components/Header';
@@ -23,38 +23,38 @@ import AdminHeaderBar from '../../../Components/AdminHeaderBar';
 import { IP } from '../../../Constants/Server';
 import Loader from '../../../Components/Loader';
 
-
 function AdminHomePage() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false); // Add refreshing state
 
   const fetchData = async () => {
     try {
-      setLoading(true);
+      setRefreshing(true); // Set refreshing to true when fetching data
       const response = await fetch(`${IP}/service/view-services?page=1&limit=18`);
-      const data = await response.json();
-      setData(data.services);
+      const newData = await response.json();
+      setData(newData.services);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
+      setRefreshing(false); // Set refreshing to false when done fetching data
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      fetchData();
-    });
+  const onRefresh = () => {
+    fetchData(); // Call fetchData when the user pulls to refresh
+  };
 
-    return unsubscribe;
-  }, [navigation]);
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
-        
         <Header />
-
         <View
           style={{
             backgroundColor: Colors.mainColor,
@@ -71,8 +71,13 @@ function AdminHomePage() {
             behavior="padding"
             style={{ flex: 1 }}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-             
-            <ScrollView style={{ flex: 1, padding: 10 }}>
+            <ScrollView style={{ flex: 1, padding: 10 }}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                />
+              }>
               <FlatList
                 data={data}
                 renderItem={({ item }) => (
@@ -82,7 +87,6 @@ function AdminHomePage() {
                   />
                 )}
                 keyExtractor={(item, index) => (item && item.id ? item.id.toString() : index.toString())}
-
                 contentContainerStyle={{ paddingBottom: responsiveHeight(20) }}
                 showsVerticalScrollIndicator={false}
               />
