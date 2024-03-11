@@ -1,11 +1,11 @@
 import React from 'react';
-import {Dimensions, Image, SafeAreaView, ScrollView, Text, View} from 'react-native';
+import { Dimensions, Image, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import Colors from '../../Constants/Colors';
 import Header from '../../Components/Header';
 import ImagePath from '../../Constants/ImagePath';
 import Button from '../../Components/Button';
-const {width, height} = Dimensions.get('screen');
-import {useNavigation} from '@react-navigation/native';
+const { width, height } = Dimensions.get('screen');
+import { useNavigation } from '@react-navigation/native';
 import {
   responsiveWidth,
   responsiveFontSize,
@@ -17,7 +17,7 @@ import ContactAreaComp from '../../Components/ContactAreaComp';
 function Profile() {
   const navigation = useNavigation();
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Header />
       <ScrollView
         style={{
@@ -25,7 +25,7 @@ function Profile() {
           padding: 10,
           width: responsiveWidth(100),
           // height: responsiveHeight(100),
-          height:'100%'
+          height: '100%'
         }}>
         <View
           style={{
@@ -108,7 +108,7 @@ function Profile() {
             USA ENGLISH
           </Text>
         </View>
-        <ContactAreaComp/>
+        <ContactAreaComp />
       </ScrollView>
     </SafeAreaView>
   );

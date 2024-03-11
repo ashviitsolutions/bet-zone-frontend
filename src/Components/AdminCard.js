@@ -6,27 +6,29 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import { IP } from '../Constants/Server';
+import {IP} from '../Constants/Server';
 
 const AdminCard = ({item, onPress}) => {
   const {type} = item;
-  // console.log(item.attachments)
-  const originalDate = item.updatedAt instanceof Date ? item.updatedAt : new Date();
-  const hours = String(originalDate.getUTCHours()).padStart(2, '0');
-  const minutes = String(originalDate.getUTCMinutes()).padStart(2, '0');
-  const day = String(originalDate.getUTCDate()).padStart(2, '0');
-  const month = String(originalDate.getUTCMonth() + 1).padStart(2, '0');
-  const year = originalDate.getUTCFullYear();
-  const formattedDate = `${hours}:${minutes} ${day}-${month}-${year}`;
-
+  // console.log(item)
+  const originalTimestamp = (item.date);
+  const dateObject = new Date(originalTimestamp);
+  
+  const hours = dateObject.getHours().toString().padStart(2, '0');
+  const minutes = dateObject.getMinutes().toString().padStart(2, '0');
+  const day = dateObject.getDate().toString().padStart(2, '0');
+  const month = (dateObject.getMonth() + 1).toString().padStart(2, '0'); // Note: Months are zero-based
+  const year = dateObject.getFullYear();
+  
+  const finalFormattedString = `${hours}:${minutes} ${day}-${month}-${year}`;
+  
+  
   return (
     <TouchableOpacity
       activeOpacity={0.8}
       onPress={onPress}
       style={{
         backgroundColor: type === 'VIP' ? Colors.brownColor : Colors.lightBrown,
-        // width: responsiveWidth(95),
-        // height: responsiveHeight(22.5),
         flex: 1,
         borderRadius: responsiveWidth(5),
         padding: 10,
@@ -43,7 +45,7 @@ const AdminCard = ({item, onPress}) => {
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
-        <Text style={styles.dateText}>{formattedDate}</Text>
+        <Text style={styles.dateText}>{finalFormattedString}</Text>
         <View
           style={{
             borderRadius: responsiveWidth(3),
@@ -58,17 +60,20 @@ const AdminCard = ({item, onPress}) => {
               alignSelf: 'center',
               fontWeight: '900',
             }}>
-            {item.type}
+            {item.type || 'null'}
           </Text>
         </View>
         <View style={styles.game_Icon_Name_box}>
           <Image source={require('../assets/icons/football.png')} />
-          <Text style={styles.gameNameText}>{item.category}</Text>
+          <Text style={styles.gameNameText}>{item.category || 'null'}</Text>
         </View>
       </View>
 
       <View style={styles.secondRow}>
-      <Image source={{ uri: `${IP}/file/${item.attachments}`}} style={styles.imgStyle} />
+        <Image
+          source={{uri: `${IP}/file/${item.attachments}`}}
+          style={styles.imgStyle}
+        />
         <View style={{width: responsiveWidth(52)}}>
           <Text style={styles.titleText}>{item.title}</Text>
           <Text numberOfLines={6} ellipsizeMode="tail" style={styles.descText}>

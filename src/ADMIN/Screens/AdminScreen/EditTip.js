@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   ImageBackground,
   KeyboardAvoidingView,
+  ActivityIndicator,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -10,6 +11,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ToastAndroid,
 } from 'react-native';
 import Header from '../../../Components/Header';
 import {
@@ -19,25 +21,68 @@ import {
 } from 'react-native-responsive-dimensions';
 import Colors from '../../../Constants/Colors';
 import ImagePath from '../../../Constants/ImagePath';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {Button} from '../../../Components';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { Button } from '../../../Components';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { IP } from '../../../Constants/Server';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import DropDownComp from '../../../Components/DropDownComp';
+import SportsDropDown from '../../../Components/SportsDropDown';
+import ContactAreaComp from '../../../Components/ContactAreaComp';
+import DatePicker from 'react-native-date-picker'
 export default function EditTip() {
   const navigation = useNavigation();
   const route = useRoute();
-  const {date} = route.params.item;
-  
-
+  // const { date } = route.params.item;
   const [title, setTitle] = useState(route.params.item.title);
   const [description, setDescription] = useState(route.params.item.description);
   const [amount, setAmount] = useState(route.params.item.amt);
   const [odds, setOdds] = useState(route.params.item.odds);
   const [prob, setProb] = useState(route.params.item.probs);
-
+  const [type, setType] = useState(route.params.item.type || '');
+  const [category, setCategory] = useState(route.params.item.category || '');
   const [image, setImage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState('');
+  const [date, setDate] = useState(new Date())
+  const [open, setOpen] = useState(false)
+  const [selectedDate,setSelectedDate]= useState('')
+  // console.log(route.params.item.date)
+  const originalTimestamp = (route.params.item.date);
+  const dateObject = new Date(originalTimestamp);
+  
+  const hours = dateObject.getHours().toString().padStart(2, '0');
+  const minutes = dateObject.getMinutes().toString().padStart(2, '0');
+  const day = dateObject.getDate().toString().padStart(2, '0');
+  const month = (dateObject.getMonth() + 1).toString().padStart(2, '0'); // Note: Months are zero-based
+  const year = dateObject.getFullYear();
+  
+  const finalFormattedString = `${hours}:${minutes} ${day}-${month}-${year}`;
+  // console.log(finalFormattedString)
+  const data = [
+    { id: 1, name: 'VIP' },
+    { id: 2, name: 'OLD' },
+  ];
+  const [selectedItem, setSelectedItem] = useState(route.params.item.type);
+
+
+  const onSelect = item => {
+    setType(item.name);
+    console.log(type);
+    setSelectedItem(item);
+  };
+  const data2 = [
+    { id: 1, name: 'BaseBall' },
+    { id: 2, name: 'Cricket' },
+    { id: 3, name: 'Football' },
+    { id: 4, name: 'Tennis' },
+  ];
+  const [sportsSelectedItem, setSportsSelectedItem] = useState(null);
+
+  const onSportsSelect = item => {
+    setCategory(item.name);
+    setSportsSelectedItem(item);
+  };
 
   const openImagePicker = () => {
     const options = {
@@ -59,7 +104,6 @@ export default function EditTip() {
       }
     });
   };
-  const [token, setToken] = useState('');
   useEffect(() => {
     async function fetchData() {
       try {
@@ -74,41 +118,52 @@ export default function EditTip() {
   }, []);
 
   const handleUpdateTip = async () => {
+    setLoading(true);
     try {
       const formData = new FormData();
-      formData.append('title', 'baseball');
-      formData.append('description', 'a usa game from usa');
-      formData.append('amt', '12');
-      formData.append('odds', '344');
-      formData.append('probs', '432');
-      formData.append('type', 'VIP');
-      formData.append('category', 'cricket');
-      formData.append('postImages', {
-        uri: image,
-        type: 'image/jpeg',
-        name: 'image.jpg',
-      });
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('amt', amount);
+      formData.append('odds', odds);
+      formData.append('probs', prob);
+      formData.append('type', type || '');
+      formData.append('category', category || '');
+      // formData.append('date', selectedDate);
+      const formattedDate = date.toISOString();
+      formData.append('date', formattedDate);
+      if (image) {
+        formData.append('postImages', {
+          uri: image,
+          type: 'image/jpeg',
+          name: 'image.jpg',
+        });
+      }
 
-      const response = await fetch(`${IP}/service/${route.params.item._id}/update`, {
-        method: 'PUT',
-        headers: {
-          Authorization: token,
+      const response = await fetch(
+        `${IP}/service/${route.params.item._id}/update`,
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: token,
+          },
+          body: formData,
         },
-        body: formData,
-      });
+      );
 
       const responseData = await response.json();
-      console.warn('error is ',responseData)
+      ToastAndroid.show(responseData.msg, ToastAndroid.SHORT);
+      // console.warn('error is ', responseData.msg);
       navigation.navigate('AdminHomePage');
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error('Error:', error.message);
       console.error('Stack Trace:', error.stack);
     }
   };
 
- 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Header />
 
       <ScrollView
@@ -117,28 +172,56 @@ export default function EditTip() {
           height: '100%',
           padding: 10,
         }}>
-       
-         <View style={styles.hedaerSub}>
-          <View style={styles.sportBox}>
-            <Image source={require('../../../assets/icons/run.png')} />
-            <Text style={styles.sportText}>SPORT</Text>
-            <Image source={require('../../../assets/icons/downArr.png')} />
-          </View>
+        <View style={styles.hedaerSub}>
+          <SportsDropDown
+            data={data2}
+            onSelect={onSportsSelect}
+            value={sportsSelectedItem}
+            defaultValueSport={route.params.item.category}
+          />
 
-          <View style={styles.vipBox}>
-            <Text  style={styles.vipText}>{route.params.item.type}</Text>
-            <Image source={require('../../../assets/icons/whiteDwnArr.png')} />
-          </View>
+          <DropDownComp
+            data={data}
+            onSelect={onSelect}
+            value={selectedItem}
+            defaultValueType={route.params.item.type}
+          />
           <View style={styles.date_box}>
             <Image
               source={require('../../../assets/icons/solar_calendar-linear.png')}
               style={styles.calender_icon}
             />
-            <Text style={styles.date_text}>Select date/time</Text>
+            <Text onPress={() => setOpen(true)} style={styles.date_text}>{selectedDate ? selectedDate.toString() : finalFormattedString}</Text>
           </View>
+          <DatePicker
+        modal
+        open={open}
+        date={date}
+        onConfirm={(date) => {
+          setOpen(false)
+          setDate(date)
+          const originalTimestamp = date;
+          const newdate = new Date(originalTimestamp);
+          const formattedTime = `${("0" + newdate.getHours()).slice(-2)}:${("0" + newdate.getMinutes()).slice(-2)}`;
+          const formattedDate = `${("0" + newdate.getDate()).slice(-2)}-${("0" + (newdate.getMonth() + 1)).slice(-2)}-${newdate.getFullYear()}`;
+          const result = `${formattedTime} ${formattedDate}`;
+        //  console.log(typeof(result))
+         setSelectedDate(result)
+        }}
+        onCancel={() => {
+          setOpen(false)
+        }}
+      />
         </View>
         <View style={styles.imgBox}>
-          <Image source={image ? {uri:image}:{ uri: `${IP}/file/${route.params.item.attachments}`}} style={styles.imgStyle} />
+          <Image
+            source={
+              image
+                ? { uri: image }
+                : { uri: `${IP}/file/${route.params.item.attachments}` }
+            }
+            style={styles.imgStyle}
+          />
         </View>
         <Text style={styles.titleText}>TIP TITLE</Text>
         <View
@@ -212,7 +295,7 @@ export default function EditTip() {
           <View style={styles.backBtn}>
             <Text
               onPress={() => navigation.goBack()}
-              style={{color: Colors.grayText, alignSelf: 'center'}}>
+              style={{ color: Colors.grayText, alignSelf: 'center' }}>
               {' '}
               BACK
             </Text>
@@ -222,18 +305,19 @@ export default function EditTip() {
             h={4}
             br={2}
             title={'UPDATE'}
-            customStyle={{marginTop: 0}}
+            customStyle={{ marginTop: 0 }}
             onPress={handleUpdateTip}
-            // onPress={() => navigation.navigate('NewTips')}
+
           />
         </View>
+        {loading && <ActivityIndicator size="large" color="#0000ff" />}
+        <ContactAreaComp />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
- 
   imgBox: {
     width: responsiveWidth(93),
     height: responsiveHeight(30),
@@ -263,8 +347,8 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     width: '70%',
   },
-  titleText: {color: Colors.grayText, marginVertical: 5},
-  changeTextStyle: {color: Colors.grayText, alignSelf: 'center'},
+  titleText: { color: Colors.grayText, marginVertical: 5 },
+  changeTextStyle: { color: Colors.grayText, alignSelf: 'center' },
   changeBtn: {
     borderWidth: 1,
     borderColor: Colors.grayText,
@@ -273,7 +357,7 @@ const styles = StyleSheet.create({
     height: responsiveHeight(5),
     justifyContent: 'center',
   },
-  descInput: {color: '#fff', fontSize: responsiveFontSize(1.9)},
+  descInput: { color: '#fff', fontSize: responsiveFontSize(1.9) },
   descBox: {
     borderWidth: 1,
     borderColor: Colors.grayText,
@@ -282,7 +366,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 5,
   },
-  descText: {color: Colors.grayText, marginVertical: 5, marginTop: 10},
+  descText: { color: Colors.grayText, marginVertical: 5, marginTop: 10 },
   inputFiledView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -324,7 +408,6 @@ const styles = StyleSheet.create({
     height: responsiveHeight(4),
     justifyContent: 'center',
   },
-
 
   hedaerSub: {
     flexDirection: 'row',

@@ -16,8 +16,8 @@ import Header from '../../Components/Header';
 import ImagePath from '../../Constants/ImagePath';
 import Button from '../../Components/Button';
 import Tabs from '../../Navigation/TabsNav';
-const {width, height} = Dimensions.get('screen');
-import {useNavigation} from '@react-navigation/native';
+const { width, height } = Dimensions.get('screen');
+import { useNavigation } from '@react-navigation/native';
 import {
   responsiveWidth,
   responsiveFontSize,
@@ -27,10 +27,9 @@ import ContactAreaComp from '../../Components/ContactAreaComp';
 function Plans() {
   const navigation = useNavigation();
   const Data = [
-    {id: 1, price: '13$/month', type: 'MONTHLY SUBSCRIPTION'},
-    {id: 2, price: '13$/month', type: 'MONTHLY SUBSCRIPTION'},
-    {id: 3, price: '13$/month', type: 'MONTHLY SUBSCRIPTION'},
-    {id: 4, price: '13$/month', type: 'MONTHLY SUBSCRIPTION'},
+    { id: 1, price: '13$/month', type: 'MONTHLY SUBSCRIPTION' },
+    { id: 2, price: '13$/month', type: '3 MONTH SUBSCRIPTION' },
+
   ];
 
   function Card() {
@@ -56,7 +55,7 @@ function Plans() {
     );
   }
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Header />
       <View
         style={{
@@ -80,13 +79,13 @@ function Plans() {
           </Text>
         </View>
 
-        <ScrollView style={{flex: 1, padding: 10, height: 'auto'}}>
+        <ScrollView style={{ flex: 1, padding: 10, height: 'auto' }}>
           <FlatList
             data={Data}
-            renderItem={({item}) => <Card item={item} />}
+            renderItem={({ item }) => <Card item={item} />}
             keyExtractor={item => item.id.toString()}
             showsVerticalScrollIndicator={false}
-            // contentContainerStyle={{ paddingBottom: height*0.22 }}
+          // contentContainerStyle={{ paddingBottom: height*0.22 }}
           />
 
           <ContactAreaComp />
