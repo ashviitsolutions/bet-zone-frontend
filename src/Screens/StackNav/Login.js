@@ -68,6 +68,7 @@ function Login() {
           await AsyncStorage.setItem('token', authToken)
           await AsyncStorage.setItem('email', email);
           await AsyncStorage.setItem('full_name', responseData.user_info.full_name);
+          await AsyncStorage.setItem('userid', responseData.user_info._id);
           await AsyncStorage.setItem('mobile', responseData.user_info.mobile);
           await AsyncStorage.setItem('is_member', String(responseData.user_info.is_member));
           global.auth_type = responseData.user_info.auth_type

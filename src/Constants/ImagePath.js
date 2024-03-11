@@ -18,4 +18,5 @@ export default {
     backIcon:require('../assets/Image/back.png'),
     AdminUsersIcon:require('../assets/icons/lucide_users.png'),
     footballImg:require('../assets/Image/football.webp'),
+    successIcon:require('../assets/icons/checked.png'),
 }
