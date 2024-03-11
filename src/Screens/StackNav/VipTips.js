@@ -9,6 +9,7 @@ import {
   Touchable,
   TouchableOpacity,
   View,
+  RefreshControl
 } from 'react-native';
 import Colors from '../../Constants/Colors';
 import Header from '../../Components/Header';
@@ -31,22 +32,28 @@ function VipTips() {
 
 
   const [loading, setLoading] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
   const [data, setData] = useState([])
-  useEffect(() => {
-    setLoading(true);
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${IP}/service/view-services?page=1&limit=18`);
-        const responseData = await response.json();
-        const filteredServices = responseData.services.filter(service => service.type === 'VIP');
-        setData(filteredServices);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
+  const fetchData = async () => {
+    try {
+      setRefreshing(true)
+      const response = await fetch(`${IP}/service/view-services?page=1&limit=18`);
+      const responseData = await response.json();
+      const filteredServices = responseData.services.filter(service => service.type === 'VIP');
+      setData(filteredServices);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setRefreshing(false)
+      setLoading(false);
+    }
+  };
+
+  const onRefersh=()=>{
+    fetchData()
+  }
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -129,7 +136,12 @@ function VipTips() {
               </Text>
             </View>
           </View>
-          <ScrollView style={{ flex: 1, padding: 10 }}>
+          <ScrollView style={{ flex: 1, padding: 10 }}
+          RefreshControl={<RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefersh}
+          />}
+          >
             <FlatList
               data={data}
               renderItem={({ item }) => (

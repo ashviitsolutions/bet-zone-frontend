@@ -62,7 +62,9 @@ function Login() {
         const authToken = response.headers.get('Authorization');
         console.log("responseData login data", responseData)
         if (authToken) {
+          // console.log(responseData.user_info)
           await AsyncStorage.setItem('auth_type', String(responseData.user_info.auth_type));
+          await AsyncStorage.setItem('userid', String(responseData.user_info._id));
           await AsyncStorage.setItem('token', authToken)
           await AsyncStorage.setItem('email', email);
           await AsyncStorage.setItem('full_name', responseData.user_info.full_name);
