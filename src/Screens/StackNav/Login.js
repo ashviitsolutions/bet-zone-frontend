@@ -62,14 +62,13 @@ function Login() {
         const authToken = response.headers.get('Authorization');
         console.log("responseData login data", responseData)
         if (authToken) {
-          await AsyncStorage.setItem('auth_type', String(responseData?.user_info?.auth_type));
+          await AsyncStorage.setItem('auth_type', String(responseData.user_info.auth_type));
           await AsyncStorage.setItem('token', authToken)
           await AsyncStorage.setItem('email', email);
-          await AsyncStorage.setItem('userid', responseData?.user_info?._id);
-          await AsyncStorage.setItem('full_name', responseData?.user_info?.full_name);
-          await AsyncStorage.setItem('mobile', responseData?.user_info?.mobile);
-          await AsyncStorage.setItem('is_member', String(responseData?.user_info?.is_member));
-          global.auth_type = responseData?.user_info?.auth_type
+          await AsyncStorage.setItem('full_name', responseData.user_info.full_name);
+          await AsyncStorage.setItem('mobile', responseData.user_info.mobile);
+          await AsyncStorage.setItem('is_member', String(responseData.user_info.is_member));
+          global.auth_type = responseData.user_info.auth_type
         }
         ToastAndroid.show(responseData.msg, ToastAndroid.SHORT);
         if (responseData?.user_info?.auth_type === 'user') {

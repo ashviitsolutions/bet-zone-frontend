@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -37,17 +37,11 @@ function Plans() {
       <View style={styles.main_container}>
         <Image source={ImagePath.publicIcon} style={styles.icon_style} />
         <View>
-          <Text style={styles.monthy_subs_text}>MONTHLY SUBSCRIPTION</Text>
-          <Text
-            style={{
-              color: Colors.whiteText,
-              fontSize: responsiveFontSize(1.6),
-            }}>
-            13$/month
-          </Text>
+          <Text style={styles.monthy_subs_text}>{item.name}</Text>
+          <Text style={{ color: Colors.whiteText, fontSize: responsiveFontSize(1.6) }}>{item.price}</Text>
         </View>
         <View style={styles.buy_box}>
-          <TouchableOpacity onPress={i => navigation.navigate('VipTips')}>
+          <TouchableOpacity onPress={() => handleSubmit(item.id, index)} >
             <Text style={styles.buy_text}>BUY</Text>
           </TouchableOpacity>
         </View>

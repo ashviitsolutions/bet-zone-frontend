@@ -9,7 +9,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Alert,
 } from 'react-native';
 import Colors from '../../Constants/Colors';
 import Header from '../../Components/Header';
@@ -17,58 +16,18 @@ import ImagePath from '../../Constants/ImagePath';
 import { useNavigation } from '@react-navigation/native';
 import { responsiveWidth, responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
 import ContactAreaComp from '../../Components/ContactAreaComp';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const { width, height } = Dimensions.get('screen');
-
 function Plans() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(null);
   const [url, setUrl] = useState(null);
 
   const Data = [
-    { id: "price_1OAn62LnVrUYOeK2Y2M7l0Cj", price: '13$/month', name: 'MONTHLY SUBSCRIPTION' },
-    { id: "price_1OMYiBLnVrUYOeK2LPEbMEvW", price: '13$/month', name: '3 MONTH SUBSCRIPTION' },
+    { id: 1, price: '13$/month', type: 'MONTHLY SUBSCRIPTION' },
+    { id: 2, price: '13$/month', type: '3 MONTH SUBSCRIPTION' },
+
   ];
 
-  const handleSubmit = async (membership_id, index) => {
-    setLoading(index);
-    try {
-      const user_id = await AsyncStorage.getItem('userid');
-      const token = await AsyncStorage.getItem('token');
-      const url = `${IP}/payment/create-checkout-session?membership=${membership_id}&userId=${user_id}`;
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token,
-        },
-      };
-
-      const res = await axios.get(url, config);
-      console.log('Stripe Redirect URL:', res.config.url);
-      setUrl(res.config.url);
-      console.log('API Response:', res);
-
-      if (res.config.url) {
-        // Redirect to Stripe checkout page
-        // Note: React Native does not support redirection like window.location.href in web, you would need to use Linking
-        // You may need to handle this differently in your React Native app
-        // Example: await Linking.openURL(res.config.url);
-      } else {
-        console.error('Invalid response from the server:', res);
-      }
-    } catch (error) {
-      console.error('API Error:', error);
-      Alert.alert('API Error', error.message);
-    } finally {
-      if (loading === index) {
-        setLoading(null); // Reset loading state only if it matches the index
-      }
-    }
-  };
-
-  const Card = ({ item, index }) => {
+  function Card() {
     return (
       <View style={styles.main_container}>
         <Image source={ImagePath.publicIcon} style={styles.icon_style} />
@@ -77,7 +36,7 @@ function Plans() {
           <Text style={{ color: Colors.whiteText, fontSize: responsiveFontSize(1.6) }}>{item.price}</Text>
         </View>
         <View style={styles.buy_box}>
-          <TouchableOpacity onPress={() => handleSubmit(item.id, index)} disabled={loading !== null}>
+          <TouchableOpacity onPress={i => navigation.navigate('VipTips')}>
             <Text style={styles.buy_text}>BUY</Text>
           </TouchableOpacity>
         </View>
@@ -88,17 +47,37 @@ function Plans() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Header />
-      <View style={{ backgroundColor: Colors.mainColor, height: '100%', padding: 5 }}>
-        <View style={{ height: '10%', justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: responsiveFontSize(3), color: Colors.whiteText, fontWeight: '900' }}>PLANS</Text>
+      <View
+        style={{
+          backgroundColor: Colors.mainColor,
+          height: responsiveHeight(100),
+          padding: 5,
+        }}>
+        <View
+          style={{
+            height: responsiveHeight(10),
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text
+            style={{
+              fontSize: responsiveFontSize(3),
+              color: Colors.whiteText,
+              fontWeight: '900',
+            }}>
+            PLANS
+          </Text>
         </View>
+
         <ScrollView style={{ flex: 1, padding: 10, height: 'auto' }}>
           <FlatList
             data={Data}
-            renderItem={({ item, index }) => <Card item={item} index={index} />}
+            renderItem={({ item }) => <Card item={item} />}
             keyExtractor={item => item.id.toString()}
             showsVerticalScrollIndicator={false}
+          // contentContainerStyle={{ paddingBottom: height*0.22 }}
           />
+
           <ContactAreaComp />
         </ScrollView>
       </View>
@@ -121,6 +100,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     elevation: 4,
     shadowColor: '#000',
+    padding:10
   },
   icon_style: {
     width: responsiveWidth(12),

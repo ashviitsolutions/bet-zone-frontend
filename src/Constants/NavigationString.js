@@ -18,5 +18,6 @@ export default {
     ON_BOARDING_PAGE: 'OnBoardingPage',
     ADMIN_LOGIN_PAGE: 'FirstLoginPage',
     AUTH_LOGIN: 'AuthLogin',
-    AUTH_SIGN_UP: 'AuthSignup'
+    AUTH_SIGN_UP: 'AuthSignup',
+    SUCCESS_PAGE: 'SuccessPage',
 }

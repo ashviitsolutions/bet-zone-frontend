@@ -9,6 +9,7 @@ import {
   Touchable,
   TouchableOpacity,
   View,
+  RefreshControl
 } from 'react-native';
 import Colors from '../../Constants/Colors';
 import Header from '../../Components/Header';
@@ -30,21 +31,27 @@ function Home() {
 
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState([])
-  useEffect(() => {
-    setLoading(true);
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${IP}/service/view-services?page=1&limit=18`);
-        const responseData = await response.json();
-        const filteredServices = responseData.services.filter(service => service.type === 'OLD');
-        setData(filteredServices);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const [refreshing, setRefreshing] = useState(false)
 
+  const fetchData = async () => {
+    try {
+      setRefreshing(true)
+      const response = await fetch(`${IP}/service/view-services?page=1&limit=18`);
+      const responseData = await response.json();
+      const filteredServices = responseData.services.filter(service => service.type === 'OLD');
+      setData(filteredServices);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setRefreshing(false)
+      setLoading(false);
+    }
+  };
+  const onRefresh = () => {
+    fetchData(); // Call fetchData when the user pulls to refresh
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -61,7 +68,14 @@ function Home() {
             height: responsiveHeight(100),
           }}>
           <UserHeaderBar />
-          <ScrollView style={{ flex: 1, padding: 10 }}>
+          <ScrollView style={{ flex: 1, padding: 10 }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
+          >
             <FlatList
               data={data}
               renderItem={({ item }) => (
