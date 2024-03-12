@@ -141,26 +141,38 @@ function ListUser() {
   }
 
   const [data, setData] = useState([])
+  const [searchText, setSearchText] = useState('');
 
   const fetchData = async () => {
     try {
-      setRefreshing(true)
-      const response = await fetch(`${IP}/getUsers?page=1&limit=18`);
+      setRefreshing(true);
+      const response = await fetch(`${IP}/getUsers?page=1&limit=18&search=${searchText}`);
       const newData = await response.json();
       setData(newData?.services);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
-      setRefreshing(false)
+      setRefreshing(false);
       setLoading(false);
     }
   };
-const onRefresh=()=>{
-  fetchData()
-}
+
+  const onRefresh = () => {
+    fetchData();
+  };
+
+  const filterData = () => {
+    return data.filter(
+      (item) =>
+        item.full_name.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.email.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.mobile.toLowerCase().includes(searchText.toLowerCase())
+    );
+  };
+
   useEffect(() => {
-      fetchData();
-  }, []);
+    fetchData();
+  }, [searchText]);
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
@@ -176,8 +188,7 @@ const onRefresh=()=>{
             rightTitle={'+ NEW USER'}
             onPress={() => navigation.navigate('AddUser')}
           />
-
-          <SearchBar />
+            <SearchBar onChangeText={setSearchText} filtericon={false} />
           <KeyboardAvoidingView
             behavior="padding"
             style={{ flex: 1 }}
@@ -189,7 +200,7 @@ const onRefresh=()=>{
             />}
             >
               <FlatList
-                data={data}
+                data={filterData()}
                 renderItem={({ item }) => (
                   <Card
                     item={item}

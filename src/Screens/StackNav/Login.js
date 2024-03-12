@@ -90,7 +90,7 @@ function Login() {
   };
 
   return (
-    <>
+   
       <SafeAreaView style={{ flex: 1 }}>
         <Header />
         <ScrollView
@@ -124,10 +124,8 @@ function Login() {
             onChangeText={setPassword}
             password={true}
           />
-
+             {loading ? <ActivityIndicator color={Colors.yellowColor} /> : null}
           <Button w={30} h={5} br={6} title={'LOGIN'} onPress={handleLogin} />
-
-
 
           <View
             style={{
@@ -146,8 +144,8 @@ function Login() {
           </View>
         </ScrollView>
       </SafeAreaView>
-      {loading ? <Loader /> : null}
-    </>
+    
+ 
   );
 }
 
