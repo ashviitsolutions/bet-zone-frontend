@@ -66,6 +66,7 @@ function Home() {
             backgroundColor: Colors.mainColor,
             width: responsiveWidth(100),
             height: responsiveHeight(100),
+            
           }}>
           <UserHeaderBar />
           <ScrollView style={{ flex: 1, padding: 10 }}

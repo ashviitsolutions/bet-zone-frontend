@@ -96,7 +96,6 @@ function Plans() {
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
-
         <Header />
         <View style={{ backgroundColor: Colors.mainColor, height: '100%', padding: 5 }}>
           <View style={{ height: '10%', justifyContent: 'center', alignItems: 'center' }}>
