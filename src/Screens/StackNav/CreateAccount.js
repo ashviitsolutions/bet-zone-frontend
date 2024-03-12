@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -27,127 +27,170 @@ import NavigationString from '../../Constants/NavigationString';
 import InputComp from '../../Components/InputComp';
 import ContactAreaComp from '../../Components/ContactAreaComp';
 import { IP } from '../../Constants/Server';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loader from '../../Components/Loader';
 
 function CreateAccount() {
   const navigation = useNavigation();
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [mobile, setMobile] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [mobile, setMobile] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [token, setToken] = useState('');
 
-  const handleSubmit = async () => {
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const storedToken = await AsyncStorage.getItem('token');
+        setToken(storedToken);
+
+        // Fetch user details from AsyncStorage
+        const storedEmail = await AsyncStorage.getItem('email');
+        const storedMobile = await AsyncStorage.getItem('mobile');
+        const storedName = await AsyncStorage.getItem('full_name');
+
+        setEmail(storedEmail || '');
+        setMobile(storedMobile || '');
+        setName(storedName || '');
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  // Function to handle profile update
+  const handleProfileUpdate = async () => {
     setLoading(true);
-    try {
-      const data = {
-        full_name: fullName,
-        email: email,
-        mobile: mobile,
-        password: password,
-        confirm_password: confirmPassword,
-        auth_type: 'user',
-      };
+    const userData = {
+      full_name: name,
+      email: email,
+      password: password,
+      confirm_password: confirmPassword,
+      mobile: mobile,
+      auth_type: 'user'
+    };
 
-      const response = await fetch(`${IP}/user/register`, {
+    try {
+      const response = await fetch(`${IP}/updateprofile`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: token,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(userData), // Convert the data to JSON string
       });
 
-      setLoading(false);
-
-      if (response.ok) {
-        setFullName('');
-        setEmail('');
-        setMobile('');
-        setPassword('');
-        setConfirmPassword('');
-        ToastAndroid.show('Registration successful!', ToastAndroid.SHORT);
-        navigation.goBack();
-      } else if (response.status === 400) {
-        ToastAndroid.show('Email or mobile number already used', ToastAndroid.LONG);
+      const responseData = await response.json();
+      console.log("responseData", responseData)
+      if (response.status === 200) {
+        console.log('Profile update successfully');
+        setLoading(false);
+        // Update local storage data
+        await AsyncStorage.setItem('email', email);
+        await AsyncStorage.setItem('mobile', mobile);
+        await AsyncStorage.setItem('full_name', name);
+        navigation.replace(NavigationString.TABS);
+        // navigation.navigate('AdminHomePage');
+      } else {
+        setLoading(false);
+        console.log('Error:', responseData.msg);
+        // Handle error messages appropriately, e.g., show them to the user
       }
     } catch (error) {
+      console.error('Error adding user:', error);
       setLoading(false);
-      console.error(error);
-      ToastAndroid.show('An error occurred. Please try again later.', ToastAndroid.LONG);
+      // Handle network errors or other unexpected errors
     }
   };
 
+  const handleLogout = async () => {
+    await AsyncStorage.clear()
+    navigation.replace(NavigationString.TABS);
+  }
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Header />
-      <ScrollView
-        style={{
-          backgroundColor: Colors.mainColor,
-          height: responsiveHeight(100),
-          padding: 10,
-        }}
-      >
-        <View
+    <>
+      <SafeAreaView style={{ flex: 1 }}>
+        <Header />
+
+        <ScrollView
           style={{
-            height: responsiveHeight(15),
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Image
-            source={ImagePath.ProfileIcon}
+            backgroundColor: Colors.mainColor,
+            height: responsiveHeight(100),
+            padding: 10,
+          }}>
+             {/* <Button w={20} h={4} br={6} title={'Logout'} onPress={handleLogout} customStyle={{alignSelf:'flex-end'}} /> */}
+          <View
             style={{
-              width: responsiveWidth(10),
-              height: responsiveHeight(8),
-              tintColor: Colors.whiteText,
-            }}
+              height: responsiveHeight(15),
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Image
+              source={ImagePath.ProfileIcon}
+              style={{
+                width: responsiveWidth(10),
+                height: responsiveHeight(8),
+                tintColor: Colors.whiteText,
+              }}
+            />
+            <Text
+              style={{
+                fontSize: responsiveFontSize(3),
+                color: Colors.whiteText,
+                fontWeight: '900',
+              }}>
+              CREATE ACCOUNT
+            </Text>
+          </View>
+          <InputComp
+            title={'Full name'}
+            value={name}
+            onChangeText={setName}
           />
+          <InputComp
+            title={'Email'}
+            value={email}
+            onChangeText={setEmail}
+            editable={false} // Prevents editing of email
+          />
+          <InputComp
+            title={'Mobile'}
+            value={mobile}
+            onChangeText={setMobile}
+            editable={false} // Prevents editing of mobile
+          />
+          <InputComp
+            title={'New password'}
+            value={password}
+            onChangeText={setPassword}
+            password={true} // Hides entered text
+          />
+          <InputComp
+            title={'Confirm password'}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            password={true} // Hides entered text
+          />
+          <Button w={30} h={5} br={6} title={'SignUp'} onPress={handleProfileUpdate} />
+
           <Text
             style={{
-              fontSize: responsiveFontSize(3),
-              color: Colors.whiteText,
-              fontWeight: '900',
+              color: Colors.grayText,
+              alignSelf: 'center',
+              marginVertical: 15,
             }}
-          >
-            CREATE ACCOUNT
+            onPress={() => navigation.goBack()}>
+            Back
           </Text>
-        </View>
-        <InputComp
-          title={'full name'}
-          value={fullName}
-          onChangeText={setFullName}
-        />
-        <InputComp
-          title={'email'}
-          value={email}
-          onChangeText={setEmail}
-          keyType={'email-address'}
-        />
-        <InputComp
-          title={'mobile no.'}
-          keyType={'numeric'}
-          value={mobile}
-          onChangeText={setMobile}
-        />
-        <InputComp
-          title={'password'}
-          value={password}
-          onChangeText={setPassword}
-          password={true}
-        />
-        <InputComp
-          title={'confirm password'}
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          password={true}
-        />
-        <Button w={30} h={5} br={6} title={'SIGN UP'} onPress={handleSubmit} />
-
-        {loading && <ActivityIndicator size="large" color="#0000ff" />}
-
-        <ContactAreaComp />
-      </ScrollView>
-    </SafeAreaView>
+          {/* <Button w={30} h={5} br={6} title={'Logout'} onPress={handleLogout} /> */}
+        </ScrollView>
+      </SafeAreaView>
+      {loading ? <Loader /> : null}
+    </>
   );
 }
 

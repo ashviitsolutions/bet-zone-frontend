@@ -5,7 +5,7 @@ import Tabs from './TabsNav';
 import SplashScreen from '../Screens/SplashScreen/SplashScreen';
 import NavigationString from '../Constants/NavigationString';
 import AdminTabs from './AdminTabsNav';
-import { Login } from '../Screens/StackNav';
+import { CreateAccount, Login } from '../Screens/StackNav';
 import SuccessPage from '../Screens/StackNav/SuccessPage';
 const Stack = createNativeStackNavigator();
 export default function StackNav() {
@@ -16,6 +16,7 @@ export default function StackNav() {
       <Stack.Screen name={NavigationString.TABS} component={Tabs} />
       <Stack.Screen name={NavigationString.Admin_Tabs} component={AdminTabs} />
       <Stack.Screen name={"LOGIN"} component={Login} />
+      {/* <Stack.Screen name={NavigationString.CREATE_ACCOUNT} component={CreateAccount} /> */}
       <Stack.Screen name={NavigationString.SUCCESS_PAGE} component={SuccessPage} />
     </Stack.Navigator>
   );
