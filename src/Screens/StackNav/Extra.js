@@ -7,69 +7,32 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
-  Alert,
-  Linking,
 } from 'react-native';
 import Colors from '../../Constants/Colors';
 import Header from '../../Components/Header';
 import ImagePath from '../../Constants/ImagePath';
-import { useNavigation } from '@react-navigation/native';
-import { responsiveWidth, responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
-import ContactAreaComp from '../../Components/ContactAreaComp';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { IP } from '../../Constants/Server';
-
+import Button from '../../Components/Button';
+import Tabs from '../../Navigation/TabsNav';
 const { width, height } = Dimensions.get('screen');
-
+import { useNavigation } from '@react-navigation/native';
+import {
+  responsiveWidth,
+  responsiveFontSize,
+  responsiveHeight,
+} from 'react-native-responsive-dimensions';
+import ContactAreaComp from '../../Components/ContactAreaComp';
 function Plans() {
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(null);
-  const [url, setUrl] = useState(null);
-
   const Data = [
-    { id: "price_1OAn62LnVrUYOeK2Y2M7l0Cj", price: '13$/month', name: 'MONTHLY SUBSCRIPTION' },
-    { id: "price_1OMYiBLnVrUYOeK2LPEbMEvW", price: '13$/month', name: '3 MONTH SUBSCRIPTION' },
+    { id: 1, price: '13$/month', type: 'MONTHLY SUBSCRIPTION' },
+    { id: 2, price: '13$/month', type: '3 MONTH SUBSCRIPTION' },
+
   ];
 
-  const handleSubmit = async (membership_id, index) => {
-    console.log("membership_id", membership_id)
-    setLoading(index);
-    try {
-      const user_id = "65ddb8bd879352c6c84dcb4d"
-      const token = await AsyncStorage.getItem('token');
-      const url = `http://45.13.132.197:5000/api/payment/create-checkout-session?membership=${membership_id}&userId=${user_id}`;
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token,
-        },
-      };
-
-      const res = await axios.get(url, config);
-      console.log('Stripe Redirect URL:', url);
-      setUrl(res.config.url);
-      console.log('API Response:', res);
-      Linking.openURL(res.config.url); // Redirect user to Stripe checkout page
-      if (res.config.url) {
-        // Redirect to Stripe checkout page
-        Linking.openURL(res.config.url); // Redirect user to Stripe checkout page
-      } else {
-        console.error('Invalid response from the server:', res);
-      }
-    } catch (error) {
-      console.error('API Error:', error);
-      Alert.alert('API Error', error.message);
-    } finally {
-      if (loading === index) {
-        setLoading(null); // Reset loading state only if it matches the index
-      }
-    }
-  };
-
-  const Card = ({ item, index }) => {
+  function Card() {
     return (
       <View style={styles.main_container}>
         <Image source={ImagePath.publicIcon} style={styles.icon_style} />
@@ -85,21 +48,40 @@ function Plans() {
       </View>
     );
   }
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Header />
-      <View style={{ backgroundColor: Colors.mainColor, height: '100%', padding: 5 }}>
-        <View style={{ height: '10%', justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: responsiveFontSize(3), color: Colors.whiteText, fontWeight: '900' }}>PLANS</Text>
+      <View
+        style={{
+          backgroundColor: Colors.mainColor,
+          height: responsiveHeight(100),
+          padding: 5,
+        }}>
+        <View
+          style={{
+            height: responsiveHeight(10),
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text
+            style={{
+              fontSize: responsiveFontSize(3),
+              color: Colors.whiteText,
+              fontWeight: '900',
+            }}>
+            PLANS
+          </Text>
         </View>
+
         <ScrollView style={{ flex: 1, padding: 10, height: 'auto' }}>
           <FlatList
             data={Data}
-            renderItem={({ item, index }) => <Card item={item} index={index} />}
+            renderItem={({ item }) => <Card item={item} />}
             keyExtractor={item => item.id.toString()}
             showsVerticalScrollIndicator={false}
+          // contentContainerStyle={{ paddingBottom: height*0.22 }}
           />
+
           <ContactAreaComp />
         </ScrollView>
       </View>
@@ -117,8 +99,9 @@ const styles = StyleSheet.create({
     borderRadius: responsiveWidth(10),
     alignSelf: 'center',
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     marginBottom: 15,
     elevation: 4,
     shadowColor: '#000',

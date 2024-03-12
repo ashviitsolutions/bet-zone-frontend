@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -30,11 +30,55 @@ function Plans() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(null);
   const [url, setUrl] = useState(null);
+  const [redirecting, setRedirecting] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+  const [user_id, setUserid] = useState(null)
+
+
+  const [sessionID, setSessionID] = useState('');
+
+  useEffect(() => {
+    const fetchSessionID = async () => {
+      try {
+        // Assuming authToken is your authentication token
+        const token = await AsyncStorage.getItem('token');
+        const response = await fetch(`${IP}/sessionid`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+
+          setSessionID(data.session_id);
+        } else {
+          console.error('Error fetching session ID:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching session ID:', error.message);
+      }
+    };
+
+    fetchSessionID();
+  }, [sessionID]); // Empt
+
+  console.log("sessionid data availble", sessionID)
+
+
+
+
+
 
   const Data = [
     { id: "price_1Ola6GGJyA6XB6N0nyCrs0iP", price: '13$/month', name: 'MONTHLY SUBSCRIPTION' },
     { id: "price_1OlaAjGJyA6XB6N0wEiaH8Xr", price: '13$/month', name: '3 MONTH SUBSCRIPTION' },
   ];
+
+
+
 
   const handleSubmit = async (membership_id, index) => {
     console.log("membership_id", membership_id)
@@ -54,11 +98,16 @@ function Plans() {
       const res = await axios.get(url, config);
       console.log('Stripe Redirect URL:', url);
       setUrl(res.config.url);
+
+
       console.log('API Response:', res);
       if (res.config.url) {
         setLoading(false);
+        setSelectedId(membership_id);
+        setUserid(user_id)
         // Redirect to Stripe checkout page
         Linking.openURL(res.config.url);
+        setRedirecting(true);
         // navigation.navigate(NavigationString.SUCCESS_PAGE)
       } else {
         console.error('Invalid response from the server:', res);
@@ -72,6 +121,25 @@ function Plans() {
       }
     }
   };
+
+
+
+
+
+
+  useEffect(() => {
+    if (redirecting && url && sessionID) {
+      navigation.navigate('SuccessPage', { id: selectedId, user_id: user_id, session_id: sessionID });
+    }
+  }, [redirecting, url, sessionID]);
+
+
+
+
+
+
+
+
 
 
 
@@ -109,7 +177,6 @@ function Plans() {
               showsVerticalScrollIndicator={false}
             />
             <ContactAreaComp />
-                <Text  onPress={()=>navigation.navigate(NavigationString.SUCCESS_PAGE)} style={{color:'white'}}>success</Text>
           </ScrollView>
         </View>
       </SafeAreaView>
@@ -134,7 +201,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     elevation: 4,
     shadowColor: '#000',
-    padding:10
+    padding: 10
   },
   icon_style: {
     width: responsiveWidth(12),

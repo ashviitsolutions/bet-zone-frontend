@@ -6,6 +6,7 @@ import ImagePath from '../../Constants/ImagePath';
 import Button from '../../Components/Button';
 const { width, height } = Dimensions.get('screen');
 import { useNavigation } from '@react-navigation/native';
+import { IP } from '../../Constants/Server';
 import {
   responsiveWidth,
   responsiveFontSize,
@@ -19,12 +20,66 @@ function VIP() {
   const navigation = useNavigation();
   const [token, setToken] = useState('');
   const [membership, setMemberhsip] = useState(true);
+
+
+
+  const [membershipLevel, setMembershipLevel] = useState('');
+  const [status, setStatus] = useState('');
+  const [membershipEndDate, setMembershipEndDate] = useState('');
+
+  useEffect(() => {
+    const getUserMembership = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        const response = await fetch(`${IP}/user/membership-details`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("membership", data);
+
+        setMembershipLevel(data.membershipType);
+        await AsyncStorage.setItem('membership', data.membershipType);
+        setStatus(data.status);
+        setMemberhsip(data.status === 'active');
+
+        const daysToAdd = data.renewalDays;
+        const result = new Date(data.lastRenewalPaymentDate);
+        result.setDate(result.getDate() + daysToAdd);
+        setMembershipEndDate(result);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    getUserMembership();
+  }, []); // Run once when component mounts
+
+
+
+  console.log("membership status", status);
+
+
+
+
+
+
+
+
   async function fetchData() {
     try {
       const storedToken = await AsyncStorage.getItem('token');
-      const meberhsip = await AsyncStorage.getItem('is_member');
+      // const meberhsip = await AsyncStorage.getItem('is_member');
       setToken(storedToken);
-      setMemberhsip(meberhsip === 'true');
+      // setMemberhsip(meberhsip === 'true');
     } catch (error) {
       console.error(error);
     }
@@ -44,6 +99,13 @@ function VIP() {
       navigation.navigate(NavigationString.LOGIN);
     }
   };
+
+  useEffect(() => {
+    if (token && membership) {
+      navigation.navigate(NavigationString.VIP_TIPS);
+    }
+    handlePress()
+  }, [])
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

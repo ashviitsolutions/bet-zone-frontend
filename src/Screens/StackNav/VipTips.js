@@ -50,7 +50,7 @@ function VipTips() {
     }
   };
 
-  const onRefersh=()=>{
+  const onRefersh = () => {
     fetchData()
   }
   useEffect(() => {
@@ -137,10 +137,10 @@ function VipTips() {
             </View>
           </View>
           <ScrollView style={{ flex: 1, padding: 10 }}
-          RefreshControl={<RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefersh}
-          />}
+            RefreshControl={<RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefersh}
+            />}
           >
             <FlatList
               data={data}
