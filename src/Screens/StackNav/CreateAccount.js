@@ -69,13 +69,13 @@ function CreateAccount() {
       email: email,
       password: password,
       confirm_password: confirmPassword,
-      mobile: mobile,
-      auth_type: 'user'
+      mobile: mobile
+
     };
 
     try {
-      const response = await fetch(`${IP}/updateprofile`, {
-        method: 'POST',
+      const response = await fetch(`${IP}/update`, {
+        method: 'put',
         headers: {
           'Content-Type': 'application/json',
           Authorization: token,
@@ -122,7 +122,7 @@ function CreateAccount() {
             height: responsiveHeight(100),
             padding: 10,
           }}>
-             {/* <Button w={20} h={4} br={6} title={'Logout'} onPress={handleLogout} customStyle={{alignSelf:'flex-end'}} /> */}
+          {/* <Button w={20} h={4} br={6} title={'Logout'} onPress={handleLogout} customStyle={{alignSelf:'flex-end'}} /> */}
           <View
             style={{
               height: responsiveHeight(15),

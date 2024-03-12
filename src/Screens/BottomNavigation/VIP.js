@@ -101,9 +101,9 @@ function VIP() {
   };
 
   useEffect(() => {
-    if (token && membership) {
-      navigation.navigate(NavigationString.VIP_TIPS);
-    }
+    // if (token && membership) {
+    //   navigation.navigate(NavigationString.VIP_TIPS);
+    // }
     handlePress()
   }, [])
 
