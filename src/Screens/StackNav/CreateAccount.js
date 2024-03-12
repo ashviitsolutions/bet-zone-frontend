@@ -70,11 +70,10 @@ function CreateAccount() {
       password: password,
       confirm_password: confirmPassword,
       mobile: mobile
-
     };
 
     try {
-      const response = await fetch(`${IP}/update`, {
+      const response = await fetch(`${IP}/user/update`, {
         method: 'put',
         headers: {
           'Content-Type': 'application/json',
@@ -93,104 +92,103 @@ function CreateAccount() {
         await AsyncStorage.setItem('mobile', mobile);
         await AsyncStorage.setItem('full_name', name);
         navigation.replace(NavigationString.TABS);
-        // navigation.navigate('AdminHomePage');
       } else {
         setLoading(false);
         console.log('Error:', responseData.msg);
         // Handle error messages appropriately, e.g., show them to the user
       }
     } catch (error) {
-      console.error('Error adding user:', error);
+      console.error('Error updating profile:', error);
       setLoading(false);
       // Handle network errors or other unexpected errors
     }
   };
 
   const handleLogout = async () => {
-    await AsyncStorage.clear()
+    await AsyncStorage.clear();
     navigation.replace(NavigationString.TABS);
   }
 
   return (
-    <>
-      <SafeAreaView style={{ flex: 1 }}>
-        <Header />
-
-        <ScrollView
+    <SafeAreaView style={{ flex: 1 }}>
+      <Header />
+      <ScrollView
+        style={{
+          backgroundColor: Colors.mainColor,
+          height: '100%',
+          padding: 10,
+        }}>
+        <View
           style={{
-            backgroundColor: Colors.mainColor,
-            height: responsiveHeight(100),
-            padding: 10,
+            height: responsiveHeight(15),
+            justifyContent: 'center',
+            alignItems: 'center',
           }}>
-          {/* <Button w={20} h={4} br={6} title={'Logout'} onPress={handleLogout} customStyle={{alignSelf:'flex-end'}} /> */}
-          <View
+          <Image
+            source={ImagePath.ProfileIcon}
             style={{
-              height: responsiveHeight(15),
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Image
-              source={ImagePath.ProfileIcon}
-              style={{
-                width: responsiveWidth(10),
-                height: responsiveHeight(8),
-                tintColor: Colors.whiteText,
-              }}
-            />
-            <Text
-              style={{
-                fontSize: responsiveFontSize(3),
-                color: Colors.whiteText,
-                fontWeight: '900',
-              }}>
-              CREATE ACCOUNT
-            </Text>
-          </View>
-          <InputComp
-            title={'Full name'}
-            value={name}
-            onChangeText={setName}
+              width: responsiveWidth(10),
+              height: responsiveHeight(8),
+              tintColor: Colors.whiteText,
+            }}
           />
-          <InputComp
-            title={'Email'}
-            value={email}
-            onChangeText={setEmail}
-            editable={false} // Prevents editing of email
-          />
-          <InputComp
-            title={'Mobile'}
-            value={mobile}
-            onChangeText={setMobile}
-            editable={false} // Prevents editing of mobile
-          />
-          <InputComp
-            title={'New password'}
-            value={password}
-            onChangeText={setPassword}
-            password={true} // Hides entered text
-          />
-          <InputComp
-            title={'Confirm password'}
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            password={true} // Hides entered text
-          />
-          <Button w={30} h={5} br={6} title={'SignUp'} onPress={handleProfileUpdate} />
-
           <Text
             style={{
-              color: Colors.grayText,
-              alignSelf: 'center',
-              marginVertical: 15,
-            }}
-            onPress={() => navigation.goBack()}>
-            Back
+              fontSize: responsiveFontSize(3),
+              color: Colors.whiteText,
+              fontWeight: '900',
+            }}>
+            CREATE ACCOUNT
           </Text>
-          {/* <Button w={30} h={5} br={6} title={'Logout'} onPress={handleLogout} /> */}
-        </ScrollView>
-      </SafeAreaView>
-      {loading ? <Loader /> : null}
-    </>
+        </View>
+        <InputComp
+          title={'Full name'}
+          value={name}
+          onChangeText={setName}
+        />
+        <InputComp
+          title={'Email'}
+          value={email}
+          onChangeText={setEmail}
+          editable={false} // Prevents editing of email
+        />
+        <InputComp
+          title={'Mobile'}
+          value={mobile}
+          onChangeText={setMobile}
+          editable={false} // Prevents editing of mobile
+        />
+        <InputComp
+          title={'New password'}
+          value={password}
+          onChangeText={setPassword}
+          password={true} // Hides entered text
+        />
+        <InputComp
+          title={'Confirm password'}
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          password={true} // Hides entered text
+        />
+        <Button
+          w={30}
+          h={5}
+          br={6}
+          title={'SignUp'}
+          onPress={handleProfileUpdate}
+        />
+        <Text
+          style={{
+            color: Colors.grayText,
+            alignSelf: 'center',
+            marginVertical: 15,
+          }}
+          onPress={handleLogout}>
+          Back
+        </Text>
+      </ScrollView>
+      {loading && <Loader />}
+    </SafeAreaView>
   );
 }
 
