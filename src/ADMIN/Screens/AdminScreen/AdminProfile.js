@@ -8,6 +8,7 @@ import {
   Text,
   TextInput,
   View,
+  RefreshControl
 } from 'react-native';
 import Colors from '../../../Constants/Colors';
 import Header from '../../../Components/Header';
@@ -36,25 +37,29 @@ function AdminProfile() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [token, setToken] = useState('');
+  const [refreshing, setRefreshing] = useState(false)
+  async function fetchData() {
+    try {
+      const storedToken = await AsyncStorage.getItem('token');
+      setToken(storedToken);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const storedToken = await AsyncStorage.getItem('token');
-        setToken(storedToken);
+      // Fetch user details from AsyncStorage
+      const storedEmail = await AsyncStorage.getItem('email');
+      const storedMobile = await AsyncStorage.getItem('mobile');
+      const storedName = await AsyncStorage.getItem('full_name');
 
-        // Fetch user details from AsyncStorage
-        const storedEmail = await AsyncStorage.getItem('email');
-        const storedMobile = await AsyncStorage.getItem('mobile');
-        const storedName = await AsyncStorage.getItem('full_name');
-
-        setEmail(storedEmail || '');
-        setMobile(storedMobile || '');
-        setName(storedName || '');
-      } catch (error) {
-        console.error(error);
-      }
+      setEmail(storedEmail || '');
+      setMobile(storedMobile || '');
+      setName(storedName || '');
+    } catch (error) {
+      console.error(error);
     }
+  }
+
+  const onRefresh = () => {
+    fetchData(); // Call fetchData when the user pulls to refresh
+  };
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -118,7 +123,14 @@ function AdminProfile() {
             backgroundColor: Colors.mainColor,
             height: responsiveHeight(100),
             padding: 10,
-          }}>
+          }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
+          >
              <Button w={20} h={4} br={6} title={'Logout'} onPress={handleLogout} customStyle={{alignSelf:'flex-end'}} />
           <View
             style={{

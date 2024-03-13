@@ -66,6 +66,21 @@ function AddUser() {
 
 
   const handleAddUser = async () => {
+    if (mobile.length < 10) {
+      ToastAndroid.show('Mobile number must be at least 10 digits', ToastAndroid.LONG);
+      return;
+    }
+
+    if (password.length < 8) {
+      ToastAndroid.show('Password must be at least 8 characters', ToastAndroid.LONG);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      ToastAndroid.show('Password and Confirm Password must match', ToastAndroid.LONG);
+      return;
+    }
+
     setLoading(true);
     const userData = {
       full_name: name,

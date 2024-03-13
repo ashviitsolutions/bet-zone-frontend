@@ -4,7 +4,7 @@ import Colors from '../Constants/Colors';
 
 const Loader = ({customebgColor}) => {
   return (
-    <View style={[StyleSheet.absoluteFillObject ,styles,{ backgroundColor: customebgColor ? customebgColor : 'rgba(0,0,0,0.3)' }]}>
+    <View style={[StyleSheet.absoluteFillObject ,styles.container,{ backgroundColor: customebgColor ? customebgColor : 'rgba(0,0,0,0.3)' }]}>
       <ActivityIndicator size="large" color={Colors.yellowColor} />
     </View>
   );

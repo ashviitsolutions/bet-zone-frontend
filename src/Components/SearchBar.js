@@ -29,6 +29,7 @@ const SearchBar = ({ onChangeText ,filtericon}) => {
           style={styles.input_field_style}
           placeholder="Search..."
           onChangeText={handleTextChange} // Handle text input changes
+          placeholderTextColor={'#000'}
         />
 
         <Image source={require('../assets/icons/search.png')} />

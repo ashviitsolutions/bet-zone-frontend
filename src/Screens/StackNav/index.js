@@ -1,5 +1,5 @@
 export {default as Contacts} from './Contacts'
-export {default as CreateAccount} from './CreateAccount'
+export {default as CreateAccount} from './Register'
 export {default as DetailsPage} from './DetailsPage'
 export {default as Login} from './Login'
 export {default as Plans} from './Plans'

@@ -57,8 +57,6 @@ function VipTips() {
     fetchData();
   }, []);
 
-
-
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
@@ -137,10 +135,14 @@ function VipTips() {
             </View>
           </View>
           <ScrollView style={{ flex: 1, padding: 10 }}
-            RefreshControl={<RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefersh}
-            />}
+             refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefersh}
+                // Set the color of the loading indicator
+                colors={[Colors.mainColor]}
+              />
+            }
           >
             <FlatList
               data={data}

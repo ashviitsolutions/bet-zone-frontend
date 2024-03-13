@@ -3,6 +3,7 @@ import {
   Dimensions,
   Image,
   KeyboardAvoidingView,
+  Linking,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -24,9 +25,9 @@ import {
 function Contacts() {
   const navigation = useNavigation();
 
-  function Card({icon, title}) {
+  function Card({icon, title,onPress}) {
     return (
-      <TouchableOpacity activeOpacity={0.5} style={styles.mainBox}>
+      <TouchableOpacity activeOpacity={0.5} style={styles.mainBox} onPress={onPress}>
         <Image
           source={icon}
           style={{
@@ -47,11 +48,7 @@ function Contacts() {
         style={{flex: 1}}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
         <ScrollView
-          style={{
-            backgroundColor: Colors.mainColor,
-            height: responsiveHeight(100),
-            padding: 10,
-          }}>
+          style={styles.mainView}>
           <View
             style={{
               height: responsiveHeight(15),
@@ -82,8 +79,8 @@ function Contacts() {
               }}>
               Any troubles? Contact us Directly
             </Text>
-            <Card icon={ImagePath.telegramIcon} title={'Telegram'} />
-            <Card icon={ImagePath.telegramIcon} title={'WhatsApp'} />
+            <Card onPress={()=>Linking.openURL('https://telegram.org/')} icon={ImagePath.telegramIcon} title={'Telegram'} />
+            <Card  onPress={()=>Linking.openURL('whatsapp://send?phone=+91 84494 96694')} icon={ImagePath.telegramIcon} title={'WhatsApp'} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -94,6 +91,11 @@ function Contacts() {
 export default Contacts;
 
 const styles = StyleSheet.create({
+  mainView:{
+    backgroundColor: Colors.mainColor,
+    height: responsiveHeight(100),
+    padding: 10,
+  },
   Contacts_text: {
     fontSize: responsiveFontSize(3),
     color: Colors.whiteText,

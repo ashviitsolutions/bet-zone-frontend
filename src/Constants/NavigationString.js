@@ -1,7 +1,7 @@
 export default {
     SPLASH_SCREEN: 'SplashScreen',
     VIP: 'Vip',
-    CREATE_ACCOUNT: 'CreateAccount',
+    REGISTER: 'Register',
     LOGIN: 'Login',
     PLAN: 'Plans',
     CONTACTS: 'Contacts',
@@ -20,4 +20,5 @@ export default {
     AUTH_LOGIN: 'AuthLogin',
     AUTH_SIGN_UP: 'AuthSignup',
     SUCCESS_PAGE: 'SuccessPage',
+    UPDATE_PROFILE:'UpdateProfile'
 }

@@ -21,8 +21,6 @@ function VIP() {
   const [token, setToken] = useState('');
   const [membership, setMemberhsip] = useState(true);
 
-
-
   const [membershipLevel, setMembershipLevel] = useState('');
   const [status, setStatus] = useState('');
   const [membershipEndDate, setMembershipEndDate] = useState('');
@@ -64,15 +62,7 @@ function VIP() {
   }, []); // Run once when component mounts
 
 
-
   console.log("membership status", status);
-
-
-
-
-
-
-
 
   async function fetchData() {
     try {
@@ -91,21 +81,15 @@ function VIP() {
   }, [navigation]);
 
   const handlePress = () => {
-    if (token && membership) {
-      navigation.navigate(NavigationString.VIP_TIPS);
-    } else if (token) {
-      navigation.navigate(NavigationString.PLAN);
-    } else {
-      navigation.navigate(NavigationString.LOGIN);
-    }
+     {token ? navigation.navigate(NavigationString.PLAN) : navigation.navigate('LOGIN') } 
   };
 
-  useEffect(() => {
-    // if (token && membership) {
-    //   navigation.navigate(NavigationString.VIP_TIPS);
-    // }
-    handlePress()
-  }, [])
+  // useEffect(() => {
+  //   // if (token && membership) {
+  //   //   navigation.navigate(NavigationString.VIP_TIPS);
+  //   // }
+  //   handlePress()
+  // }, [])
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

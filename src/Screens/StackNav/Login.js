@@ -124,7 +124,7 @@ function Login() {
             onChangeText={setPassword}
             password={true}
           />
-             {loading ? <ActivityIndicator color={Colors.yellowColor} /> : null}
+             {loading ? <ActivityIndicator color={Colors.yellowColor} size={'large'}/> : null}
           <Button w={30} h={5} br={6} title={'LOGIN'} onPress={handleLogin} />
 
           <View
@@ -137,9 +137,8 @@ function Login() {
             }}>
             <Text style={{ color: Colors.grayText }}>Don't have an account? </Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate(NavigationString.CREATE_ACCOUNT)}
               activeOpacity={0.8}>
-              <Text style={{ color: Colors.grayText }}>Sign up</Text>
+              <Text style={{ color: Colors.grayText }} onPress={()=>navigation.navigate(NavigationString.REGISTER)}>Sign up</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

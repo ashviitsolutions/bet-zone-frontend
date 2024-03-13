@@ -30,6 +30,7 @@ import DropDownComp from '../../../Components/DropDownComp';
 import SportsDropDown from '../../../Components/SportsDropDown';
 import ContactAreaComp from '../../../Components/ContactAreaComp';
 import DatePicker from 'react-native-date-picker'
+import Loader from '../../../Components/Loader';
 export default function EditTip() {
   const navigation = useNavigation();
   const route = useRoute();
@@ -163,6 +164,7 @@ export default function EditTip() {
   };
 
   return (
+    <>
     <SafeAreaView style={{ flex: 1 }}>
       <Header />
 
@@ -310,10 +312,12 @@ export default function EditTip() {
 
           />
         </View>
-        {loading && <ActivityIndicator size="large" color="#0000ff" />}
+        {/* {loading && <ActivityIndicator size="large" color="#0000ff" />} */}
         <ContactAreaComp />
       </ScrollView>
     </SafeAreaView>
+    {loading ?<Loader/>:null}
+    </>
   );
 }
 

@@ -9,7 +9,8 @@ import {
   TextInput,
   ToastAndroid,
   View,
-  ActivityIndicator
+  ActivityIndicator,
+  RefreshControl
 } from 'react-native';
 import Colors from '../../Constants/Colors';
 import Header from '../../Components/Header';
@@ -30,7 +31,7 @@ import { IP } from '../../Constants/Server';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../../Components/Loader';
 
-function CreateAccount() {
+function UpdateProfile() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
@@ -39,25 +40,29 @@ function CreateAccount() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [token, setToken] = useState('');
+  const [refreshing, setRefreshing] = useState(false)
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const storedToken = await AsyncStorage.getItem('token');
-        setToken(storedToken);
+  async function fetchData() {
+    try {
+      setRefreshing(true)
+      const storedToken = await AsyncStorage.getItem('token');
+      setToken(storedToken);
 
-        // Fetch user details from AsyncStorage
-        const storedEmail = await AsyncStorage.getItem('email');
-        const storedMobile = await AsyncStorage.getItem('mobile');
-        const storedName = await AsyncStorage.getItem('full_name');
-
-        setEmail(storedEmail || '');
-        setMobile(storedMobile || '');
-        setName(storedName || '');
-      } catch (error) {
-        console.error(error);
-      }
+      // Fetch user details from AsyncStorage
+      const storedEmail = await AsyncStorage.getItem('email');
+      const storedMobile = await AsyncStorage.getItem('mobile');
+      const storedName = await AsyncStorage.getItem('full_name');
+      setEmail(storedEmail || '');
+      setMobile(storedMobile || '');
+      setName(storedName || '');
+    } catch (error) {
+      console.error(error);
     }
+    finally{
+      setRefreshing(false)
+    }
+  }
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -91,7 +96,7 @@ function CreateAccount() {
         await AsyncStorage.setItem('email', email);
         await AsyncStorage.setItem('mobile', mobile);
         await AsyncStorage.setItem('full_name', name);
-        navigation.replace(NavigationString.TABS);
+        onRefresh()
       } else {
         setLoading(false);
         console.log('Error:', responseData.msg);
@@ -103,6 +108,9 @@ function CreateAccount() {
       // Handle network errors or other unexpected errors
     }
   };
+  const onRefresh = () => {
+    fetchData(); // Call fetchData when the user pulls to refresh
+  };
 
   const handleLogout = async () => {
     await AsyncStorage.clear();
@@ -110,6 +118,7 @@ function CreateAccount() {
   }
 
   return (
+    
     <SafeAreaView style={{ flex: 1 }}>
       <Header />
       <ScrollView
@@ -117,7 +126,14 @@ function CreateAccount() {
           backgroundColor: Colors.mainColor,
           height: '100%',
           padding: 10,
-        }}>
+        }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+        >
         <View
           style={{
             height: responsiveHeight(15),
@@ -138,7 +154,7 @@ function CreateAccount() {
               color: Colors.whiteText,
               fontWeight: '900',
             }}>
-            CREATE ACCOUNT
+            UPDATE PROFILE
           </Text>
         </View>
         <InputComp
@@ -174,7 +190,7 @@ function CreateAccount() {
           w={30}
           h={5}
           br={6}
-          title={'SignUp'}
+          title={'Update'}
           onPress={handleProfileUpdate}
         />
         <Text
@@ -187,9 +203,9 @@ function CreateAccount() {
           Back
         </Text>
       </ScrollView>
-      {loading && <Loader />}
     </SafeAreaView>
+   
   );
 }
 
-export default CreateAccount;
+export default UpdateProfile;

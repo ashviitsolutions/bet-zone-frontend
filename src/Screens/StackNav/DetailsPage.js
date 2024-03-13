@@ -18,25 +18,21 @@ import {
 import Colors from '../../Constants/Colors';
 import ImagePath from '../../Constants/ImagePath';
 import {useNavigation, useRoute} from '@react-navigation/native';
+import { IP } from '../../Constants/Server';
 export default function DetailsPage() {
   const navigation = useNavigation();
   const route = useRoute()
-  const date = route.params.item.updatedAt
-  // const originalDate = route.params.item.updatedAt instanceof Date ? route.params.item.updatedAt : new Date();
-  // const hours = String(originalDate.getUTCHours()).padStart(2, '0');
-  // const minutes = String(originalDate.getUTCMinutes()).padStart(2, '0');
-  // const day = String(originalDate.getUTCDate()).padStart(2, '0');
-  // const month = String(originalDate.getUTCMonth() + 1).padStart(2, '0');
-  // const year = originalDate.getUTCFullYear();
-  // const formattedDate = `${hours}:${minutes} ${day}-${month}-${year}`;
-
-  const formattedDate = new Date(date).toLocaleString('en-GB', {
-    day: 'numeric',
-    month: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-  });
+  console.log(route.params.item.date)
+  const originalTimestamp = (route.params.item.date);
+  const dateObject = new Date(originalTimestamp);
+  
+  const hours = dateObject.getHours().toString().padStart(2, '0');
+  const minutes = dateObject.getMinutes().toString().padStart(2, '0');
+  const day = dateObject.getDate().toString().padStart(2, '0');
+  const month = (dateObject.getMonth() + 1).toString().padStart(2, '0'); // Note: Months are zero-based
+  const year = dateObject.getFullYear();
+  
+  const finalFormattedString = `${hours}:${minutes} ${day}-${month}-${year}`;
   
 
   return (
@@ -56,10 +52,11 @@ export default function DetailsPage() {
             <Image source={ImagePath.backIcon} style={styles.backIcon_style} />
             <Text style={{color: '#d0d0d0'}}>Back</Text>
           </TouchableOpacity>
-          <Text style={styles.date_text}>Tip - {formattedDate}</Text>
+          <Text style={styles.date_text}>Tip - {finalFormattedString}</Text>
         </View>
         <Image
-          source={require('../../assets/Image/football.webp')}
+          // source={require('../../assets/Image/football.webp')}
+          source={ {uri: `${IP}/file/${route.params.item.attachments}`}}
           style={styles.img_style}
         />
           <Text style={styles.title_text}>{route.params.item.title}</Text>
@@ -100,6 +97,7 @@ const styles = StyleSheet.create({
     color: Colors.whiteText,
     fontSize: responsiveFontSize(1.9),
     fontWeight: '900',
+    marginTop:10
   },
   desc_text: {
     color: '#d0d0d0',

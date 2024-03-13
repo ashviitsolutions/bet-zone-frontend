@@ -16,7 +16,6 @@ export default function StackNav() {
       <Stack.Screen name={NavigationString.TABS} component={Tabs} />
       <Stack.Screen name={NavigationString.Admin_Tabs} component={AdminTabs} />
       <Stack.Screen name={"LOGIN"} component={Login} />
-      {/* <Stack.Screen name={NavigationString.CREATE_ACCOUNT} component={CreateAccount} /> */}
       <Stack.Screen name={NavigationString.SUCCESS_PAGE} component={SuccessPage} />
     </Stack.Navigator>
   );

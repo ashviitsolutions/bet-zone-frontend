@@ -87,7 +87,7 @@ function Profile() {
           h={5}
           br={6}
           title={'SIGN UP'}
-          onPress={() => navigation.navigate(NavigationString.CREATE_ACCOUNT)}
+          onPress={() => navigation.navigate(NavigationString.REGISTER)}
         />
 
         <View
