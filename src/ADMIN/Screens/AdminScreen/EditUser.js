@@ -25,6 +25,7 @@ import {
   responsiveFontSize,
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
+import InputComp from '../../../Components/InputComp';
 
 function EditUser() {
   const route = useRoute();
@@ -133,87 +134,35 @@ function EditUser() {
             EDIT USER
           </Text>
         </View>
-        <TextInput
-          placeholder="Demo user"
+       <InputComp
+          title={'full name'}
           value={name}
           onChangeText={(i) => setName(i)}
-          placeholderTextColor={Colors.grayText}
-          style={{
-            padding: 10,
-            borderColor: Colors.grayText,
-            color: Colors.whiteText,
-            borderWidth: 1,
-            borderRadius: responsiveWidth(2),
-            width: responsiveWidth(85),
-            alignSelf: 'center',
-            marginBottom: responsiveHeight(1.5),
-          }}
         />
-        <TextInput
-          placeholder="demo@gmail.com"
-          placeholderTextColor={Colors.grayText}
+         <InputComp
+          title={'email'}
           value={email}
           onChangeText={(i) => setEmail(i)}
-          style={{
-            padding: 10,
-            borderColor: Colors.grayText,
-            color: Colors.whiteText,
-            borderWidth: 1,
-            borderRadius: responsiveWidth(2),
-            width: responsiveWidth(85),
-            alignSelf: 'center',
-            marginBottom: responsiveHeight(1.5),
-          }}
+          keyType={'email-address'}
         />
-        <TextInput
-          placeholder="123849862"
+       <InputComp
+          title={'mobile no.'}
+          keyType={'numeric'}
           value={String(mobile)}
           onChangeText={(i) => setMobile(i)}
-          placeholderTextColor={Colors.grayText}
-          style={{
-            padding: 10,
-            borderColor: Colors.grayText,
-            color: Colors.whiteText,
-            borderWidth: 1,
-            borderRadius: responsiveWidth(2),
-            width: responsiveWidth(85),
-            alignSelf: 'center',
-            marginBottom: responsiveHeight(1.5),
-          }}
         />
-        <TextInput
-          placeholder="new password"
+       <InputComp
+          title={"new password"}
           value={password}
-          secureTextEntry={true}
           onChangeText={(i) => setPassword(i)}
-          placeholderTextColor={Colors.grayText}
-          style={{
-            padding: 10,
-            borderColor: Colors.grayText,
-            color: Colors.whiteText,
-            borderWidth: 1,
-            borderRadius: responsiveWidth(2),
-            width: responsiveWidth(85),
-            alignSelf: 'center',
-            marginBottom: responsiveHeight(1.5),
-          }}
+          password={true}
         />
-        <TextInput
-          placeholder="confirm password"
+          <InputComp
+          title={'confirm password'}
           value={confirmPassword}
-          secureTextEntry={true}
           onChangeText={(i) => setConfirmPassword(i)}
-          placeholderTextColor={Colors.grayText}
-          style={{
-            padding: 10,
-            borderColor: Colors.grayText,
-            color: Colors.whiteText,
-            borderWidth: 1,
-            borderRadius: responsiveWidth(2),
-            width: responsiveWidth(85),
-            alignSelf: 'center',
-            marginBottom: responsiveHeight(1.5),
-          }}
+          password={true}
+          
         />
         <DropDownPicker
           open={open}

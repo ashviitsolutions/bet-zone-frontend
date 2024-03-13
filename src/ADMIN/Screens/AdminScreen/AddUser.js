@@ -66,7 +66,7 @@ function AddUser() {
 
 
   const handleAddUser = async () => {
-    if (mobile.length < 10) {
+    if (mobile.length < 8) {
       ToastAndroid.show('Mobile number must be at least 10 digits', ToastAndroid.LONG);
       return;
     }
@@ -164,10 +164,11 @@ function AddUser() {
           keyType={'email-address'}
         />
         <InputComp title={'mobile'} onChangeText={(t) => setMobile(t)} keyType={'numeric'}/>
-        <InputComp title={'new password'} onChangeText={(t) => setPassword(t)} />
+        <InputComp title={'new password'} onChangeText={(t) => setPassword(t)}    password={true} />
         <InputComp
           title={'confirm password'}
           onChangeText={(t) => setConfirmPassword(t)}
+          password={true}
         />
 
         <DropDownPicker

@@ -10,7 +10,7 @@ import {IP} from '../Constants/Server';
 
 const AdminCard = ({item, onPress}) => {
   const {type} = item;
-  // console.log(item)
+  // console.log(item.type)
   const originalTimestamp = (item.date);
   const dateObject = new Date(originalTimestamp);
   

@@ -6,16 +6,16 @@ import FilterDropDown from './FilterDropDown';
 
 const { height } = Dimensions.get('window');
 
-const SearchBar = ({ onChangeText ,filtericon}) => {
+const SearchBar = ({ onChangeText ,filtericon,setDropDownValue}) => {
   const data = [
     { id: 1, name: 'ALL' },
     { id: 2, name: 'VIP' },
     { id: 3, name: 'OLD' },
   ];
   const [selectedItem, setSelectedItem] = useState(null);
-
-  const onSelect = (item) => {
-    setSelectedItem(item);
+ const onSelect = (item) => {
+  setDropDownValue(item.name)
+   setSelectedItem(item);
   };
 
   const handleTextChange = (text) => {

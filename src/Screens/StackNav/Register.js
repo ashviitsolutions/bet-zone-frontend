@@ -40,7 +40,7 @@ function Register() {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (mobile.length < 10) {
+    if (mobile.length < 8) {
       ToastAndroid.show('Mobile number must be at least 10 digits', ToastAndroid.LONG);
       return;
     }
@@ -150,11 +150,14 @@ function Register() {
           title={'password'}
           value={password}
           onChangeText={setPassword}
+          password={true}
+          
         />
         <InputComp
           title={'confirm password'}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
+          password={true}
         />
         <Button w={30} h={5} br={6} title={'SIGN UP'} onPress={handleSubmit} />
 

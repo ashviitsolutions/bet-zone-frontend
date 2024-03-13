@@ -1,14 +1,18 @@
-import {View, Text, TextInput, StyleSheet} from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Colors from '../Constants/Colors';
-import {
-  responsiveHeight,
-  responsiveWidth,
-} from 'react-native-responsive-dimensions';
+import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import ImagePath from '../Constants/ImagePath';
 
-const InputComp = ({title, keyType,value,onChangeText,password}) => {
+const InputComp = ({ title, keyType, value, onChangeText, password }) => {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <TextInput
         keyboardType={keyType}
         placeholder={title}
@@ -16,8 +20,16 @@ const InputComp = ({title, keyType,value,onChangeText,password}) => {
         style={styles.input_style}
         value={value}
         onChangeText={onChangeText}
-        secureTextEntry={password}
+        secureTextEntry={!isPasswordVisible && password}
       />
+    {isPasswordVisible ?  <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIconContainer}>
+          <Image source={ImagePath.viewEyeIcon} style={styles.eyeIcon} />
+        </TouchableOpacity>: password?  <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIconContainer}>
+          <Image source={ImagePath.hideEyeIcon} style={styles.eyeIcon} />
+        </TouchableOpacity>:null}
+       
+      
+      
     </View>
   );
 };
@@ -34,5 +46,16 @@ const styles = StyleSheet.create({
     width: responsiveWidth(85),
     alignSelf: 'center',
     marginBottom: responsiveHeight(1.5),
+  },
+  eyeIconContainer: {
+    position: 'absolute',
+    right: 30,
+    top: 14,
+    zIndex: 1,
+  },
+  eyeIcon: {
+    width: 25,
+    height: 25,
+    tintColor:Colors.grayText
   },
 });

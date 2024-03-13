@@ -29,7 +29,8 @@ function AdminHomePage() {
   const [data, setData] = useState([]);
   const [refreshing, setRefreshing] = useState(false); // Add refreshing state
   const [searchText, setSearchText] = useState('');
-
+  const [dropDownValue, setDropDownValue] = useState('ALL');
+  console.log(dropDownValue)
   const fetchData = async () => {
     try {
       setRefreshing(true);
@@ -53,13 +54,14 @@ function AdminHomePage() {
   const filterData = () => {
     return data.filter((item) =>
       item.title.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchText.toLowerCase())
+      item.description.toLowerCase().includes(searchText.toLowerCase()) || 
+      item.type.toLowerCase().includes(dropDownValue.toLowerCase())
     );
   };
 
   useEffect(() => {
     fetchData();
-  }, [searchText]); // Step 3: Add searchText as a dependency
+  }, [searchText,dropDownValue]); // Step 3: Add searchText as a dependency
 
 
   return (
@@ -77,7 +79,7 @@ function AdminHomePage() {
             rightTitle={'+ NEW TIP'}
             onPress={() => navigation.navigate('NewTips')}
           />
-          <SearchBar onChangeText={setSearchText} filtericon={true} /> 
+          <SearchBar onChangeText={setSearchText} filtericon={true} setDropDownValue={setDropDownValue} /> 
           <KeyboardAvoidingView
             behavior="padding"
             style={{ flex: 1 }}

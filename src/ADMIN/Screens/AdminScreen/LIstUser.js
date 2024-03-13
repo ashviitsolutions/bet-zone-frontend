@@ -32,6 +32,7 @@ function ListUser() {
   const [refreshing, setRefreshing] = useState(false); 
   function Card({ onPress, item }) {
     const { member } = item;
+    console.log(item)
     if (item.auth_type === 'admin') {
       return null; // Do not render the card for admin
     }
