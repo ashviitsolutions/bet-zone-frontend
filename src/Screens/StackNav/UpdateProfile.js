@@ -125,6 +125,14 @@ function UpdateProfile() {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
+            <Button
+          w={20}
+          h={4}
+          br={6}
+          title={'Logout'}
+          onPress={handleLogout}
+          customStyle={styles.logoutButton}
+        />
         <View style={styles.headingView}>
           <Image
             source={ImagePath.ProfileIcon}
@@ -200,5 +208,8 @@ const styles = StyleSheet.create({
     height: responsiveHeight(15),
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  logoutButton: {
+    alignSelf: 'flex-end',
   },
 });

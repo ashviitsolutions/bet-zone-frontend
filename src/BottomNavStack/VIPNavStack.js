@@ -59,6 +59,7 @@ const [userId,setUserId]=useState('')
   useEffect(() => {
     const getUserMembership = async () => {
       try {
+        setLoading(true)
         const token = await AsyncStorage.getItem('token');
         const response = await fetch(`${IP}/user/membership-details`, {
           method: 'GET',
@@ -73,17 +74,19 @@ const [userId,setUserId]=useState('')
         }
 
         const data = await response.json();
-        console.warn('membership', data);
+        // console.warn('membership', data);
 
         setMembershipLevel(data.membershipType);
         await AsyncStorage.setItem('membership', data.membershipType);
         setStatus(data.status);
+        
         setMembership(data.status === 'active');
 
         const daysToAdd = data.renewalDays;
         const result = new Date(data.lastRenewalPaymentDate);
         result.setDate(result.getDate() + daysToAdd);
         setMembershipEndDate(result);
+        setLoading(false)
       } catch (error) {
         console.error('Error:', error);
       }
@@ -107,13 +110,13 @@ const [userId,setUserId]=useState('')
     );
   }
 
-console.log(status)
+// console.warn(status)
 
   if (loading) {
     return <Loadercomp />;
   }
 
-  return userId && token ? (
+  return status=='active' && token ? (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name={NavigationString.VIP_TIPS} component={VipTips} />
       <Stack.Screen name={NavigationString.CONTACTS} component={Contacts} />
