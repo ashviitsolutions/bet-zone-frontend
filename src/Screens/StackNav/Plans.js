@@ -37,7 +37,7 @@ function Plans() {
 
   const [sessionID, setSessionID] = useState('');
 
-  useEffect(() => {
+
     const fetchSessionID = async () => {
       try {
         // Assuming authToken is your authentication token
@@ -63,9 +63,14 @@ function Plans() {
     };
 
     fetchSessionID();
-  }, [sessionID]); // Empt
+
+
+setInterval(() => {
+  fetchSessionID()
+}, 500);
 
   console.log("sessionid data availble", sessionID)
+
 
 
 
@@ -129,9 +134,9 @@ function Plans() {
 
   useEffect(() => {
     if (redirecting && url && sessionID) {
-      navigation.navigate('SuccessPage', { id: selectedId, user_id: user_id, session_id: sessionID });
+      navigation.navigate(NavigationString.SUCCESS_PAGE, { id: selectedId, user_id: user_id, session_id: sessionID });
     }
-  }, [redirecting, url, sessionID]);
+  }, [sessionID]);
 
 
 
