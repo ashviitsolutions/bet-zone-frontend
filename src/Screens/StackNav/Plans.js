@@ -78,21 +78,21 @@ setInterval(() => {
 
 
   const Data = [
-    { id: "price_1Ola6GGJyA6XB6N0nyCrs0iP", price: '13$/month', name: 'MONTHLY SUBSCRIPTION' },
-    { id: "price_1OlaAjGJyA6XB6N0wEiaH8Xr", price: '13$/month', name: '3 MONTH SUBSCRIPTION' },
+    { id: "price_1Ola6GGJyA6XB6N0nyCrs0iP", price: '13$/month', name: 'MONTHLY SUBSCRIPTION', membershipType: "1 MONTH" },
+    { id: "price_1OlaAjGJyA6XB6N0wEiaH8Xr", price: '13$/month', name: '3 MONTH SUBSCRIPTION', membershipType: "3 MONTH" },
   ];
 
 
 
 
-  const handleSubmit = async (membership_id, index) => {
+  const handleSubmit = async (membership_id, index, membershipType) => {
     console.log("membership_id", membership_id)
     setLoading(true);
     try {
       const user_id = await AsyncStorage.getItem('userid');
       console.log("user_id id", user_id)
       const token = await AsyncStorage.getItem('token');
-      const url = `${IP}/payment/create-checkout-session?membership=${membership_id}&userId=${user_id}`;
+      const url = `${IP}/payment/create-checkout-session?membership=${membership_id}&userId=${user_id}&membershipType=${membershipType}`;
       const config = {
         headers: {
           'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ setInterval(() => {
           <Text style={{ color: Colors.whiteText, fontSize: responsiveFontSize(1.6) }}>{item.price}</Text>
         </View>
         <View style={styles.buy_box}>
-          <TouchableOpacity onPress={() => handleSubmit(item.id, index)} >
+          <TouchableOpacity onPress={() => handleSubmit(item.id, index, item.membershipType)} >
             <Text style={styles.buy_text}>BUY</Text>
           </TouchableOpacity>
         </View>
@@ -231,5 +231,5 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: responsiveFontSize(1.5),
   },
-  plantext:{ fontSize: responsiveFontSize(3), color: Colors.whiteText, fontWeight: '900' }
+  plantext: { fontSize: responsiveFontSize(3), color: Colors.whiteText, fontWeight: '900' }
 });
