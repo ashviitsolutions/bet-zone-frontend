@@ -80,7 +80,7 @@ function Plans() {
 
 
 
-  const handleSubmit = async (membership_id, index ,membershipType) => {
+  const handleSubmit = async (membership_id, index, membershipType) => {
     console.log("membership_id", membership_id)
     setLoading(true);
     try {
@@ -153,7 +153,7 @@ function Plans() {
           <Text style={{ color: Colors.whiteText, fontSize: responsiveFontSize(1.6) }}>{item.price}</Text>
         </View>
         <View style={styles.buy_box}>
-          <TouchableOpacity onPress={() => handleSubmit(item.id, index ,item.name)} >
+          <TouchableOpacity onPress={() => handleSubmit(item.id, index, item.name)} >
             <Text style={styles.buy_text}>BUY</Text>
           </TouchableOpacity>
         </View>
@@ -226,5 +226,5 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: responsiveFontSize(1.5),
   },
-  plantext:{ fontSize: responsiveFontSize(3), color: Colors.whiteText, fontWeight: '900' }
+  plantext: { fontSize: responsiveFontSize(3), color: Colors.whiteText, fontWeight: '900' }
 });
