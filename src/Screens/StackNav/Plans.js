@@ -80,14 +80,14 @@ function Plans() {
 
 
 
-  const handleSubmit = async (membership_id, index) => {
+  const handleSubmit = async (membership_id, index ,membershipType) => {
     console.log("membership_id", membership_id)
     setLoading(true);
     try {
       const user_id = await AsyncStorage.getItem('userid');
       console.log("user_id id", user_id)
       const token = await AsyncStorage.getItem('token');
-      const url = `${IP}/payment/create-checkout-session?membership=${membership_id}&userId=${user_id}`;
+      const url = `${IP}/payment/create-checkout-session?membership=${membership_id}&userId=${user_id}&membershipType=${membershipType}`;
       const config = {
         headers: {
           'Content-Type': 'application/json',
@@ -153,7 +153,7 @@ function Plans() {
           <Text style={{ color: Colors.whiteText, fontSize: responsiveFontSize(1.6) }}>{item.price}</Text>
         </View>
         <View style={styles.buy_box}>
-          <TouchableOpacity onPress={() => handleSubmit(item.id, index)} >
+          <TouchableOpacity onPress={() => handleSubmit(item.id, index ,item.name)} >
             <Text style={styles.buy_text}>BUY</Text>
           </TouchableOpacity>
         </View>
