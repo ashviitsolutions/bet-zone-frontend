@@ -73,8 +73,8 @@ function Plans() {
 
 
   const Data = [
-    { id: "price_1Ola6GGJyA6XB6N0nyCrs0iP", price: '13$/month', name: 'MONTHLY SUBSCRIPTION' },
-    { id: "price_1OlaAjGJyA6XB6N0wEiaH8Xr", price: '13$/month', name: '3 MONTH SUBSCRIPTION' },
+    { id: "price_1Ola6GGJyA6XB6N0nyCrs0iP", price: '13$/month', name: 'MONTHLY SUBSCRIPTION', membershipType: "1 MONTH" },
+    { id: "price_1OlaAjGJyA6XB6N0wEiaH8Xr", price: '13$/month', name: '3 MONTH SUBSCRIPTION', membershipType: "3 MONTH" },
   ];
 
 
@@ -153,7 +153,7 @@ function Plans() {
           <Text style={{ color: Colors.whiteText, fontSize: responsiveFontSize(1.6) }}>{item.price}</Text>
         </View>
         <View style={styles.buy_box}>
-          <TouchableOpacity onPress={() => handleSubmit(item.id, index, item.name)} >
+          <TouchableOpacity onPress={() => handleSubmit(item.id, index, item.membershipType)} >
             <Text style={styles.buy_text}>BUY</Text>
           </TouchableOpacity>
         </View>

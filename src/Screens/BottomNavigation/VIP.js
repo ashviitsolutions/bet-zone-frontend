@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -12,9 +12,9 @@ import Colors from '../../Constants/Colors';
 import Header from '../../Components/Header';
 import ImagePath from '../../Constants/ImagePath';
 import Button from '../../Components/Button';
-const {width, height} = Dimensions.get('screen');
-import {useNavigation} from '@react-navigation/native';
-import {IP} from '../../Constants/Server';
+const { width, height } = Dimensions.get('screen');
+import { useNavigation } from '@react-navigation/native';
+import { IP } from '../../Constants/Server';
 import {
   responsiveWidth,
   responsiveFontSize,
@@ -98,7 +98,7 @@ function VIP() {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Header />
       <View style={styles.mainConatiner}>
         <View style={styles.headingView}>
@@ -130,7 +130,7 @@ function VIP() {
 
         {!token && (
           <View style={styles.loginLinkArea}>
-            <Text style={{color: Colors.grayText}}>
+            <Text style={{ color: Colors.grayText }}>
               Already have an account?{' '}
             </Text>
             <TouchableOpacity
@@ -196,5 +196,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginVertical: responsiveHeight(1.5),
   },
-  loginText: {color: Colors.grayText},
+  loginText: { color: Colors.grayText },
 });
