@@ -19,4 +19,6 @@ export default {
     AdminUsersIcon:require('../assets/icons/lucide_users.png'),
     footballImg:require('../assets/Image/football.webp'),
     successIcon:require('../assets/icons/checked.png'),
+    viewEyeIcon:require('../assets/icons/view.png'),
+    hideEyeIcon:require('../assets/icons/hide.png'),
 }

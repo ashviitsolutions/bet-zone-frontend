@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
   Image,
@@ -9,15 +9,17 @@ import {
   TextInput,
   ToastAndroid,
   View,
-  ActivityIndicator
+  ActivityIndicator,
+  RefreshControl,
+  StyleSheet,
 } from 'react-native';
 import Colors from '../../Constants/Colors';
 import Header from '../../Components/Header';
 import ImagePath from '../../Constants/ImagePath';
 import Button from '../../Components/Button';
 import Tabs from '../../Navigation/TabsNav';
-const { width, height } = Dimensions.get('screen');
-import { useNavigation } from '@react-navigation/native';
+const {width, height} = Dimensions.get('screen');
+import {useNavigation} from '@react-navigation/native';
 import {
   responsiveWidth,
   responsiveFontSize,
@@ -26,11 +28,11 @@ import {
 import NavigationString from '../../Constants/NavigationString';
 import InputComp from '../../Components/InputComp';
 import ContactAreaComp from '../../Components/ContactAreaComp';
-import { IP } from '../../Constants/Server';
+import {IP} from '../../Constants/Server';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../../Components/Loader';
 
-function CreateAccount() {
+function UpdateProfile() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
@@ -39,25 +41,28 @@ function CreateAccount() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [token, setToken] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const storedToken = await AsyncStorage.getItem('token');
-        setToken(storedToken);
+  async function fetchData() {
+    try {
+      setRefreshing(true);
+      const storedToken = await AsyncStorage.getItem('token');
+      setToken(storedToken);
 
-        // Fetch user details from AsyncStorage
-        const storedEmail = await AsyncStorage.getItem('email');
-        const storedMobile = await AsyncStorage.getItem('mobile');
-        const storedName = await AsyncStorage.getItem('full_name');
-
-        setEmail(storedEmail || '');
-        setMobile(storedMobile || '');
-        setName(storedName || '');
-      } catch (error) {
-        console.error(error);
-      }
+      // Fetch user details from AsyncStorage
+      const storedEmail = await AsyncStorage.getItem('email');
+      const storedMobile = await AsyncStorage.getItem('mobile');
+      const storedName = await AsyncStorage.getItem('full_name');
+      setEmail(storedEmail || '');
+      setMobile(storedMobile || '');
+      setName(storedName || '');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setRefreshing(false);
     }
+  }
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -69,7 +74,7 @@ function CreateAccount() {
       email: email,
       password: password,
       confirm_password: confirmPassword,
-      mobile: mobile
+      mobile: mobile,
     };
 
     try {
@@ -83,7 +88,7 @@ function CreateAccount() {
       });
 
       const responseData = await response.json();
-      console.log("responseData", responseData)
+      console.log('responseData', responseData);
       if (response.status === 200) {
         console.log('Profile update successfully');
         setLoading(false);
@@ -91,7 +96,7 @@ function CreateAccount() {
         await AsyncStorage.setItem('email', email);
         await AsyncStorage.setItem('mobile', mobile);
         await AsyncStorage.setItem('full_name', name);
-        navigation.replace(NavigationString.TABS);
+        onRefresh();
       } else {
         setLoading(false);
         console.log('Error:', responseData.msg);
@@ -103,49 +108,31 @@ function CreateAccount() {
       // Handle network errors or other unexpected errors
     }
   };
+  const onRefresh = () => {
+    fetchData(); // Call fetchData when the user pulls to refresh
+  };
 
   const handleLogout = async () => {
     await AsyncStorage.clear();
     navigation.replace(NavigationString.TABS);
-  }
+  };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{flex: 1}}>
       <Header />
       <ScrollView
-        style={{
-          backgroundColor: Colors.mainColor,
-          height: '100%',
-          padding: 10,
-        }}>
-        <View
-          style={{
-            height: responsiveHeight(15),
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+        style={styles.ScrollViewContent}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <View style={styles.headingView}>
           <Image
             source={ImagePath.ProfileIcon}
-            style={{
-              width: responsiveWidth(10),
-              height: responsiveHeight(8),
-              tintColor: Colors.whiteText,
-            }}
+            style={styles.ProfileIconStyle}
           />
-          <Text
-            style={{
-              fontSize: responsiveFontSize(3),
-              color: Colors.whiteText,
-              fontWeight: '900',
-            }}>
-            CREATE ACCOUNT
-          </Text>
+          <Text style={styles.UpdateProfileText}>UPDATE PROFILE</Text>
         </View>
-        <InputComp
-          title={'Full name'}
-          value={name}
-          onChangeText={setName}
-        />
+        <InputComp title={'Full name'} value={name} onChangeText={setName} />
         <InputComp
           title={'Email'}
           value={email}
@@ -174,7 +161,7 @@ function CreateAccount() {
           w={30}
           h={5}
           br={6}
-          title={'SignUp'}
+          title={'Update'}
           onPress={handleProfileUpdate}
         />
         <Text
@@ -187,9 +174,31 @@ function CreateAccount() {
           Back
         </Text>
       </ScrollView>
-      {loading && <Loader />}
     </SafeAreaView>
   );
 }
 
-export default CreateAccount;
+export default UpdateProfile;
+
+const styles = StyleSheet.create({
+  ScrollViewContent: {
+    backgroundColor: Colors.mainColor,
+    height: '100%',
+    padding: 10,
+  },
+  ProfileIconStyle: {
+    width: responsiveWidth(10),
+    height: responsiveHeight(8),
+    tintColor: Colors.whiteText,
+  },
+  UpdateProfileText: {
+    fontSize: responsiveFontSize(3),
+    color: Colors.whiteText,
+    fontWeight: '900',
+  },
+  headingView: {
+    height: responsiveHeight(15),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

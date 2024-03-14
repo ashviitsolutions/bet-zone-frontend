@@ -28,28 +28,59 @@ function AdminHomePage() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [refreshing, setRefreshing] = useState(false); // Add refreshing state
-
+  const [searchText, setSearchText] = useState('');
+  const [dropDownValue, setDropDownValue] = useState('ALL');
   const fetchData = async () => {
     try {
-      setRefreshing(true); // Set refreshing to true when fetching data
-      const response = await fetch(`${IP}/service/view-services?page=1&limit=18`);
+      setRefreshing(true);
+      const response = await fetch(
+        `${IP}/service/view-services?page=1&limit=18&search=${searchText}` // Step 2: Include search parameters
+      );
       const newData = await response.json();
       setData(newData.services);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
-      setRefreshing(false); // Set refreshing to false when done fetching data
+      setRefreshing(false);
       setLoading(false);
     }
   };
 
   const onRefresh = () => {
-    fetchData(); // Call fetchData when the user pulls to refresh
+    fetchData(); // Step 4: Call fetchData with search parameters
   };
 
+// Filter function for search text
+const filterByText = (item) => {
+  return (
+    item.title.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.description.toLowerCase().includes(searchText.toLowerCase())
+  );
+};
+
+// Filter function for dropdown value
+const filterByDropDown = (item) => {
+  return item.type.toLowerCase().includes(dropDownValue.toLowerCase());
+};
+
+// Combined filter function
+const filterData = () => {
+  let filteredData = data;
+  // Apply filter by search text if searchText is not empty
+  if (searchText.trim() !== '') {
+    filteredData = filteredData.filter(filterByText);
+  }
+   // Apply filter by dropdown value if it's not "ALL"
+   if (dropDownValue !== 'ALL') {
+    filteredData = filteredData.filter(filterByDropDown);
+  }
+
+  return filteredData;
+};
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [searchText,dropDownValue]); // Step 3: Add searchText as a dependency
+
 
   return (
     <>
@@ -66,7 +97,7 @@ function AdminHomePage() {
             rightTitle={'+ NEW TIP'}
             onPress={() => navigation.navigate('NewTips')}
           />
-          <SearchBar />
+          <SearchBar onChangeText={setSearchText} filtericon={true} setDropDownValue={setDropDownValue} /> 
           <KeyboardAvoidingView
             behavior="padding"
             style={{ flex: 1 }}
@@ -79,7 +110,7 @@ function AdminHomePage() {
                 />
               }>
               <FlatList
-                data={data}
+                  data={filterData()}
                 renderItem={({ item }) => (
                   <AdminCard
                     item={item}

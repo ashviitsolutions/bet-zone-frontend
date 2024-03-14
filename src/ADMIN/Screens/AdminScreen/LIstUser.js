@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
   FlatList,
@@ -9,14 +9,14 @@ import {
   Text,
   TouchableOpacity,
   View,
-  RefreshControl, 
+  RefreshControl,
 } from 'react-native';
 import Colors from '../../../Constants/Colors';
 import Header from '../../../Components/Header';
 import ImagePath from '../../../Constants/ImagePath';
 import Button from '../../../Components/Button';
-const { width, height } = Dimensions.get('screen');
-import { useNavigation } from '@react-navigation/native';
+const {width, height} = Dimensions.get('screen');
+import {useNavigation} from '@react-navigation/native';
 import {
   responsiveWidth,
   responsiveFontSize,
@@ -24,14 +24,15 @@ import {
 } from 'react-native-responsive-dimensions';
 import SearchBar from '../../../Components/SearchBar';
 import AdminHeaderBar from '../../../Components/AdminHeaderBar';
-import { IP } from '../../../Constants/Server';
+import {IP} from '../../../Constants/Server';
 import Loader from '../../../Components/Loader';
 function ListUser() {
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(false)
-  const [refreshing, setRefreshing] = useState(false); 
-  function Card({ onPress, item }) {
-    const { member } = item;
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  function Card({onPress, item}) {
+    const {member} = item;
+    console.log(item);
     if (item.auth_type === 'admin') {
       return null; // Do not render the card for admin
     }
@@ -54,7 +55,9 @@ function ListUser() {
           shadowColor: '#000',
           borderWidth: 1,
           borderColor:
-            item.membershiplevel === 'NO MEMBER' ? Colors.grayText : Colors.yellowColor,
+            item.membershiplevel === 'NO MEMBER'
+              ? Colors.grayText
+              : Colors.yellowColor,
         }}>
         <View
           style={{
@@ -62,7 +65,9 @@ function ListUser() {
             height: responsiveHeight(6),
             borderRadius: responsiveWidth(6),
             borderColor:
-              item.membershiplevel === 'NO MEMBER' ? Colors.grayText : Colors.yellowColor,
+              item.membershiplevel === 'NO MEMBER'
+                ? Colors.grayText
+                : Colors.yellowColor,
             borderWidth: 1,
             justifyContent: 'center',
           }}>
@@ -100,7 +105,7 @@ function ListUser() {
           </Text>
         </View>
 
-        <View style={{ alignItems: 'center', justifyContent: 'space-evenly' }}>
+        <View style={{alignItems: 'center', justifyContent: 'space-evenly'}}>
           <Text
             style={{
               color: Colors.whiteText,
@@ -136,34 +141,47 @@ function ListUser() {
           </Text>
         </View>
       </TouchableOpacity>
-
     );
   }
 
-  const [data, setData] = useState([])
+  const [data, setData] = useState([]);
+  const [searchText, setSearchText] = useState('');
 
   const fetchData = async () => {
     try {
-      setRefreshing(true)
-      const response = await fetch(`${IP}/getUsers?page=1&limit=18`);
+      setRefreshing(true);
+      const response = await fetch(
+        `${IP}/getUsers?page=1&limit=18&search=${searchText}`,
+      );
       const newData = await response.json();
       setData(newData?.services);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
-      setRefreshing(false)
+      setRefreshing(false);
       setLoading(false);
     }
   };
-const onRefresh=()=>{
-  fetchData()
-}
+
+  const onRefresh = () => {
+    fetchData();
+  };
+
+  const filterData = () => {
+    return data.filter(
+      item =>
+        item.full_name.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.email.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.mobile.toLowerCase().includes(searchText.toLowerCase()),
+    );
+  };
+
   useEffect(() => {
-      fetchData();
-  }, []);
+    fetchData();
+  }, [searchText]);
   return (
     <>
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{flex: 1}}>
         <Header />
         <View
           style={{
@@ -176,24 +194,24 @@ const onRefresh=()=>{
             rightTitle={'+ NEW USER'}
             onPress={() => navigation.navigate('AddUser')}
           />
-
-          <SearchBar />
+          <SearchBar onChangeText={setSearchText} filtericon={false} />
           <KeyboardAvoidingView
             behavior="padding"
-            style={{ flex: 1 }}
+            style={{flex: 1}}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-            <ScrollView style={{ flex: 1, padding: 10, marginBottom: responsiveHeight(15) }}
-            refreshControl={<RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            />}
-            >
+            <ScrollView
+              style={{flex: 1, padding: 10, marginBottom: responsiveHeight(15)}}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }>
               <FlatList
-                data={data}
-                renderItem={({ item }) => (
+                data={filterData()}
+                renderItem={({item}) => (
                   <Card
                     item={item}
-                    onPress={() => navigation.navigate('EditUser', { item: item })}
+                    onPress={() =>
+                      navigation.navigate('EditUser', {item: item})
+                    }
                   />
                 )}
                 keyExtractor={item => item.id.toString()}

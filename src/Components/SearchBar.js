@@ -1,36 +1,41 @@
-import {
-  View,
-  Text,
-  Dimensions,
-  TextInput,
-  Image,
-  StyleSheet,
-} from 'react-native';
-import React, {useState} from 'react';
-import {responsiveFontSize} from 'react-native-responsive-dimensions';
+import React, { useState } from 'react';
+import { View, TextInput, Image, StyleSheet, Dimensions } from 'react-native';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import Colors from '../Constants/Colors';
 import FilterDropDown from './FilterDropDown';
-const {width, height} = Dimensions.get('window');
-const SearchBar = () => {
+
+const { height } = Dimensions.get('window');
+
+const SearchBar = ({ onChangeText ,filtericon,setDropDownValue}) => {
   const data = [
-    {id: 1, name: 'ALL'},
-    {id: 2, name: 'VIP'},
-    {id: 3, name: 'FREE'},
+    { id: 1, name: 'ALL' },
+    { id: 2, name: 'VIP' },
+    { id: 3, name: 'OLD' },
   ];
   const [selectedItem, setSelectedItem] = useState(null);
-
-  const onSelect = item => {
-    setSelectedItem(item);
+ const onSelect = (item) => {
+  setDropDownValue(item.name)
+   setSelectedItem(item);
   };
+
+  const handleTextChange = (text) => {
+    onChangeText(text); // Notify parent component about the text change
+  };
+
   return (
-    <View style={styles.searchbar_container}>
+    <View style={[styles.searchbar_container,{width:filtericon?'100%':'105%'}]}>
       <View style={styles.input_container}>
-        <TextInput style={styles.input_field_style} placeholder="Search..." />
+        <TextInput
+          style={styles.input_field_style}
+          placeholder="Search..."
+          onChangeText={handleTextChange} // Handle text input changes
+          placeholderTextColor={'#000'}
+        />
 
         <Image source={require('../assets/icons/search.png')} />
       </View>
       {/* <Image source={require('../assets/icons/filter.png')} /> */}
-      <FilterDropDown data={data} onSelect={onSelect} value={selectedItem} />
+     {filtericon ?  <FilterDropDown data={data} onSelect={onSelect} value={selectedItem} />: null}
     </View>
   );
 };
@@ -39,7 +44,6 @@ export default SearchBar;
 
 const styles = StyleSheet.create({
   searchbar_container: {
-    width: '100%',
     height: height * 0.06,
     justifyContent: 'center',
     alignItems: 'center',
@@ -58,7 +62,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   input_field_style: {
-    color: '#fff',
+    color: '#000',
     fontSize: responsiveFontSize(1.5),
     fontWeight: '900',
     paddingVertical: 2,

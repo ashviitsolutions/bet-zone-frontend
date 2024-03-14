@@ -90,15 +90,11 @@ function Login() {
   };
 
   return (
-    <>
+   
       <SafeAreaView style={{ flex: 1 }}>
         <Header />
         <ScrollView
-          style={{
-            backgroundColor: Colors.mainColor,
-            height: responsiveHeight(100),
-            padding: 10,
-          }}>
+          style={styles.scrollViewContent}>
           <View style={styles.header}>
             <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ flexDirection: 'row', alignItems: 'center', alignSelf: "flex-start", marginLeft: 20 }}>
               <Image source={ImagePath.backIcon} style={styles.backIcon_style} />
@@ -124,36 +120,32 @@ function Login() {
             onChangeText={setPassword}
             password={true}
           />
-
+             {loading ? <ActivityIndicator color={Colors.yellowColor} size={'large'}/> : null}
           <Button w={30} h={5} br={6} title={'LOGIN'} onPress={handleLogin} />
 
-
-
           <View
-            style={{
-              height: responsiveHeight(4),
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'row',
-              marginVertical: responsiveHeight(1.5),
-            }}>
+            style={styles.signUpTextContainer}>
             <Text style={{ color: Colors.grayText }}>Don't have an account? </Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate(NavigationString.CREATE_ACCOUNT)}
               activeOpacity={0.8}>
-              <Text style={{ color: Colors.grayText }}>Sign up</Text>
+              <Text style={{ color: Colors.grayText }} onPress={()=>navigation.navigate(NavigationString.REGISTER)}>Sign up</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>
-      {loading ? <Loader /> : null}
-    </>
+    
+ 
   );
 }
 
 export default Login;
 
 const styles = StyleSheet.create({
+  scrollViewContent:{
+    backgroundColor: Colors.mainColor,
+    height: responsiveHeight(100),
+    padding: 10,
+  },
   header: {
     height: responsiveHeight(15),
     justifyContent: 'center',
@@ -176,4 +168,11 @@ const styles = StyleSheet.create({
     color: Colors.whiteText,
     fontWeight: '900',
   },
+  signUpTextContainer:{
+    height: responsiveHeight(4),
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginVertical: responsiveHeight(1.5),
+  }
 });

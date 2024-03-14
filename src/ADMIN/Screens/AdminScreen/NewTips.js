@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Image,
@@ -19,17 +19,17 @@ import {
 } from 'react-native-responsive-dimensions';
 import Colors from '../../../Constants/Colors';
 import ImagePath from '../../../Constants/ImagePath';
-import { useNavigation } from '@react-navigation/native';
-import { Button } from '../../../Components';
-import { launchImageLibrary } from 'react-native-image-picker';
-import { IP } from '../../../Constants/Server';
+import {useNavigation} from '@react-navigation/native';
+import {Button} from '../../../Components';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {IP} from '../../../Constants/Server';
 import NavigationString from '../../../Constants/NavigationString';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DropDownComp from '../../../Components/DropDownComp';
 import SportsDropDown from '../../../Components/SportsDropDown';
 import ContactAreaComp from '../../../Components/ContactAreaComp';
 import Loader from '../../../Components/Loader';
-import DatePicker from 'react-native-date-picker'
+import DatePicker from 'react-native-date-picker';
 export default function NewTips() {
   const navigation = useNavigation();
   const [image, setImage] = useState('');
@@ -42,15 +42,15 @@ export default function NewTips() {
   const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState('');
-  const [date, setDate] = useState(new Date())
-  const [open, setOpen] = useState(false)
-  const [selectedDate,setSelectedDate]= useState('')
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState('');
   // useEffect(() => {
   //   Alert.alert(typeof(JSON.stringify(date)));
   // }, [date]);
   const data = [
-    { id: 1, name: 'VIP' },
-    { id: 2, name: 'OLD' },
+    {id: 1, name: 'VIP'},
+    {id: 2, name: 'OLD'},
   ];
   const [selectedItem, setSelectedItem] = useState(null);
   const onSelect = item => {
@@ -59,10 +59,10 @@ export default function NewTips() {
   };
 
   const data2 = [
-    { id: 1, name: 'BaseBall' },
-    { id: 2, name: 'Cricket' },
-    { id: 3, name: 'Football' },
-    { id: 4, name: 'Tennis' },
+    {id: 1, name: 'BaseBall'},
+    {id: 2, name: 'Cricket'},
+    {id: 3, name: 'Football'},
+    {id: 4, name: 'Tennis'},
   ];
   const [sportsSelectedItem, setSportsSelectedItem] = useState(null);
   const onSportsSelect = item => {
@@ -103,7 +103,7 @@ export default function NewTips() {
   }, []);
 
   const handleSaveTip = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append('title', title);
@@ -133,7 +133,7 @@ export default function NewTips() {
       });
 
       if (response.ok) {
-        setLoading(false)
+        setLoading(false);
         ToastAndroid.show('Tips add succesfully', ToastAndroid.SHORT);
         navigation.navigate('AdminHomePage'); // Navigate on success
       } else {
@@ -144,7 +144,7 @@ export default function NewTips() {
         // Optionally, display an error message to the user
       }
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       console.error('Error:', error.message);
       console.error('Stack Trace:', error.stack);
       // Handle other errors, such as network errors
@@ -153,164 +153,173 @@ export default function NewTips() {
 
   return (
     <>
-    <SafeAreaView style={{ flex: 1 }}>
-      <Header />
+      <SafeAreaView style={{flex: 1}}>
+        <Header />
 
-      <ScrollView
-        style={{
-          backgroundColor: Colors.mainColor,
-          height: '100%',
-          padding: 10,
-        }}>
-          
-        <View style={styles.hedaerSub}>
-          <SportsDropDown
-            data={data2}
-            onSelect={onSportsSelect}
-            value={sportsSelectedItem}
-          />
-
-          <DropDownComp data={data} onSelect={onSelect} value={selectedItem} />
-          <View style={styles.date_box}>
-            <Image
-              source={require('../../../assets/icons/solar_calendar-linear.png')}
-              style={styles.calender_icon}
-            />
-            <Text onPress={() => setOpen(true)} style={styles.date_text}>{selectedDate ? selectedDate :'Select date/time'}</Text>
-          </View>
-          <DatePicker
-        modal
-        open={open}
-        date={date}
-        onConfirm={(date) => {
-          setOpen(false)
-          setDate(date)
-          console.log('date is ',date)
-          console.log(typeof(date))
-          const originalTimestamp = date;
-          const newdate = new Date(originalTimestamp);
-          const formattedTime = `${("0" + newdate.getHours()).slice(-2)}:${("0" + newdate.getMinutes()).slice(-2)}`;
-          const formattedDate = `${("0" + newdate.getDate()).slice(-2)}-${("0" + (newdate.getMonth() + 1)).slice(-2)}-${newdate.getFullYear()}`;
-          const result = `${formattedTime} ${formattedDate}`;
-         console.log(typeof(result))
-         setSelectedDate(result.toString())
-         
-
-         
-        }}
-        onCancel={() => {
-          setOpen(false)
-        }}
-      />
-        </View>
-        <View style={styles.img_box}>
-          <Image source={{ uri: image }} style={styles.imgStyle} />
-        </View>
-        <Text style={{ color: Colors.grayText, marginVertical: 5 }}>
-          TIP TITLE
-        </Text>
-        <View
+        <ScrollView
           style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            width: responsiveWidth(93),
+            backgroundColor: Colors.mainColor,
+            height: '100%',
+            padding: 10,
           }}>
-          <View style={styles.title_box}>
+          <View style={styles.hedaerSub}>
+            <SportsDropDown
+              data={data2}
+              onSelect={onSportsSelect}
+              value={sportsSelectedItem}
+            />
+
+            <DropDownComp
+              data={data}
+              onSelect={onSelect}
+              value={selectedItem}
+            />
+            <View style={styles.date_box}>
+              <Image
+                source={require('../../../assets/icons/solar_calendar-linear.png')}
+                style={styles.calender_icon}
+              />
+              <Text onPress={() => setOpen(true)} style={styles.date_text}>
+                {selectedDate ? selectedDate : 'Select date/time'}
+              </Text>
+            </View>
+            <DatePicker
+              modal
+              open={open}
+              date={date}
+              onConfirm={date => {
+                setOpen(false);
+                setDate(date);
+                console.log('date is ', date);
+                console.log(typeof date);
+                const originalTimestamp = date;
+                const newdate = new Date(originalTimestamp);
+                const formattedTime = `${('0' + newdate.getHours()).slice(
+                  -2,
+                )}:${('0' + newdate.getMinutes()).slice(-2)}`;
+                const formattedDate = `${('0' + newdate.getDate()).slice(
+                  -2,
+                )}-${('0' + (newdate.getMonth() + 1)).slice(
+                  -2,
+                )}-${newdate.getFullYear()}`;
+                const result = `${formattedTime} ${formattedDate}`;
+                console.log(typeof result);
+                setSelectedDate(result.toString());
+              }}
+              onCancel={() => {
+                setOpen(false);
+              }}
+            />
+          </View>
+          <View style={styles.img_box}>
+            <Image source={{uri: image}} style={styles.imgStyle} />
+          </View>
+          <Text style={{color: Colors.grayText, marginVertical: 5}}>
+            TIP TITLE
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: responsiveWidth(93),
+            }}>
+            <View style={styles.title_box}>
+              <TextInput
+                style={styles.title_input}
+                onChangeText={t => setTitle(t)}
+                placeholder="enter tip titile"
+                placeholderTextColor={Colors.grayText}
+              />
+            </View>
+            <View style={styles.changePic_box}>
+              <Text
+                onPress={openImagePicker}
+                style={{color: Colors.grayText, alignSelf: 'center'}}>
+                CHANGE PIC
+              </Text>
+            </View>
+          </View>
+
+          <Text style={styles.desc_text_title}>TIP DISCRIPTION</Text>
+          <View style={styles.desc_box}>
             <TextInput
-              style={styles.title_input}
-              onChangeText={t => setTitle(t)}
-              placeholder="enter tip titile"
+              style={{color: '#fff', fontSize: responsiveFontSize(1.9)}}
+              multiline={true}
+              placeholder="enter tip discription"
               placeholderTextColor={Colors.grayText}
+              onChangeText={t => setDescription(t)}
             />
           </View>
-          <View style={styles.changePic_box}>
-            <Text
-              onPress={openImagePicker}
-              style={{ color: Colors.grayText, alignSelf: 'center' }}>
-              CHANGE PIC
-            </Text>
-          </View>
-        </View>
 
-        <Text style={styles.desc_text_title}>TIP DISCRIPTION</Text>
-        <View style={styles.desc_box}>
-          <TextInput
-            style={{ color: '#fff', fontSize: responsiveFontSize(1.9) }}
-            multiline={true}
-            placeholder="enter tip discription"
-            placeholderTextColor={Colors.grayText}
-            onChangeText={t => setDescription(t)}
-          />
-        </View>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginTop: 10,
-          }}>
-          <View>
-            <Text style={styles.input_field_title}>AMOUNT</Text>
-            <View style={styles.input_field_box}>
-              <TextInput
-                style={styles.input_filed}
-                onChangeText={t => setAmt(t)}
-                keyboardType="numeric"
-                placeholder="enter amount"
-                placeholderTextColor={Colors.grayText}
-              />
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: 10,
+            }}>
+            <View>
+              <Text style={styles.input_field_title}>AMOUNT</Text>
+              <View style={styles.input_field_box}>
+                <TextInput
+                  style={styles.input_filed}
+                  onChangeText={t => setAmt(t)}
+                  keyboardType="numeric"
+                  placeholder="enter amount"
+                  placeholderTextColor={Colors.grayText}
+                />
+              </View>
+            </View>
+            <View>
+              <Text style={styles.input_field_title}>ODDS</Text>
+              <View style={styles.input_field_box}>
+                <TextInput
+                  style={styles.input_filed}
+                  onChangeText={t => setOdds(t)}
+                  keyboardType="numeric"
+                  placeholder="enter odds"
+                  placeholderTextColor={Colors.grayText}
+                />
+              </View>
+            </View>
+            <View>
+              <Text style={styles.input_field_title}>PROBS.</Text>
+              <View style={styles.input_field_box}>
+                <TextInput
+                  style={styles.input_filed}
+                  onChangeText={t => setProbs(t)}
+                  keyboardType="numeric"
+                  placeholder="enter probs."
+                  placeholderTextColor={Colors.grayText}
+                />
+              </View>
             </View>
           </View>
-          <View>
-            <Text style={styles.input_field_title}>ODDS</Text>
-            <View style={styles.input_field_box}>
-              <TextInput
-                style={styles.input_filed}
-                onChangeText={t => setOdds(t)}
-                keyboardType="numeric"
-                placeholder="enter odds"
-                placeholderTextColor={Colors.grayText}
-              />
-            </View>
-          </View>
-          <View>
-            <Text style={styles.input_field_title}>PROBS.</Text>
-            <View style={styles.input_field_box}>
-              <TextInput
-                style={styles.input_filed}
-                onChangeText={t => setProbs(t)}
-                keyboardType="numeric"
-                placeholder="enter probs."
-                placeholderTextColor={Colors.grayText}
-              />
-            </View>
-          </View>
-        </View>
 
-        <View style={styles.last_row}>
-          <View style={styles.back_Box}>
-            <Text onPress={() => navigation.goBack()} style={styles.back_text}>
-              {' '}
-              BACK
-            </Text>
+          <View style={styles.last_row}>
+            <View style={styles.back_Box}>
+              <Text
+                onPress={() => navigation.goBack()}
+                style={styles.back_text}>
+                {' '}
+                BACK
+              </Text>
+            </View>
+            <Button
+              w={20}
+              h={4}
+              br={2}
+              title={'SAVE'}
+              customStyle={{marginTop: 0}}
+              onPress={handleSaveTip}
+              // onPress={() => navigation.navigate('AdminHomePage')}
+            />
           </View>
-          <Button
-            w={20}
-            h={4}
-            br={2}
-            title={'SAVE'}
-            customStyle={{ marginTop: 0 }}
-            onPress={handleSaveTip}
-          // onPress={() => navigation.navigate('AdminHomePage')}
-          />
-        </View>
-        {/* {loading && <ActivityIndicator size="large" color="#0000ff" />} */}
-        <ContactAreaComp />
-      </ScrollView>
-    </SafeAreaView>
-     {loading ? <Loader /> : null}
-     </>
-
+          {/* {loading && <ActivityIndicator size="large" color="#0000ff" />} */}
+          <ContactAreaComp />
+        </ScrollView>
+      </SafeAreaView>
+      {loading ? <Loader /> : null}
+    </>
   );
 }
 
@@ -414,7 +423,7 @@ const styles = StyleSheet.create({
     height: responsiveHeight(17),
     borderRadius: 10,
   },
-  desc_text_title: { color: Colors.grayText, marginVertical: 5, marginTop: 10 },
+  desc_text_title: {color: Colors.grayText, marginVertical: 5, marginTop: 10},
   input_field_title: {
     color: Colors.grayText,
     fontSize: responsiveFontSize(1.4),
@@ -449,5 +458,5 @@ const styles = StyleSheet.create({
     height: responsiveHeight(4),
     justifyContent: 'center',
   },
-  back_text: { color: Colors.grayText, alignSelf: 'center' },
+  back_text: {color: Colors.grayText, alignSelf: 'center'},
 });
