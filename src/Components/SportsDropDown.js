@@ -35,19 +35,17 @@ export default function SportsDropDown({
             <TouchableOpacity
               onPress={() => onSelectedItem(val)}
               key={String(i)}
-              style={{
-                width: responsiveWidth(30),
-                height: responsiveHeight(3),
-                borderRadius: responsiveWidth(1),
-                borderWidth: 1,
-                alignItems: 'center',
-                borderColor: Colors.grayText,
-                backgroundColor:
-                  value && value.id === val.id
-                    ? Colors.grayText
-                    : Colors.blackText,
-                marginBottom: 1,
-              }}>
+              style={[
+                styles.DropDownItem,
+                {
+                  backgroundColor:
+                    value && value.id === val.id
+                      ? Colors.grayText
+                      : Colors.blackText,
+                },
+              ]}
+           
+              >
               <Text style={{color: '#fff', fontWeight: '900'}}>{val.name}</Text>
             </TouchableOpacity>
           ))}
@@ -81,4 +79,11 @@ const styles = StyleSheet.create({
     // borderRadius: responsiveWidth(1),
     borderColor: Colors.grayText,
   },
+  DropDownItem:{  width: responsiveWidth(30),
+    height: responsiveHeight(3),
+    borderRadius: responsiveWidth(1),
+    borderWidth: 1,
+    alignItems: 'center',
+    borderColor: Colors.grayText,
+    marginBottom: 1}
 });

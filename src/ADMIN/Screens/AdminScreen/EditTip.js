@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   ImageBackground,
@@ -21,15 +21,15 @@ import {
 } from 'react-native-responsive-dimensions';
 import Colors from '../../../Constants/Colors';
 import ImagePath from '../../../Constants/ImagePath';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { Button } from '../../../Components';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { IP } from '../../../Constants/Server';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {Button} from '../../../Components';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {IP} from '../../../Constants/Server';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DropDownComp from '../../../Components/DropDownComp';
 import SportsDropDown from '../../../Components/SportsDropDown';
 import ContactAreaComp from '../../../Components/ContactAreaComp';
-import DatePicker from 'react-native-date-picker'
+import DatePicker from 'react-native-date-picker';
 import Loader from '../../../Components/Loader';
 export default function EditTip() {
   const navigation = useNavigation();
@@ -45,27 +45,26 @@ export default function EditTip() {
   const [image, setImage] = useState('');
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState('');
-  const [date, setDate] = useState(new Date())
-  const [open, setOpen] = useState(false)
-  const [selectedDate,setSelectedDate]= useState('')
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState('');
   // console.log(route.params.item.date)
-  const originalTimestamp = (route.params.item.date);
+  const originalTimestamp = route.params.item.date;
   const dateObject = new Date(originalTimestamp);
-  
+
   const hours = dateObject.getHours().toString().padStart(2, '0');
   const minutes = dateObject.getMinutes().toString().padStart(2, '0');
   const day = dateObject.getDate().toString().padStart(2, '0');
   const month = (dateObject.getMonth() + 1).toString().padStart(2, '0'); // Note: Months are zero-based
   const year = dateObject.getFullYear();
-  
+
   const finalFormattedString = `${hours}:${minutes} ${day}-${month}-${year}`;
   // console.log(finalFormattedString)
   const data = [
-    { id: 1, name: 'VIP' },
-    { id: 2, name: 'OLD' },
+    {id: 1, name: 'VIP'},
+    {id: 2, name: 'OLD'},
   ];
   const [selectedItem, setSelectedItem] = useState(route.params.item.type);
-
 
   const onSelect = item => {
     setType(item.name);
@@ -73,10 +72,10 @@ export default function EditTip() {
     setSelectedItem(item);
   };
   const data2 = [
-    { id: 1, name: 'BaseBall' },
-    { id: 2, name: 'Cricket' },
-    { id: 3, name: 'Football' },
-    { id: 4, name: 'Tennis' },
+    {id: 1, name: 'BaseBall'},
+    {id: 2, name: 'Cricket'},
+    {id: 3, name: 'Football'},
+    {id: 4, name: 'Tennis'},
   ];
   const [sportsSelectedItem, setSportsSelectedItem] = useState(null);
 
@@ -165,158 +164,165 @@ export default function EditTip() {
 
   return (
     <>
-    <SafeAreaView style={{ flex: 1 }}>
-      <Header />
+      <SafeAreaView style={{flex: 1}}>
+        <Header />
 
-      <ScrollView
-        style={{
-          backgroundColor: Colors.mainColor,
-          height: '100%',
-          padding: 10,
-        }}>
-        <View style={styles.hedaerSub}>
-          <SportsDropDown
-            data={data2}
-            onSelect={onSportsSelect}
-            value={sportsSelectedItem}
-            defaultValueSport={route.params.item.category}
-          />
-
-          <DropDownComp
-            data={data}
-            onSelect={onSelect}
-            value={selectedItem}
-            defaultValueType={route.params.item.type}
-          />
-          <View style={styles.date_box}>
-            <Image
-              source={require('../../../assets/icons/solar_calendar-linear.png')}
-              style={styles.calender_icon}
-            />
-            <Text onPress={() => setOpen(true)} style={styles.date_text}>{selectedDate ? selectedDate.toString() : finalFormattedString}</Text>
-          </View>
-          <DatePicker
-        modal
-        open={open}
-        date={date}
-        onConfirm={(date) => {
-          setOpen(false)
-          setDate(date)
-          const originalTimestamp = date;
-          const newdate = new Date(originalTimestamp);
-          const formattedTime = `${("0" + newdate.getHours()).slice(-2)}:${("0" + newdate.getMinutes()).slice(-2)}`;
-          const formattedDate = `${("0" + newdate.getDate()).slice(-2)}-${("0" + (newdate.getMonth() + 1)).slice(-2)}-${newdate.getFullYear()}`;
-          const result = `${formattedTime} ${formattedDate}`;
-        //  console.log(typeof(result))
-         setSelectedDate(result)
-        }}
-        onCancel={() => {
-          setOpen(false)
-        }}
-      />
-        </View>
-        <View style={styles.imgBox}>
-          <Image
-            source={
-              image
-                ? { uri: image }
-                : { uri: `${IP}/file/${route.params.item.attachments}` }
-            }
-            style={styles.imgStyle}
-          />
-        </View>
-        <Text style={styles.titleText}>TIP TITLE</Text>
-        <View
+        <ScrollView
           style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            width: responsiveWidth(93),
+            backgroundColor: Colors.mainColor,
+            height: '100%',
+            padding: 10,
           }}>
-          <View style={styles.titleInputBox}>
+          <View style={styles.hedaerSub}>
+            <SportsDropDown
+              data={data2}
+              onSelect={onSportsSelect}
+              value={sportsSelectedItem}
+              defaultValueSport={route.params.item.category}
+            />
+
+            <DropDownComp
+              data={data}
+              onSelect={onSelect}
+              value={selectedItem}
+              defaultValueType={route.params.item.type}
+            />
+            <View style={styles.date_box}>
+              <Image
+                source={require('../../../assets/icons/solar_calendar-linear.png')}
+                style={styles.calender_icon}
+              />
+              <Text onPress={() => setOpen(true)} style={styles.date_text}>
+                {selectedDate ? selectedDate.toString() : finalFormattedString}
+              </Text>
+            </View>
+            <DatePicker
+              modal
+              open={open}
+              date={date}
+              onConfirm={date => {
+                setOpen(false);
+                setDate(date);
+                const originalTimestamp = date;
+                const newdate = new Date(originalTimestamp);
+                const formattedTime = `${('0' + newdate.getHours()).slice(
+                  -2,
+                )}:${('0' + newdate.getMinutes()).slice(-2)}`;
+                const formattedDate = `${('0' + newdate.getDate()).slice(
+                  -2,
+                )}-${('0' + (newdate.getMonth() + 1)).slice(
+                  -2,
+                )}-${newdate.getFullYear()}`;
+                const result = `${formattedTime} ${formattedDate}`;
+                //  console.log(typeof(result))
+                setSelectedDate(result);
+              }}
+              onCancel={() => {
+                setOpen(false);
+              }}
+            />
+          </View>
+          <View style={styles.imgBox}>
+            <Image
+              source={
+                image
+                  ? {uri: image}
+                  : {uri: `${IP}/file/${route.params.item.attachments}`}
+              }
+              style={styles.imgStyle}
+            />
+          </View>
+          <Text style={styles.titleText}>TIP TITLE</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: responsiveWidth(93),
+            }}>
+            <View style={styles.titleInputBox}>
+              <TextInput
+                style={styles.titleInputStyle}
+                value={title}
+                onChangeText={t => setTitle(t)}
+              />
+            </View>
+
+            <View style={styles.changeBtn}>
+              <Text onPress={openImagePicker} style={styles.changeTextStyle}>
+                CHANGE PIC
+              </Text>
+            </View>
+          </View>
+
+          <Text style={styles.descText}>TIP DISCRIPTION</Text>
+          <View style={styles.descBox}>
             <TextInput
-              style={styles.titleInputStyle}
-              value={title}
-              onChangeText={t => setTitle(t)}
+              style={styles.descInput}
+              multiline={true}
+              value={description}
+              onChangeText={t => setDescription(t)}
             />
           </View>
 
-          <View style={styles.changeBtn}>
-            <Text onPress={openImagePicker} style={styles.changeTextStyle}>
-              CHANGE PIC
-            </Text>
-          </View>
-        </View>
-
-        <Text style={styles.descText}>TIP DISCRIPTION</Text>
-        <View style={styles.descBox}>
-          <TextInput
-            style={styles.descInput}
-            multiline={true}
-            value={description}
-            onChangeText={t => setDescription(t)}
-          />
-        </View>
-
-        <View style={styles.inputFiledView}>
-          <View>
-            <Text style={styles.inputHeading}>AMOUNT</Text>
-            <View style={styles.inputBox}>
-              <TextInput
-                style={styles.intputStyle}
-                keyboardType="numeric"
-                value={amount}
-                onChangeText={t => setAmount(t)}
-              />
+          <View style={styles.inputFiledView}>
+            <View>
+              <Text style={styles.inputHeading}>AMOUNT</Text>
+              <View style={styles.inputBox}>
+                <TextInput
+                  style={styles.intputStyle}
+                  keyboardType="numeric"
+                  value={amount}
+                  onChangeText={t => setAmount(t)}
+                />
+              </View>
+            </View>
+            <View>
+              <Text style={styles.inputHeading}>ODDS</Text>
+              <View style={styles.inputBox}>
+                <TextInput
+                  style={styles.intputStyle}
+                  keyboardType="numeric"
+                  value={odds}
+                  onChangeText={t => setOdds(t)}
+                />
+              </View>
+            </View>
+            <View>
+              <Text style={styles.inputHeading}>PROBS.</Text>
+              <View style={styles.inputBox}>
+                <TextInput
+                  style={styles.intputStyle}
+                  keyboardType="numeric"
+                  value={prob}
+                  onChangeText={t => setProb(t)}
+                />
+              </View>
             </View>
           </View>
-          <View>
-            <Text style={styles.inputHeading}>ODDS</Text>
-            <View style={styles.inputBox}>
-              <TextInput
-                style={styles.intputStyle}
-                keyboardType="numeric"
-                value={odds}
-                onChangeText={t => setOdds(t)}
-              />
-            </View>
-          </View>
-          <View>
-            <Text style={styles.inputHeading}>PROBS.</Text>
-            <View style={styles.inputBox}>
-              <TextInput
-                style={styles.intputStyle}
-                keyboardType="numeric"
-                value={prob}
-                onChangeText={t => setProb(t)}
-              />
-            </View>
-          </View>
-        </View>
 
-        <View style={styles.btnsBox}>
-          <View style={styles.backBtn}>
-            <Text
-              onPress={() => navigation.goBack()}
-              style={{ color: Colors.grayText, alignSelf: 'center' }}>
-              {' '}
-              BACK
-            </Text>
+          <View style={styles.btnsBox}>
+            <View style={styles.backBtn}>
+              <Text
+                onPress={() => navigation.goBack()}
+                style={{color: Colors.grayText, alignSelf: 'center'}}>
+                {' '}
+                BACK
+              </Text>
+            </View>
+            <Button
+              w={20}
+              h={4}
+              br={2}
+              title={'UPDATE'}
+              customStyle={{marginTop: 0}}
+              onPress={handleUpdateTip}
+            />
           </View>
-          <Button
-            w={20}
-            h={4}
-            br={2}
-            title={'UPDATE'}
-            customStyle={{ marginTop: 0 }}
-            onPress={handleUpdateTip}
-
-          />
-        </View>
-        {/* {loading && <ActivityIndicator size="large" color="#0000ff" />} */}
-        <ContactAreaComp />
-      </ScrollView>
-    </SafeAreaView>
-    {loading ?<Loader/>:null}
+          {/* {loading && <ActivityIndicator size="large" color="#0000ff" />} */}
+          <ContactAreaComp />
+        </ScrollView>
+      </SafeAreaView>
+      {loading ? <Loader /> : null}
     </>
   );
 }
@@ -351,8 +357,8 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     width: '70%',
   },
-  titleText: { color: Colors.grayText, marginVertical: 5 },
-  changeTextStyle: { color: Colors.grayText, alignSelf: 'center' },
+  titleText: {color: Colors.grayText, marginVertical: 5},
+  changeTextStyle: {color: Colors.grayText, alignSelf: 'center'},
   changeBtn: {
     borderWidth: 1,
     borderColor: Colors.grayText,
@@ -361,7 +367,7 @@ const styles = StyleSheet.create({
     height: responsiveHeight(5),
     justifyContent: 'center',
   },
-  descInput: { color: '#fff', fontSize: responsiveFontSize(1.9) },
+  descInput: {color: '#fff', fontSize: responsiveFontSize(1.9)},
   descBox: {
     borderWidth: 1,
     borderColor: Colors.grayText,
@@ -370,7 +376,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 5,
   },
-  descText: { color: Colors.grayText, marginVertical: 5, marginTop: 10 },
+  descText: {color: Colors.grayText, marginVertical: 5, marginTop: 10},
   inputFiledView: {
     flexDirection: 'row',
     justifyContent: 'space-between',

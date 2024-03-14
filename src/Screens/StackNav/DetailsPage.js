@@ -18,22 +18,21 @@ import {
 import Colors from '../../Constants/Colors';
 import ImagePath from '../../Constants/ImagePath';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import { IP } from '../../Constants/Server';
+import {IP} from '../../Constants/Server';
 export default function DetailsPage() {
   const navigation = useNavigation();
-  const route = useRoute()
-  console.log(route.params.item.date)
-  const originalTimestamp = (route.params.item.date);
+  const route = useRoute();
+  console.log(route.params.item.date);
+  const originalTimestamp = route.params.item.date;
   const dateObject = new Date(originalTimestamp);
-  
+
   const hours = dateObject.getHours().toString().padStart(2, '0');
   const minutes = dateObject.getMinutes().toString().padStart(2, '0');
   const day = dateObject.getDate().toString().padStart(2, '0');
   const month = (dateObject.getMonth() + 1).toString().padStart(2, '0'); // Note: Months are zero-based
   const year = dateObject.getFullYear();
-  
+
   const finalFormattedString = `${hours}:${minutes} ${day}-${month}-${year}`;
-  
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -56,18 +55,18 @@ export default function DetailsPage() {
         </View>
         <Image
           // source={require('../../assets/Image/football.webp')}
-          source={ {uri: `${IP}/file/${route.params.item.attachments}`}}
+          source={{uri: `${IP}/file/${route.params.item.attachments}`}}
           style={styles.img_style}
         />
-          <Text style={styles.title_text}>{route.params.item.title}</Text>
-        <Text style={styles.desc_text}>
-         {route.params.item.description}
-        </Text>
+        <Text style={styles.title_text}>{route.params.item.title}</Text>
+        <Text style={styles.desc_text}>{route.params.item.description}</Text>
 
         <View style={styles.last_box}>
           <Text style={styles.amt_text}>AMT - {route.params.item.amt}</Text>
           <Text style={styles.odd_text}>ODDS - {route.params.item.odds}</Text>
-          <Text style={styles.probs_text}>PROBS -{route.params.item.probs}</Text>
+          <Text style={styles.probs_text}>
+            PROBS -{route.params.item.probs}
+          </Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -97,7 +96,7 @@ const styles = StyleSheet.create({
     color: Colors.whiteText,
     fontSize: responsiveFontSize(1.9),
     fontWeight: '900',
-    marginTop:10
+    marginTop: 10,
   },
   desc_text: {
     color: '#d0d0d0',

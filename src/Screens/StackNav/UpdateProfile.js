@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
   Image,
@@ -10,15 +10,16 @@ import {
   ToastAndroid,
   View,
   ActivityIndicator,
-  RefreshControl
+  RefreshControl,
+  StyleSheet,
 } from 'react-native';
 import Colors from '../../Constants/Colors';
 import Header from '../../Components/Header';
 import ImagePath from '../../Constants/ImagePath';
 import Button from '../../Components/Button';
 import Tabs from '../../Navigation/TabsNav';
-const { width, height } = Dimensions.get('screen');
-import { useNavigation } from '@react-navigation/native';
+const {width, height} = Dimensions.get('screen');
+import {useNavigation} from '@react-navigation/native';
 import {
   responsiveWidth,
   responsiveFontSize,
@@ -27,7 +28,7 @@ import {
 import NavigationString from '../../Constants/NavigationString';
 import InputComp from '../../Components/InputComp';
 import ContactAreaComp from '../../Components/ContactAreaComp';
-import { IP } from '../../Constants/Server';
+import {IP} from '../../Constants/Server';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../../Components/Loader';
 
@@ -40,11 +41,11 @@ function UpdateProfile() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [token, setToken] = useState('');
-  const [refreshing, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
 
   async function fetchData() {
     try {
-      setRefreshing(true)
+      setRefreshing(true);
       const storedToken = await AsyncStorage.getItem('token');
       setToken(storedToken);
 
@@ -57,9 +58,8 @@ function UpdateProfile() {
       setName(storedName || '');
     } catch (error) {
       console.error(error);
-    }
-    finally{
-      setRefreshing(false)
+    } finally {
+      setRefreshing(false);
     }
   }
   useEffect(() => {
@@ -74,7 +74,7 @@ function UpdateProfile() {
       email: email,
       password: password,
       confirm_password: confirmPassword,
-      mobile: mobile
+      mobile: mobile,
     };
 
     try {
@@ -88,7 +88,7 @@ function UpdateProfile() {
       });
 
       const responseData = await response.json();
-      console.log("responseData", responseData)
+      console.log('responseData', responseData);
       if (response.status === 200) {
         console.log('Profile update successfully');
         setLoading(false);
@@ -96,7 +96,7 @@ function UpdateProfile() {
         await AsyncStorage.setItem('email', email);
         await AsyncStorage.setItem('mobile', mobile);
         await AsyncStorage.setItem('full_name', name);
-        onRefresh()
+        onRefresh();
       } else {
         setLoading(false);
         console.log('Error:', responseData.msg);
@@ -115,53 +115,24 @@ function UpdateProfile() {
   const handleLogout = async () => {
     await AsyncStorage.clear();
     navigation.replace(NavigationString.TABS);
-  }
+  };
 
   return (
-    
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{flex: 1}}>
       <Header />
       <ScrollView
-        style={{
-          backgroundColor: Colors.mainColor,
-          height: '100%',
-          padding: 10,
-        }}
+        style={styles.ScrollViewContent}
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
-        }
-        >
-        <View
-          style={{
-            height: responsiveHeight(15),
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <View style={styles.headingView}>
           <Image
             source={ImagePath.ProfileIcon}
-            style={{
-              width: responsiveWidth(10),
-              height: responsiveHeight(8),
-              tintColor: Colors.whiteText,
-            }}
+            style={styles.ProfileIconStyle}
           />
-          <Text
-            style={{
-              fontSize: responsiveFontSize(3),
-              color: Colors.whiteText,
-              fontWeight: '900',
-            }}>
-            UPDATE PROFILE
-          </Text>
+          <Text style={styles.UpdateProfileText}>UPDATE PROFILE</Text>
         </View>
-        <InputComp
-          title={'Full name'}
-          value={name}
-          onChangeText={setName}
-        />
+        <InputComp title={'Full name'} value={name} onChangeText={setName} />
         <InputComp
           title={'Email'}
           value={email}
@@ -204,8 +175,30 @@ function UpdateProfile() {
         </Text>
       </ScrollView>
     </SafeAreaView>
-   
   );
 }
 
 export default UpdateProfile;
+
+const styles = StyleSheet.create({
+  ScrollViewContent: {
+    backgroundColor: Colors.mainColor,
+    height: '100%',
+    padding: 10,
+  },
+  ProfileIconStyle: {
+    width: responsiveWidth(10),
+    height: responsiveHeight(8),
+    tintColor: Colors.whiteText,
+  },
+  UpdateProfileText: {
+    fontSize: responsiveFontSize(3),
+    color: Colors.whiteText,
+    fontWeight: '900',
+  },
+  headingView: {
+    height: responsiveHeight(15),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

@@ -167,7 +167,7 @@ function Plans() {
         <Header />
         <View style={{ backgroundColor: Colors.mainColor, height: '100%', padding: 5 }}>
           <View style={{ height: '10%', justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ fontSize: responsiveFontSize(3), color: Colors.whiteText, fontWeight: '900' }}>PLANS</Text>
+            <Text style={styles.plantext}>PLANS</Text>
           </View>
           <ScrollView style={{ flex: 1, padding: 10, height: 'auto' }}>
             <FlatList
@@ -226,4 +226,5 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: responsiveFontSize(1.5),
   },
+  plantext:{ fontSize: responsiveFontSize(3), color: Colors.whiteText, fontWeight: '900' }
 });

@@ -1,12 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Dimensions, Image, SafeAreaView, Text, View, TouchableOpacity } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  Dimensions,
+  Image,
+  SafeAreaView,
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 import Colors from '../../Constants/Colors';
 import Header from '../../Components/Header';
 import ImagePath from '../../Constants/ImagePath';
 import Button from '../../Components/Button';
-const { width, height } = Dimensions.get('screen');
-import { useNavigation } from '@react-navigation/native';
-import { IP } from '../../Constants/Server';
+const {width, height} = Dimensions.get('screen');
+import {useNavigation} from '@react-navigation/native';
+import {IP} from '../../Constants/Server';
 import {
   responsiveWidth,
   responsiveFontSize,
@@ -33,7 +41,7 @@ function VIP() {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': token,
+            Authorization: token,
           },
         });
 
@@ -42,7 +50,7 @@ function VIP() {
         }
 
         const data = await response.json();
-        console.log("membership", data);
+        console.log('membership', data);
 
         setMembershipLevel(data.membershipType);
         await AsyncStorage.setItem('membership', data.membershipType);
@@ -54,15 +62,14 @@ function VIP() {
         result.setDate(result.getDate() + daysToAdd);
         setMembershipEndDate(result);
       } catch (error) {
-        console.error("Error:", error);
+        console.error('Error:', error);
       }
     };
 
     getUserMembership();
   }, []); // Run once when component mounts
 
-
-  console.log("membership status", status);
+  console.log('membership status', status);
 
   async function fetchData() {
     try {
@@ -76,77 +83,31 @@ function VIP() {
   }
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('state', () => { fetchData() });
+    const unsubscribe = navigation.addListener('state', () => {
+      fetchData();
+    });
     return unsubscribe;
   }, [navigation]);
 
   const handlePress = () => {
-     {token ? navigation.navigate(NavigationString.PLAN) : navigation.navigate('LOGIN') } 
+    {
+      token
+        ? navigation.navigate(NavigationString.PLAN)
+        : navigation.navigate('LOGIN');
+    }
   };
 
-  // useEffect(() => {
-  //   // if (token && membership) {
-  //   //   navigation.navigate(NavigationString.VIP_TIPS);
-  //   // }
-  //   handlePress()
-  // }, [])
-
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{flex: 1}}>
       <Header />
-      <View
-        style={{
-          backgroundColor: Colors.mainColor,
-          height: responsiveHeight(100),
-          padding: 10,
-        }}>
-        <View
-          style={{
-            height: responsiveHeight(15),
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexDirection: 'row',
-          }}>
-          <Image
-            source={ImagePath.mikeIcon}
-            style={{
-              width: responsiveWidth(8),
-              tintColor: Colors.whiteText,
-              top: -responsiveHeight(1.2),
-              left: -responsiveWidth(0.3),
-            }}
-          />
-          <Text
-            style={{
-              fontSize: responsiveFontSize(5),
-              color: Colors.whiteText,
-              fontWeight: '900',
-            }}>
-            VIP TIPS
-          </Text>
-          <Image
-            source={ImagePath.starsIcon}
-            style={{
-              width: responsiveWidth(6),
-              top: -responsiveHeight(1),
-              left: responsiveWidth(-1),
-            }}
-          />
+      <View style={styles.mainConatiner}>
+        <View style={styles.headingView}>
+          <Image source={ImagePath.mikeIcon} style={styles.IconStyle} />
+          <Text style={styles.VipText}>VIP TIPS</Text>
+          <Image source={ImagePath.starsIcon} style={styles.mikeIconStyle} />
         </View>
 
-        <View
-          style={{
-            backgroundColor: Colors.brownColor,
-            width: width * 0.95,
-            height: height * 0.12,
-            borderRadius: 20,
-            marginVertical: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: 10,
-            elevation: 4,
-            shadowColor: '#000',
-          }}>
+        <View style={styles.cardBox}>
           <Text
             style={{
               fontSize: responsiveFontSize(2),
@@ -154,7 +115,8 @@ function VIP() {
               textAlign: 'center',
             }}>
             {' '}
-            To Access the VIP TIPS you have to create an account and buy membership
+            To Access the VIP TIPS you have to create an account and buy
+            membership
           </Text>
         </View>
 
@@ -166,30 +128,18 @@ function VIP() {
           onPress={handlePress}
         />
 
-
-
         {!token && (
-          <View
-            style={{
-              height: responsiveHeight(4),
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'row',
-              marginVertical: responsiveHeight(1.5),
-            }}>
-            <Text style={{ color: Colors.grayText }}>Already have an account? </Text>
+          <View style={styles.loginLinkArea}>
+            <Text style={{color: Colors.grayText}}>
+              Already have an account?{' '}
+            </Text>
             <TouchableOpacity
               onPress={() => navigation.navigate('LOGIN')}
               activeOpacity={0.8}>
-              <Text style={{ color: Colors.grayText }}>Login</Text>
+              <Text style={styles.loginText}>Login</Text>
             </TouchableOpacity>
           </View>
-        )
-        }
-
-
-
-
+        )}
 
         <ContactAreaComp />
       </View>
@@ -198,3 +148,53 @@ function VIP() {
 }
 
 export default VIP;
+
+const styles = StyleSheet.create({
+  mainConatiner: {
+    backgroundColor: Colors.mainColor,
+    height: responsiveHeight(100),
+    padding: 10,
+  },
+  headingView: {
+    height: responsiveHeight(15),
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  IconStyle: {
+    width: responsiveWidth(8),
+    tintColor: Colors.whiteText,
+    top: -responsiveHeight(1.2),
+    left: -responsiveWidth(0.3),
+  },
+  VipText: {
+    fontSize: responsiveFontSize(5),
+    color: Colors.whiteText,
+    fontWeight: '900',
+  },
+  mikeIconStyle: {
+    width: responsiveWidth(6),
+    top: -responsiveHeight(1),
+    left: responsiveWidth(-1),
+  },
+  cardBox: {
+    backgroundColor: Colors.brownColor,
+    width: width * 0.95,
+    height: height * 0.12,
+    borderRadius: 20,
+    marginVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    elevation: 4,
+    shadowColor: '#000',
+  },
+  loginLinkArea: {
+    height: responsiveHeight(4),
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginVertical: responsiveHeight(1.5),
+  },
+  loginText: {color: Colors.grayText},
+});

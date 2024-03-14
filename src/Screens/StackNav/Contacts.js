@@ -62,16 +62,7 @@ function Contacts() {
             <Text style={styles.Contacts_text}>CONTACTS</Text>
           </View>
           <View
-            style={{
-              backgroundColor: Colors.brownColor,
-              width: responsiveWidth(95),
-              height: responsiveHeight(30),
-              borderRadius: 20,
-              marginVertical: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
-              justifyContent: 'space-evenly',
-            }}>
+            style={styles.cardstyle}>
             <Text
               style={{
                 color: Colors.whiteText,
@@ -121,4 +112,14 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(2),
     marginLeft: responsiveWidth(2),
   },
+  cardstyle:{
+    backgroundColor: Colors.brownColor,
+    width: responsiveWidth(95),
+    height: responsiveHeight(30),
+    borderRadius: 20,
+    marginVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+  }
 });

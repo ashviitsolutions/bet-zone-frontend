@@ -1,5 +1,5 @@
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -13,36 +13,32 @@ export default function FilterDropDown({
   onSelect = () => {},
 }) {
   const [showOption, setShowOption] = useState(false);
-  const onSelectedItem = val => {
+
+  const onSelectedItem = (val) => {
     setShowOption(false);
     onSelect(val);
   };
+
   return (
-    <View>
+    <View style={styles.container}>
       <TouchableOpacity onPress={() => setShowOption(!showOption)}>
         <Image source={require('../assets/icons/filter.png')} />
       </TouchableOpacity>
 
       {showOption && (
-        <View style={styles.DropDownBox}>
+        <View style={styles.dropDownBox}>
           {data.map((val, i) => (
             <TouchableOpacity
               onPress={() => onSelectedItem(val)}
               key={String(i)}
-              style={{
-                width: responsiveWidth(15),
-                height: responsiveHeight(3),
-                borderRadius: responsiveWidth(1),
-                borderWidth: 1,
-                alignItems: 'center',
-                borderColor: Colors.grayText,
-                backgroundColor:
-                  value && value.id === val.id ? Colors.grayText : '#fff',
-                marginBottom: 1,
-              }}>
-              <Text style={{color: Colors.blackText, fontWeight: '900'}}>
-                {val.name}
-              </Text>
+              style={[
+                styles.optionItem,
+                {
+                  backgroundColor: value && value.id === val.id ? Colors.grayText : '#fff',
+                },
+              ]}
+            >
+              <Text style={styles.optionText}>{val.name}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -52,26 +48,28 @@ export default function FilterDropDown({
 }
 
 const styles = StyleSheet.create({
-  vipBox: {
-    width: responsiveWidth(20),
-    height: responsiveHeight(3),
-    borderRadius: responsiveWidth(15),
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    borderWidth: 1,
-    borderColor: Colors.grayText,
+  container: {
+    // Add container styles if needed
   },
-  vipText: {
-    color: Colors.whiteText,
-    fontSize: responsiveFontSize(1.8),
-    fontWeight: '900',
-  },
-  DropDownBox: {
+  dropDownBox: {
     zIndex: 1,
     position: 'absolute',
     top: 25,
-    borderColor: Colors.grayText,
     left: -40,
+    borderColor: Colors.grayText,
+  },
+  optionItem: {
+    width: responsiveWidth(15),
+    height: responsiveHeight(3),
+    borderRadius: responsiveWidth(1),
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 1,
+    borderColor: Colors.grayText,
+  },
+  optionText: {
+    color: Colors.blackText,
+    fontWeight: '900',
   },
 });

@@ -1,24 +1,30 @@
-import React from 'react'
-import { Dimensions, Image, View } from 'react-native'
+import React from 'react';
+import {Dimensions, Image, StyleSheet, View} from 'react-native';
 import Colors from '../Constants/Colors';
 import ImagePath from '../Constants/ImagePath';
 const {width, height} = Dimensions.get('screen');
 import {
   responsiveHeight,
   responsiveWidth,
-  responsiveFontSize
-} from "react-native-responsive-dimensions"
+  responsiveFontSize,
+} from 'react-native-responsive-dimensions';
 function Header() {
   return (
-   <View style={{height:responsiveHeight(10),backgroundColor:Colors.mainColor,justifyContent:'center',alignItems:'center'}}>
-
-<Image 
-source={ImagePath.headerIcon}
-style={{resizeMode:'contain',height:responsiveHeight(7)}}
-/>
-   </View>
-
-  )
+    <View style={styles.mainContainer}>
+      <Image
+        source={ImagePath.headerIcon}
+        style={{resizeMode: 'contain', height: responsiveHeight(7)}}
+      />
+    </View>
+  );
 }
 
-export default Header
+export default Header;
+const styles = StyleSheet.create({
+  mainContainer: {
+    height: responsiveHeight(10),
+    backgroundColor: Colors.mainColor,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

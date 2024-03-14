@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
   Image,
@@ -9,15 +9,16 @@ import {
   TextInput,
   ToastAndroid,
   View,
-  ActivityIndicator
+  ActivityIndicator,
+  StyleSheet,
 } from 'react-native';
 import Colors from '../../Constants/Colors';
 import Header from '../../Components/Header';
 import ImagePath from '../../Constants/ImagePath';
 import Button from '../../Components/Button';
 import Tabs from '../../Navigation/TabsNav';
-const { width, height } = Dimensions.get('screen');
-import { useNavigation } from '@react-navigation/native';
+const {width, height} = Dimensions.get('screen');
+import {useNavigation} from '@react-navigation/native';
 import {
   responsiveWidth,
   responsiveFontSize,
@@ -26,7 +27,7 @@ import {
 import NavigationString from '../../Constants/NavigationString';
 import InputComp from '../../Components/InputComp';
 import ContactAreaComp from '../../Components/ContactAreaComp';
-import { IP } from '../../Constants/Server';
+import {IP} from '../../Constants/Server';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../../Components/Loader';
 
@@ -41,17 +42,26 @@ function Register() {
 
   const handleSubmit = async () => {
     if (mobile.length < 8) {
-      ToastAndroid.show('Mobile number must be at least 10 digits', ToastAndroid.LONG);
+      ToastAndroid.show(
+        'Mobile number must be at least 10 digits',
+        ToastAndroid.LONG,
+      );
       return;
     }
 
     if (password.length < 8) {
-      ToastAndroid.show('Password must be at least 8 characters', ToastAndroid.LONG);
+      ToastAndroid.show(
+        'Password must be at least 8 characters',
+        ToastAndroid.LONG,
+      );
       return;
     }
 
     if (password !== confirmPassword) {
-      ToastAndroid.show('Password and Confirm Password must match', ToastAndroid.LONG);
+      ToastAndroid.show(
+        'Password and Confirm Password must match',
+        ToastAndroid.LONG,
+      );
       return;
     }
 
@@ -85,49 +95,31 @@ function Register() {
         ToastAndroid.show('Registration successful!', ToastAndroid.SHORT);
         navigation.navigate('LOGIN');
       } else if (response.status === 400) {
-        ToastAndroid.show('Email or mobile number already used', ToastAndroid.LONG);
+        ToastAndroid.show(
+          'Email or mobile number already used',
+          ToastAndroid.LONG,
+        );
       }
     } catch (error) {
       setLoading(false);
       console.error(error);
-      ToastAndroid.show('An error occurred. Please try again later.', ToastAndroid.LONG);
+      ToastAndroid.show(
+        'An error occurred. Please try again later.',
+        ToastAndroid.LONG,
+      );
     }
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{flex: 1}}>
       <Header />
-      <ScrollView
-        style={{
-          backgroundColor: Colors.mainColor,
-          height: responsiveHeight(100),
-          padding: 10,
-        }}
-      >
-        <View
-          style={{
-            height: responsiveHeight(15),
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
+      <ScrollView style={styles.ScrollViewContent}>
+        <View style={styles.headingView}>
           <Image
             source={ImagePath.ProfileIcon}
-            style={{
-              width: responsiveWidth(10),
-              height: responsiveHeight(8),
-              tintColor: Colors.whiteText,
-            }}
+            style={styles.ProfileIconStyle}
           />
-          <Text
-            style={{
-              fontSize: responsiveFontSize(3),
-              color: Colors.whiteText,
-              fontWeight: '900',
-            }}
-          >
-            CREATE ACCOUNT
-          </Text>
+          <Text style={styles.createaccounttext}>CREATE ACCOUNT</Text>
         </View>
         <InputComp
           title={'full name'}
@@ -151,7 +143,6 @@ function Register() {
           value={password}
           onChangeText={setPassword}
           password={true}
-          
         />
         <InputComp
           title={'confirm password'}
@@ -161,7 +152,9 @@ function Register() {
         />
         <Button w={30} h={5} br={6} title={'SIGN UP'} onPress={handleSubmit} />
 
-        {loading && <ActivityIndicator size="large" color={Colors.yellowColor} />}
+        {loading && (
+          <ActivityIndicator size="large" color={Colors.yellowColor} />
+        )}
 
         <ContactAreaComp />
       </ScrollView>
@@ -170,3 +163,26 @@ function Register() {
 }
 
 export default Register;
+
+const styles = StyleSheet.create({
+  ScrollViewContent: {
+    backgroundColor: Colors.mainColor,
+    height: responsiveHeight(100),
+    padding: 10,
+  },
+  headingView: {
+    height: responsiveHeight(15),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  ProfileIconStyle: {
+    width: responsiveWidth(10),
+    height: responsiveHeight(8),
+    tintColor: Colors.whiteText,
+  },
+  createaccounttext: {
+    fontSize: responsiveFontSize(3),
+    color: Colors.whiteText,
+    fontWeight: '900',
+  },
+});

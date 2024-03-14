@@ -30,7 +30,6 @@ function AdminHomePage() {
   const [refreshing, setRefreshing] = useState(false); // Add refreshing state
   const [searchText, setSearchText] = useState('');
   const [dropDownValue, setDropDownValue] = useState('ALL');
-  console.log(dropDownValue)
   const fetchData = async () => {
     try {
       setRefreshing(true);
@@ -51,14 +50,33 @@ function AdminHomePage() {
     fetchData(); // Step 4: Call fetchData with search parameters
   };
 
-  const filterData = () => {
-    return data.filter((item) =>
-      item.title.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchText.toLowerCase()) || 
-      item.type.toLowerCase().includes(dropDownValue.toLowerCase())
-    );
-  };
+// Filter function for search text
+const filterByText = (item) => {
+  return (
+    item.title.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.description.toLowerCase().includes(searchText.toLowerCase())
+  );
+};
 
+// Filter function for dropdown value
+const filterByDropDown = (item) => {
+  return item.type.toLowerCase().includes(dropDownValue.toLowerCase());
+};
+
+// Combined filter function
+const filterData = () => {
+  let filteredData = data;
+  // Apply filter by search text if searchText is not empty
+  if (searchText.trim() !== '') {
+    filteredData = filteredData.filter(filterByText);
+  }
+   // Apply filter by dropdown value if it's not "ALL"
+   if (dropDownValue !== 'ALL') {
+    filteredData = filteredData.filter(filterByDropDown);
+  }
+
+  return filteredData;
+};
   useEffect(() => {
     fetchData();
   }, [searchText,dropDownValue]); // Step 3: Add searchText as a dependency
