@@ -41,7 +41,7 @@ function Register() {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (mobile.length != 8) {
+    if (mobile.length < 8) {
       ToastAndroid.show(
         'Mobile number must be at 8 digits',
         ToastAndroid.LONG,

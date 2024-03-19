@@ -44,7 +44,7 @@ const [userId,setUserId]=useState('')
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
+       {!token ?  setLoading(true) : null}
         const storedToken = await AsyncStorage.getItem('token');
         setToken(storedToken);
         setLoading(false);
@@ -59,8 +59,7 @@ const [userId,setUserId]=useState('')
   useEffect(() => {
     const getUserMembership = async () => {
       try {
-        setLoading(true)
-        const token = await AsyncStorage.getItem('token');
+      
         const response = await fetch(`${IP}/user/membership-details`, {
           method: 'GET',
           headers: {
@@ -79,9 +78,8 @@ const [userId,setUserId]=useState('')
         setMembershipLevel(data.membershipType);
         await AsyncStorage.setItem('membership', data.membershipType);
         setStatus(data.status);
-        
         setMembership(data.status === 'active');
-
+        
         const daysToAdd = data.renewalDays;
         const result = new Date(data.lastRenewalPaymentDate);
         result.setDate(result.getDate() + daysToAdd);
@@ -112,7 +110,7 @@ const [userId,setUserId]=useState('')
 
 // console.warn(status)
 
-  if (loading) {
+  if (loading ) {
     return <Loadercomp />;
   }
 

@@ -60,7 +60,7 @@ const AddUser = () => {
 
   const handleAddUser = async () => {
     if (mobile.length < 8) {
-      ToastAndroid.show('Mobile number must be at least 10 digits', ToastAndroid.LONG);
+      ToastAndroid.show('Mobile number must be at 8 digits', ToastAndroid.LONG);
       return;
     }
 

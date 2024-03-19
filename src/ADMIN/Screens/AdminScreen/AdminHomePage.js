@@ -6,11 +6,12 @@ import {
   SafeAreaView,
   ScrollView,
   View,
-  RefreshControl, // Import RefreshControl
+  RefreshControl,
+  Platform,
+  ActivityIndicator, // Import Platform for keyboardVerticalOffset
 } from 'react-native';
 import Colors from '../../../Constants/Colors';
 import Header from '../../../Components/Header';
-const { width, height } = Dimensions.get('screen');
 import { useNavigation } from '@react-navigation/native';
 import {
   responsiveWidth,
@@ -23,21 +24,26 @@ import AdminHeaderBar from '../../../Components/AdminHeaderBar';
 import { IP } from '../../../Constants/Server';
 import Loader from '../../../Components/Loader';
 
+const { width, height } = Dimensions.get('screen');
+
 function AdminHomePage() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
-  const [refreshing, setRefreshing] = useState(false); // Add refreshing state
+  const [refreshing, setRefreshing] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [dropDownValue, setDropDownValue] = useState('ALL');
+  const [page, setPage] = useState(1); // Track current page for pagination
+
   const fetchData = async () => {
     try {
       setRefreshing(true);
       const response = await fetch(
-        `${IP}/service/view-services?page=1&limit=18&search=${searchText}` // Step 2: Include search parameters
+        `${IP}/service/view-services?page=1&limit=${page}&search=${searchText}`
       );
       const newData = await response.json();
-      setData(newData.services);
+      // setData(prevData => [...prevData, ...newData.services]); // Append new data to existing data
+      setData([...data, ...newData.services]);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -47,40 +53,43 @@ function AdminHomePage() {
   };
 
   const onRefresh = () => {
-    fetchData(); // Step 4: Call fetchData with search parameters
+    fetchData();
   };
 
-// Filter function for search text
-const filterByText = (item) => {
-  return (
-    item.title.toLowerCase().includes(searchText.toLowerCase()) ||
-    item.description.toLowerCase().includes(searchText.toLowerCase())
-  );
-};
+  const loadMore = () => {
+    setPage(page + 1)
+  };
 
-// Filter function for dropdown value
-const filterByDropDown = (item) => {
-  return item.type.toLowerCase().includes(dropDownValue.toLowerCase());
-};
-
-// Combined filter function
-const filterData = () => {
-  let filteredData = data;
-  // Apply filter by search text if searchText is not empty
-  if (searchText.trim() !== '') {
-    filteredData = filteredData.filter(filterByText);
+  const renderLoader=()=>{
+    return(<View>
+      {/* <ActivityIndicator size={'large'}/> */}
+    </View>)
   }
-   // Apply filter by dropdown value if it's not "ALL"
-   if (dropDownValue !== 'ALL') {
-    filteredData = filteredData.filter(filterByDropDown);
-  }
+  const filterByText = (item) => {
+    return (
+      item.title.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchText.toLowerCase())
+    );
+  };
 
-  return filteredData;
-};
+  const filterByDropDown = (item) => {
+    return item.type.toLowerCase().includes(dropDownValue.toLowerCase());
+  };
+
+  const filterData = () => {
+    let filteredData = data;
+    if (searchText.trim() !== '') {
+      filteredData = filteredData.filter(filterByText);
+    }
+    if (dropDownValue !== 'ALL') {
+      filteredData = filteredData.filter(filterByDropDown);
+    }
+    return filteredData;
+  };
+
   useEffect(() => {
     fetchData();
-  }, [searchText,dropDownValue]); // Step 3: Add searchText as a dependency
-
+  }, [searchText, dropDownValue,page]); // Update useEffect dependencies
 
   return (
     <>
@@ -97,7 +106,7 @@ const filterData = () => {
             rightTitle={'+ NEW TIP'}
             onPress={() => navigation.navigate('NewTips')}
           />
-          <SearchBar onChangeText={setSearchText} filtericon={true} setDropDownValue={setDropDownValue} /> 
+          <SearchBar onChangeText={setSearchText} filtericon={true} setDropDownValue={setDropDownValue} />
           <KeyboardAvoidingView
             behavior="padding"
             style={{ flex: 1 }}
@@ -110,7 +119,7 @@ const filterData = () => {
                 />
               }>
               <FlatList
-                  data={filterData()}
+                data={filterData()}
                 renderItem={({ item }) => (
                   <AdminCard
                     item={item}
@@ -120,6 +129,9 @@ const filterData = () => {
                 keyExtractor={(item, index) => (item && item.id ? item.id.toString() : index.toString())}
                 contentContainerStyle={{ paddingBottom: responsiveHeight(20) }}
                 showsVerticalScrollIndicator={false}
+                onEndReachedThreshold={0.1} // Load more when 10% from the bottom
+                onEndReached={loadMore} // Call loadMore function when reaching the end
+                ListFooterComponent={renderLoader}
               />
             </ScrollView>
           </KeyboardAvoidingView>
