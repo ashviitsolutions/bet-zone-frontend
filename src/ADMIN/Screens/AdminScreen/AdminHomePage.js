@@ -8,7 +8,7 @@ import {
   View,
   RefreshControl,
   Platform,
-  ActivityIndicator, // Import Platform for keyboardVerticalOffset
+  ActivityIndicator,
 } from 'react-native';
 import Colors from '../../../Constants/Colors';
 import Header from '../../../Components/Header';
@@ -33,46 +33,76 @@ function AdminHomePage() {
   const [refreshing, setRefreshing] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [dropDownValue, setDropDownValue] = useState('ALL');
-  const [page, setPage] = useState(1); // Track current page for pagination
+  const [page, setPage] = useState(0); // Track current page for pagination
+  const [isFetching, setIsFetching] = useState(false); // Track whether new data is being fetched
 
-  const fetchData = async () => {
-    try {
-      setRefreshing(true);
-      const response = await fetch(
-        `${IP}/service/view-services?page=1&limit=${page}&search=${searchText}`
-      );
-      const newData = await response.json();
-      // setData(prevData => [...prevData, ...newData.services]); // Append new data to existing data
-      setData([...data, ...newData.services]);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setRefreshing(false);
-      setLoading(false);
+  useEffect(() => {
+    setLoading(true);
+    fetch(`${IP}/service/view-services?page=${page}&limit=10`)
+      .then(resp => resp.json())
+      .then(result => {
+        if (result.msg) {
+          // Handle the case where no providers are found
+          console.log('result :   ',result.msg);
+        } else {
+          setLoading(false);
+          console.log("result" ,result)
+          setData(prevData => {
+            // Check for duplicates and concatenate only unique entries
+            const newData = result.filter(newItem => !prevData.some(oldItem => oldItem._id === newItem._id));
+            return [...prevData, ...newData];
+          });
+          // setCount('resulttt......',result);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false); // Set loading to false after fetching data
+      });
+  }, [page]);
+
+  const onRefresh = () => {
+    setRefreshing(true); // Set refreshing to true to show the refresh indicator
+  
+    // Fetch data from the server
+    fetch(`${IP}/service/view-services?page=0&limit=10`)
+      .then(resp => resp.json())
+      .then(result => {
+        if (result.msg) {
+          console.log('result:', result.msg);
+        } else {
+          setData(result); // Update the data with the newly fetched data
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+        setRefreshing(false); // Set refreshing to false when data fetching is done
+      });
+  };
+  
+
+  const loadMore = () => {
+    if (!isFetching) {
+      setPage(page + 1);
     }
   };
 
-  const onRefresh = () => {
-    fetchData();
+  const renderLoader = () => {
+    
   };
 
-  const loadMore = () => {
-    setPage(page + 1)
-  };
-
-  const renderLoader=()=>{
-    return(<View>
-      {/* <ActivityIndicator size={'large'}/> */}
-    </View>)
-  }
-  const filterByText = (item) => {
+  const filterByText = item => {
     return (
       item.title.toLowerCase().includes(searchText.toLowerCase()) ||
       item.description.toLowerCase().includes(searchText.toLowerCase())
     );
   };
 
-  const filterByDropDown = (item) => {
+  const filterByDropDown = item => {
     return item.type.toLowerCase().includes(dropDownValue.toLowerCase());
   };
 
@@ -86,10 +116,6 @@ function AdminHomePage() {
     }
     return filteredData;
   };
-
-  useEffect(() => {
-    fetchData();
-  }, [searchText, dropDownValue,page]); // Update useEffect dependencies
 
   return (
     <>
@@ -106,17 +132,19 @@ function AdminHomePage() {
             rightTitle={'+ NEW TIP'}
             onPress={() => navigation.navigate('NewTips')}
           />
-          <SearchBar onChangeText={setSearchText} filtericon={true} setDropDownValue={setDropDownValue} />
+          <SearchBar
+            onChangeText={setSearchText}
+            filtericon={true}
+            setDropDownValue={setDropDownValue}
+          />
           <KeyboardAvoidingView
             behavior="padding"
             style={{ flex: 1 }}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-            <ScrollView style={{ flex: 1, padding: 10 }}
+            <ScrollView
+              style={{ flex: 1, padding: 10 }}
               refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                />
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }>
               <FlatList
                 data={filterData()}
@@ -126,11 +154,13 @@ function AdminHomePage() {
                     onPress={() => navigation.navigate('EditTip', { item: item })}
                   />
                 )}
-                keyExtractor={(item, index) => (item && item.id ? item.id.toString() : index.toString())}
+                keyExtractor={(item, index) =>
+                  item && item.id ? item.id.toString() : index.toString()
+                }
                 contentContainerStyle={{ paddingBottom: responsiveHeight(20) }}
                 showsVerticalScrollIndicator={false}
-                onEndReachedThreshold={0.1} // Load more when 10% from the bottom
-                onEndReached={loadMore} // Call loadMore function when reaching the end
+                onEndReachedThreshold={0.1}
+                onEndReached={loadMore}
                 ListFooterComponent={renderLoader}
               />
             </ScrollView>

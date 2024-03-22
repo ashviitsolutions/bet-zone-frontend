@@ -73,11 +73,12 @@ const [userId,setUserId]=useState('')
         }
 
         const data = await response.json();
-        // console.warn('membership', data);
+       
+        const last_element = data[data.length - 1];
+        setStatus(last_element?.status);
 
         setMembershipLevel(data.membershipType);
         await AsyncStorage.setItem('membership', data.membershipType);
-        setStatus(data.status);
         setMembership(data.status === 'active');
         
         const daysToAdd = data.renewalDays;

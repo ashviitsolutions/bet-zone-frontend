@@ -94,7 +94,7 @@ function Profile() {
           style={{
             flexDirection: 'row',
             alignSelf: 'center',
-            marginTop: width * 0.4,
+            marginTop: responsiveWidth(30),
             justifyContent: 'center',
             alignItems: 'center',
           }}>

@@ -1,22 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
-  Image,
   KeyboardAvoidingView,
   SafeAreaView,
   ScrollView,
   Text,
-  TouchableOpacity,
+TouchableOpacity,
   View,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import Colors from '../../../Constants/Colors';
 import Header from '../../../Components/Header';
-import ImagePath from '../../../Constants/ImagePath';
 import Button from '../../../Components/Button';
-const {width, height} = Dimensions.get('screen');
-import {useNavigation} from '@react-navigation/native';
+const { width, height } = Dimensions.get('screen');
+import { useNavigation } from '@react-navigation/native';
 import {
   responsiveWidth,
   responsiveFontSize,
@@ -24,23 +23,29 @@ import {
 } from 'react-native-responsive-dimensions';
 import SearchBar from '../../../Components/SearchBar';
 import AdminHeaderBar from '../../../Components/AdminHeaderBar';
-import {IP} from '../../../Constants/Server';
+import { IP } from '../../../Constants/Server';
 import Loader from '../../../Components/Loader';
+
+
 function ListUser() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  function Card({onPress, item}) {
-    const {member} = item;
-    console.log(item);
+  const [page, setPage] = useState(1); // Track current page for pagination
+  const [isFetching, setIsFetching] = useState(false); // Track whether new data is being fetched
+
+
+  function Card({ onPress, item }) {
+    const { member } = item;
     if (item.auth_type === 'admin') {
-      return null; // Do not render the card for admin
+      return null; 
     }
     return (
       <TouchableOpacity
         activeOpacity={0.7}
         onPress={onPress}
         style={{
+          flex:1,
           backgroundColor: Colors.brownColor,
           width: responsiveWidth(92),
           height: responsiveHeight(12),
@@ -105,7 +110,7 @@ function ListUser() {
           </Text>
         </View>
 
-        <View style={{alignItems: 'center', justifyContent: 'space-evenly'}}>
+        <View style={{ alignItems: 'center', justifyContent: 'space-evenly' }}>
           <Text
             style={{
               color: Colors.whiteText,
@@ -117,7 +122,7 @@ function ListUser() {
             w={25}
             h={3}
             br={6}
-            title={`${item.membershiplevel}`}
+            title={`${item.membershipType}`}
             customStyle={{
               marginTop: 3,
               marginBottom: 3,
@@ -131,6 +136,7 @@ function ListUser() {
               fontWeight: '900',
             }}
           />
+          
           <Text
             style={{
               color: Colors.whiteText,
@@ -146,42 +152,82 @@ function ListUser() {
 
   const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState('');
-
-  const fetchData = async () => {
-    try {
-      setRefreshing(true);
-      const response = await fetch(
-        `${IP}/getUsers?page=1&limit=18&search=${searchText}`,
-      );
-      const newData = await response.json();
-      setData(newData?.services);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setRefreshing(false);
-      setLoading(false);
-    }
-  };
-
+ 
+  useEffect(() => {
+    // setLoading(true);
+    setIsFetching(true); // Set isFetching to true when starting to fetch new data
+    fetch(`${IP}/getUsers?page=${page}&limit=10`)
+      .then(resp => resp.json())
+      .then(result => {
+        if (result.msg) {
+          // console.log('result: ', result.msg);
+        } else {
+          // setLoading(false);
+          setIsFetching(false); // Set isFetching to false when data fetching is complete
+          setData(prevData => [...prevData, ...result]); // Assuming 'result' is an array of new data
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+        // setLoading(false);
+        setIsFetching(false)
+      });
+  }, [page]);
+  
+  
   const onRefresh = () => {
-    fetchData();
+    console.log('Refreshing data...');
+    setRefreshing(true); // Set refreshing to true to show the refresh indicator
+  
+    // Fetch data from the server
+    fetch(`${IP}/getUsers?page=0&limit=10`)
+      .then(resp => resp.json())
+      .then(result => {
+        if (result.msg) {
+          console.log('result: ', result.msg);
+        } else {
+          console.log('New data fetched: ', result);
+          setData(result); // Set the new data
+        }
+      })
+      .catch(err => {
+        console.log('Error fetching data: ', err);
+      })
+      .finally(() => {
+        setRefreshing(false); // Set refreshing to false when data fetching is done
+        console.log('Refresh complete.');
+      });
+  };
+  
+
+const loadMore = () => {
+  if (!isFetching) {
+    setPage(page + 1);
+  }
+};
+
+  const renderLoader = () => {
+    return isFetching ? <ActivityIndicator size={'large'} color={Colors.yellowColor}/> : null;
   };
 
   const filterData = () => {
     return data.filter(
       item =>
-        item.full_name.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.email.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.mobile.toLowerCase().includes(searchText.toLowerCase()),
+        item?.full_name.toLowerCase().includes(searchText.toLowerCase()) ||
+        item?.email.toLowerCase().includes(searchText.toLowerCase()) ||
+        item?.mobile.toLowerCase().includes(searchText.toLowerCase()),
     );
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [searchText]);
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
+
   return (
     <>
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <Header />
         <View
           style={{
@@ -197,25 +243,26 @@ function ListUser() {
           <SearchBar onChangeText={setSearchText} filtericon={false} />
           <KeyboardAvoidingView
             behavior="padding"
-            style={{flex: 1}}
+            style={{ flex: 1 }}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
             <ScrollView
-              style={{flex: 1, padding: 10, marginBottom: responsiveHeight(15)}}
+              style={{ flex: 1, padding: 10, marginBottom: responsiveHeight(15) }}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }>
               <FlatList
                 data={filterData()}
-                renderItem={({item}) => (
+                renderItem={({ item }) => (
                   <Card
                     item={item}
-                    onPress={() =>
-                      navigation.navigate('EditUser', {item: item})
-                    }
+                    onPress={() => navigation.navigate('EditUser', { item: item })}
                   />
                 )}
                 keyExtractor={item => item.id.toString()}
                 showsVerticalScrollIndicator={false}
+                onEndReachedThreshold={0.5}
+                onEndReached={loadMore}
+                ListFooterComponent={renderLoader}
               />
             </ScrollView>
           </KeyboardAvoidingView>

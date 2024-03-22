@@ -26,6 +26,7 @@ import {
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
 import InputComp from '../../../Components/InputComp';
+import Loader from '../../../Components/Loader';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -40,7 +41,7 @@ const EditUser = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(item.membershiplevel || 'NO MEMBER');
+  const [value, setValue] = useState(item.membershipType || 'NO MEMBER');
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState('');
   const [items, setItems] = useState([
@@ -71,7 +72,7 @@ const EditUser = () => {
       confirm_password: confirmPassword,
       mobile: mobile,
       auth_type: 'user',
-      membershiplevel: value,
+      membershipType: value,
     };
 
     try {
@@ -102,6 +103,7 @@ const EditUser = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Header />
+      <>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.profileHeader}>
           <Image source={ImagePath.ProfileIcon} style={styles.profileIcon} />
@@ -126,9 +128,11 @@ const EditUser = () => {
         />
         <Button w={30} h={5} br={6} title={'UPDATE'} onPress={handleAddUser} />
         <Text style={styles.backText} onPress={() => navigation.goBack()}>Back</Text>
-        {loading && <ActivityIndicator size="large" color={Colors.yellowColor} />}
+        {/* {loading && <ActivityIndicator size="large" color={Colors.yellowColor} />} */}
         <ContactAreaComp customStyle={{marginBottom:10}} />
       </ScrollView>
+      {loading ? <Loader/>:null}
+      </>
     </SafeAreaView>
   );
 }

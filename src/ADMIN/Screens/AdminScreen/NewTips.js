@@ -161,6 +161,7 @@ export default function NewTips() {
             backgroundColor: Colors.mainColor,
             height: '100%',
             padding: 10,
+            flex:1
           }}>
           <View style={styles.hedaerSub}>
             <SportsDropDown
@@ -433,7 +434,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.grayText,
     width: responsiveWidth(25),
-    height: responsiveHeight(4.3),
+    height: responsiveHeight(4.5),
     borderRadius: 10,
   },
   input_filed: {

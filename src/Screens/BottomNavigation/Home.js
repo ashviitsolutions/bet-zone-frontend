@@ -38,7 +38,8 @@ function Home() {
       setRefreshing(true)
       const response = await fetch(`${IP}/service/view-services?page=1&limit=18`);
       const responseData = await response.json();
-      const filteredServices = responseData.services.filter(service => service.type === 'OLD');
+      console.log('rerewrwerwewe',responseData)
+      const filteredServices = responseData.filter(service => service.type === 'OLD');
       setData(filteredServices);
     } catch (error) {
       console.error('Error fetching data:', error);

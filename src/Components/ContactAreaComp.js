@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
   contactButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom:responsiveHeight(4)
   },
   contactIcon: {
     width: responsiveWidth(5),
@@ -54,6 +55,7 @@ const styles = StyleSheet.create({
   contactText: {
     color: Colors.grayText,
     fontSize: responsiveFontSize(1.3),
+   
   },
 });
 

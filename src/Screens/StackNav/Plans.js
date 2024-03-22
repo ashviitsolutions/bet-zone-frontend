@@ -102,13 +102,13 @@ function Plans() {
 
   const Data = [
     {
-      id: 'price_1Ola6GGJyA6XB6N0nyCrs0iP',
+      id: 'price_1OubUKGJyA6XB6N0WhxsKaUs',
       price: '13$/month',
       name: '1 MONTHLY SUBSCRIPTION',
       membershipType: '1 MONTH',
     },
     {
-      id: 'price_1OlaAjGJyA6XB6N0wEiaH8Xr',
+      id: 'price_1OubUEGJyA6XB6N0xrnl0l0x',
       price: '13$/month',
       name: '3 MONTH SUBSCRIPTION',
       membershipType: '3 MONTH',

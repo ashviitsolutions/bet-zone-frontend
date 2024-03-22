@@ -33,32 +33,73 @@ function VipTips() {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [data, setData] = useState([]);
+  const [page, setPage] = useState(0); // Track current page for pagination
+  const [isFetching, setIsFetching] = useState(false); // Track whether new data is being fetched
 
-  const fetchData = async () => {
-    try {
-      setRefreshing(true);
-      const response = await fetch(
-        `${IP}/service/view-services?page=1&limit=18`,
-      );
-      const responseData = await response.json();
-      const filteredServices = responseData.services.filter(
-        service => service.type === 'VIP',
-      );
-      setData(filteredServices);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setRefreshing(false);
-      setLoading(false);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`${IP}/service/view-services?page=${page}&limit=10`)
+      .then(resp => resp.json())
+      .then(result => {
+        if (result.msg) {
+          // Handle the case where no providers are found
+          console.log('result :   ',result.msg);
+        } else {
+          setLoading(false);
+          console.log("result" ,result)
+          setData(prevData => {
+            // Check for duplicates and concatenate only unique entries
+            const newData = result.filter(newItem => !prevData.some(oldItem => oldItem._id === newItem._id));
+            return [...prevData, ...newData];
+          });
+          // setCount(result.length);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false); // Set loading to false after fetching data
+      });
+  }, [page]);
+
+  const onRefersh = () => {
+    setRefreshing(true); 
+  
+    // Fetch data from the server
+    fetch(`${IP}/service/view-services?page=0&limit=10`)
+      .then(resp => resp.json())
+      .then(result => {
+        if (result.msg) {
+          console.log('result:', result.msg);
+        } else {
+          setData(result); // Update the data with the newly fetched data
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+        setRefreshing(false); // Set refreshing to false when data fetching is done
+      });
+  };
+
+  
+  const loadMore = () => {
+    if (!isFetching) {
+      setPage(page + 1);
     }
   };
 
-  const onRefersh = () => {
-    fetchData();
+  const renderLoader = () => {
+    return isFetching ? <ActivityIndicator size={'large'} /> : null;
   };
   useEffect(() => {
-    fetchData();
+    // fetchData();
   }, []);
+
+
 
   return (
     <>
@@ -112,6 +153,9 @@ function VipTips() {
               }
               contentContainerStyle={{paddingBottom: responsiveHeight(20)}}
               showsVerticalScrollIndicator={false}
+              onEndReachedThreshold={0.1}
+              onEndReached={loadMore}
+              ListFooterComponent={renderLoader}
             />
           </ScrollView>
         </View>

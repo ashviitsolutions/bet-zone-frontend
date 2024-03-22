@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     borderRadius: responsiveWidth(5),
     padding: 10,
     justifyContent: 'space-evenly',
-    marginVertical: 10,
+    marginVertical: responsiveHeight(1),
   },
   first_row: {
     width: responsiveWidth(90),
@@ -73,13 +73,14 @@ const styles = StyleSheet.create({
   date_text: {color: Colors.grayText, fontSize: responsiveFontSize(1.5)},
   game_icon_name_box: {
     width: responsiveWidth(23),
-    height: responsiveHeight(3),
+    height: responsiveHeight(3.6),
     backgroundColor: Colors.secondaryColor,
     borderRadius: responsiveWidth(15),
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     justifyContent: 'space-evenly',
+    
   },
   game_text: {
     color: Colors.blackText,

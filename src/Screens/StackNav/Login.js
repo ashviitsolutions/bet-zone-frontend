@@ -38,11 +38,14 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [disable, setDisable] = useState(false);
+
 
   const handleLogin = async () => {
     if (email && password) {
       try {
         setLoading(true);
+        setDisable(true)
         const response = await fetch(`${IP}/user/login`, {
           method: 'POST',
           headers: {
@@ -81,8 +84,10 @@ function Login() {
         ToastAndroid.show(error.toString(), ToastAndroid.SHORT);
         console.error('Error during login:', error);
         setLoading(false);
+        setDisable(false)
       } finally {
         setLoading(false);
+        setDisable(false)
       }
     } else {
       ToastAndroid.show('Enter email/password', ToastAndroid.SHORT);
@@ -121,12 +126,12 @@ function Login() {
             password={true}
           />
              {loading ? <ActivityIndicator color={Colors.yellowColor} size={'large'}/> : null}
-          <Button w={30} h={5} br={6} title={'LOGIN'} onPress={handleLogin} />
+          <Button w={30} h={5} br={6} title={'LOGIN'} onPress={handleLogin} disable={disable}/>
 
           <View
             style={styles.signUpTextContainer}>
             <Text style={{ color: Colors.grayText }}>Don't have an account? </Text>
-            <TouchableOpacity
+            <TouchableOpacity 
               activeOpacity={0.8}>
               <Text style={{ color: Colors.grayText }} onPress={()=>navigation.navigate(NavigationString.REGISTER)}>Sign up</Text>
             </TouchableOpacity>

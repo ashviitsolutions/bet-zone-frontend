@@ -60,7 +60,7 @@ export default function DropDownComp({
 const styles = StyleSheet.create({
   vipBox: {
     width: responsiveWidth(20),
-    height: responsiveHeight(3),
+    height: responsiveHeight(3.5),
     borderRadius: responsiveWidth(15),
     flexDirection: 'row',
     alignItems: 'center',

@@ -11,6 +11,7 @@ import { responsiveWidth, responsiveFontSize, responsiveHeight } from 'react-nat
 import NavigationString from '../Constants/NavigationString';
 import { CustomTabButton } from './CustomTabButton';
 const Tab = createBottomTabNavigator();
+
 const { width, height } = Dimensions.get('screen');
 function Tabs() {
   const navigation = useNavigation();
@@ -22,7 +23,7 @@ function Tabs() {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          height: height * 0.07,
+          height: responsiveHeight(7),
           backgroundColor: Colors.bottomNavColor,
         },
       }}
@@ -58,13 +59,13 @@ function Tabs() {
               customStyle={{
                 backgroundColor: Colors.secondaryColor,
                 width: responsiveWidth(15),
-                height: responsiveHeight(6),
+                height: responsiveHeight(10),
                 borderRadius: responsiveWidth(8),
                 top: -responsiveHeight(3),
-                padding: 5
+                padding: 5,
               }}
               customTextStyle={{
-                fontSize: responsiveFontSize(1.6), marginTop: responsiveHeight(0.5), color: '#000'
+                fontSize: responsiveFontSize(1.6), marginTop: responsiveHeight(0.1), color: '#000'
               }}
             />
           ),

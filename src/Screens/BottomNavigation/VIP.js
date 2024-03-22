@@ -7,6 +7,7 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
+  ScrollView,
 } from 'react-native';
 import Colors from '../../Constants/Colors';
 import Header from '../../Components/Header';
@@ -50,13 +51,14 @@ function VIP() {
         }
 
         const data = await response.json();
+        const last_element = data[data.length - 1];
+        // console.log('last element', last_element.status);
         console.log('membership', data);
 
         setMembershipLevel(data.membershipType);
         await AsyncStorage.setItem('membership', data.membershipType);
-        setStatus(data.status);
+        setStatus(last_element.status);
         setMemberhsip(data.status === 'active');
-
         const daysToAdd = data.renewalDays;
         const result = new Date(data.lastRenewalPaymentDate);
         result.setDate(result.getDate() + daysToAdd);
@@ -69,7 +71,7 @@ function VIP() {
     getUserMembership();
   }, []); // Run once when component mounts
 
-  console.log('membership status', status);
+
 
   async function fetchData() {
     try {
@@ -100,7 +102,7 @@ function VIP() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Header />
-      <View style={styles.mainConatiner}>
+      <ScrollView style={styles.mainConatiner}>
         <View style={styles.headingView}>
           <Image source={ImagePath.mikeIcon} style={styles.IconStyle} />
           <Text style={styles.VipText}>VIP TIPS</Text>
@@ -142,7 +144,7 @@ function VIP() {
         )}
 
         <ContactAreaComp />
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -198,3 +200,4 @@ const styles = StyleSheet.create({
   },
   loginText: { color: Colors.grayText },
 });
+

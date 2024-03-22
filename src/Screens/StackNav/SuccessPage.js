@@ -23,8 +23,8 @@ const SuccessPage = () => {
   console.log("userId", session_id);
 
   const Data = [
-    { id: "price_1Ola6GGJyA6XB6N0nyCrs0iP", price: '13$/month', name: 'MONTHLY SUBSCRIPTION' },
-    { id: "price_1OlaAjGJyA6XB6N0wEiaH8Xr", price: '13$/month', name: '3 MONTH SUBSCRIPTION' },
+    { id: "price_1OubUKGJyA6XB6N0WhxsKaUs", price: '13$/month', name: 'MONTHLY SUBSCRIPTION' },
+    { id: "price_1OubUEGJyA6XB6N0xrnl0l0x", price: '13$/month', name: '3 MONTH SUBSCRIPTION' },
   ];
 
   const selectedMembership = Data.find(option => option.id === id);

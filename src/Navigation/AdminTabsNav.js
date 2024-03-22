@@ -22,7 +22,7 @@ function Tabs() {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          height: height * 0.07,
+          height: responsiveHeight(7),
           backgroundColor: Colors.bottomNavColor,
         },
       }}

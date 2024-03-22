@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   },
   gameContainer: {
     width: responsiveWidth(25),
-    height: responsiveHeight(3),
+    height: responsiveHeight(3.5),
     backgroundColor: Colors.secondaryColor,
     borderRadius: responsiveWidth(15),
     flexDirection: 'row',

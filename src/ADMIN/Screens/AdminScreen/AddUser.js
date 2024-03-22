@@ -26,6 +26,7 @@ import InputComp from '../../../Components/InputComp';
 import { IP } from '../../../Constants/Server';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ContactAreaComp from '../../../Components/ContactAreaComp';
+import Loader from '../../../Components/Loader';
 
 const { width } = Dimensions.get('screen');
 
@@ -112,6 +113,7 @@ const AddUser = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Header />
+      <>
       <ScrollView style={styles.scrollView}>
         <View style={styles.headerContainer}>
           <Image source={ImagePath.ProfileIcon} style={styles.profileIcon} />
@@ -138,9 +140,11 @@ const AddUser = () => {
 
         <Button w={30} h={5} br={6} title={'CREATE'} onPress={handleAddUser} />
         <Text onPress={() => navigation.goBack()} style={styles.backText}>Back</Text>
-        {loading && <ActivityIndicator size="large" color={Colors.yellowColor} />}
+        {/* {loading && <ActivityIndicator size="large" color={Colors.yellowColor} />} */}
         <ContactAreaComp customStyle={{marginBottom:40}} />
       </ScrollView>
+      {loading ? <Loader/>:null}
+      </>
     </SafeAreaView>
   );
 };

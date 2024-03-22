@@ -159,9 +159,9 @@ const AdminProfile = () => {
           onPress={handleProfileUpdate}
           customStyle={styles.updateButton}
         />
-        <Text style={styles.backText} onPress={() => navigation.goBack()}>
+        {/* <Text style={styles.backText} onPress={() => navigation.goBack()}>
           Back
-        </Text>
+        </Text> */}
       </ScrollView>
       {loading ? <Loader /> : null}
     </SafeAreaView>

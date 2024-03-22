@@ -42,7 +42,7 @@ function UpdateProfile() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [token, setToken] = useState('');
   const [refreshing, setRefreshing] = useState(false);
-
+  const [disable, setDisable] = useState(false);
   async function fetchData() {
     try {
       setRefreshing(true);
@@ -69,6 +69,7 @@ function UpdateProfile() {
   // Function to handle profile update
   const handleProfileUpdate = async () => {
     setLoading(true);
+    setDisable(true)
     const userData = {
       full_name: name,
       email: email,
@@ -99,12 +100,14 @@ function UpdateProfile() {
         onRefresh();
       } else {
         setLoading(false);
+        setDisable(false)
         console.log('Error:', responseData.msg);
         // Handle error messages appropriately, e.g., show them to the user
       }
     } catch (error) {
       console.error('Error updating profile:', error);
       setLoading(false);
+      setDisable(false)
       // Handle network errors or other unexpected errors
     }
   };
@@ -165,14 +168,16 @@ function UpdateProfile() {
           onChangeText={setConfirmPassword}
           password={true} // Hides entered text
         />
+        {loading ? <ActivityIndicator color={Colors.yellowColor} size={'large'}/> : null}
         <Button
           w={30}
           h={5}
           br={6}
           title={'Update'}
           onPress={handleProfileUpdate}
+          disable={disable}
         />
-        <Text
+        {/* <Text
           style={{
             color: Colors.grayText,
             alignSelf: 'center',
@@ -180,7 +185,7 @@ function UpdateProfile() {
           }}
           onPress={handleLogout}>
           Back
-        </Text>
+        </Text> */}
       </ScrollView>
     </SafeAreaView>
   );

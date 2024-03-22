@@ -6,7 +6,7 @@ import { responsiveHeight, responsiveFontSize, responsiveWidth } from 'react-nat
 
 const { width, height } = Dimensions.get('screen');
 
-function Button({ w, h, title, br, onPress, customStyle, customStyleText }) {
+function Button({ w, h, title, br, onPress, customStyle, customStyleText,disable }) {
   return (
     <TouchableHighlight
       onPress={onPress}
@@ -15,6 +15,7 @@ function Button({ w, h, title, br, onPress, customStyle, customStyleText }) {
         height: responsiveHeight(h),
         borderRadius: responsiveWidth(br),
       }, customStyle]}
+      disabled={disable}
     >
       <Text style={[styles.buttonText, customStyleText]}>{title}</Text>
     </TouchableHighlight>
@@ -34,6 +35,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: Colors.blackText,
     fontWeight: '500',
+    fontSize:responsiveFontSize(1.6)
   },
 });
 

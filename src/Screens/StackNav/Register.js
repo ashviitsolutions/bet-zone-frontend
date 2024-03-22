@@ -39,7 +39,7 @@ function Register() {
   const [mobile, setMobile] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const [disable, setDisable] = useState(false);
   const handleSubmit = async () => {
     if (mobile.length < 8) {
       ToastAndroid.show(
@@ -66,6 +66,7 @@ function Register() {
     }
 
     setLoading(true);
+    setDisable(true)
     try {
       const data = {
         full_name: fullName,
@@ -85,6 +86,7 @@ function Register() {
       });
 
       setLoading(false);
+      setDisable(false)
 
       if (response.ok) {
         setFullName('');
@@ -102,6 +104,7 @@ function Register() {
       }
     } catch (error) {
       setLoading(false);
+      setDisable(false)
       console.error(error);
       ToastAndroid.show(
         'An error occurred. Please try again later.',
@@ -150,13 +153,13 @@ function Register() {
           onChangeText={setConfirmPassword}
           password={true}
         />
-        <Button w={30} h={5} br={6} title={'SIGN UP'} onPress={handleSubmit} />
+        <Button w={30} h={5} br={6} title={'SIGN UP'} onPress={handleSubmit} disable={disable}/>
 
         {loading && (
           <ActivityIndicator size="large" color={Colors.yellowColor} />
         )}
 
-        <ContactAreaComp />
+        <ContactAreaComp customStyle={{marginBottom:10}} />
       </ScrollView>
     </SafeAreaView>
   );

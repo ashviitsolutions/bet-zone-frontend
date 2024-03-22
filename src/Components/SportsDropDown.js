@@ -58,7 +58,7 @@ export default function SportsDropDown({
 const styles = StyleSheet.create({
   sportBox: {
     width: responsiveWidth(30),
-    height: responsiveHeight(3),
+    height: responsiveHeight(3.5),
     backgroundColor: Colors.grayText,
     borderRadius: responsiveWidth(15),
     flexDirection: 'row',
